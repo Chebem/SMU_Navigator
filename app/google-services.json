@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591447220592",
+    "project_id": "smu-navigator",
+    "storage_bucket": "smu-navigator.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591447220592:android:a32cd4095e4e92a57dafb5",
+        "android_client_info": {
+          "package_name": "com.example.smunavigator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqLG_8vIR6GaiQMljx4ph5FfqccOLsEAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

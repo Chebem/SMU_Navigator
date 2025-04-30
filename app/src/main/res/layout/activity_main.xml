@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@drawable/main_bg_gradient"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/headerSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:animateLayoutChanges="true">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/user_1"
+                    android:transitionName="profilePic"
+                    android:alpha="0"
+                    android:translationY="-50dp"/>
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Hi, Alex"
+                    android:textColor="@color/blue_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:translationX="-100dp"
+                    android:alpha="0"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Tap. Go. Explore\nFrom dorm to downtown—let's go!"
+                android:textColor="@color/blue_dark"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:alpha="0"
+                android:translationY="30dp" />
+
+            <EditText
+                android:id="@+id/editTextText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/grey_bg"
+                android:drawableStart="@drawable/search_icon"
+                android:drawablePadding="8dp"
+                android:hint="Where do you wanna go?"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/blue_dark"
+                android:textSize="14sp"
+                android:textStyle="bold|italic"
+                android:elevation="2dp"
+                android:translationY="50dp"
+                android:alpha="0"
+                />
+
+
+            <TableLayout
+                android:id="@+id/tableMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_bg_gradient"
+                android:stretchColumns="*"
+                android:padding="8dp">
+
+                <!-- Single Row with 5 Sections -->
+                <TableRow>
+
+                    <!-- Campus -->
+                    <LinearLayout
+                        android:id="@+id/campusSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/ripple_menu_item"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/campusIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/school"
+                            android:background="@drawable/main_bg_gradient"
+                            android:padding="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Campus"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- City Guide -->
+                    <LinearLayout
+                        android:id="@+id/cityGuideSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/ripple_menu_item"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/cityGuideIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/building"
+                            android:background="@drawable/main_bg_gradient"
+                            android:padding="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="City Guide"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Events -->
+                    <LinearLayout
+                        android:id="@+id/eventsSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/ripple_menu_item"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/eventsIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/calendar"
+                            android:background="@drawable/main_bg_gradient"
+                            android:padding="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Events"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- SMU Talk -->
+                    <LinearLayout
+                        android:id="@+id/smuTalkSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/ripple_menu_item"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/smutalkIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/worldwide"
+                            android:background="@drawable/main_bg_gradient"
+                            android:padding="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SMU Talk"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Bus Schedule -->
+                    <LinearLayout
+                        android:id="@+id/busScheduleSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/ripple_menu_item"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/busScheduleIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/bus"
+                            android:background="@drawable/main_bg_gradient"
+                            android:padding="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bus"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                </TableRow>
+
+            </TableLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recommendedView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layoutAnimation="@anim/layout_fall_down"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/navigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_margin="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/stroke_white_bg"
+        android:elevation="12dp"
+        android:padding="8dp"
+        app:cnb_iconColor="@drawable/main_bg_gradient"
+        app:cnb_iconSize="20sp"
+        app:cnb_menuResource="@menu/menu_bottom"
+        app:cnb_orientationMode="horizontal"
+        app:cnb_radius="100dp"
+        app:cnb_unselectedColor="@color/blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

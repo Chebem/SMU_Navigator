@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">SMU Navigator</string>
+    <string name="explore_smu_and_jecheon_nall_with_a_tap">Explore SMU and Jecheon.\nAll with a Tap!</string>
+    <string name="sign_in">Sign In</string>
+    <string name="get_started">get started</string>
+    <string name="explore_smu_and_jecheon_n_all_with_a_tap">Explore SMU and Jecheon\n All With a Tap</string>
+    <string name="find_your_way_enjoy_student_life_fully">Find Your Way Enjoy Student Life Fully</string>
+    <string name="find_your_way_nenjoy_student_life_fully">Find Your Way \nEnjoy Student Life Fully</string>
+    <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
+    <string name="tap_go_explore_smu_jecheon_n"><![CDATA[Tap. Go. Explore SMU & Jecheon!\n기숙사에서 시내까지, 함께 가요!]]></string>
+    <string name="school">School</string>
+    <string name="about">about</string>
+    <string name="follow">Follow</string>
+    <string name="followers">Followers</string>
+    <string name="likes">Likes</string>
+    <string name="followings">Followings</string>
+    <string name="posts">Posts</string>
+    <string name="department_of_computer_science">Department of Computer Science</string>
+    <string name="michael_mabinuola">Michael Mabinuola</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="view_all">View All</string>
+    <string name="departments">📚 Departments</string>
+    <string name="my_profile">My Profile</string>
+    <string name="smu_campus">SMU Campus</string>
+    <string name="search">Search</string>
+</resources>

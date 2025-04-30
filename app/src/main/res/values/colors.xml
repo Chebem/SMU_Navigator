@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_light">#3A86FF</color>
+    <color name="blue_dark">#023E8A</color>
+    <color name="blue_soft">#90E0EF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_dark">#333333</color>
+
+        <!-- Primary Blue -->
+        <color name="primary_blue">#0078FF</color>
+
+        <!-- Secondary Purple -->
+        <color name="secondary_purple">#9147FF</color>
+
+        <!-- Accent Orange -->
+        <color name="accent_orange">#FF6A3D</color>
+
+        <!-- Alert Red-Pink -->
+        <color name="alert_pink">#FF4C61</color>
+
+        <color name="teal">#00d5d5</color>
+
+    <!-- App Color Scheme -->
+
+    <!-- 🌟 Main App Background Color -->
+    <color name="background_main">#E0F7FA </color>
+    <!-- Very light gray, almost white — clean and bright without being harsh. -->
+
+    <!-- 🏛️ Header, AppBar, Section Titles -->
+    <color name="header_teal">#007991</color>
+    <!-- Slight teal tone — matches Splash screen, keeps consistency. -->
+
+    <!-- 🗂️ Cards and Inner Item Background -->
+    <color name="card_background">#FFFFFF</color>
+    <!-- Pure white cards for contrast against the light background — looks clean. -->
+
+    <!-- Accent color (for icons, etc.) -->
+    <color name="accent_light_blue">#5BC0EB</color>
+
+    <color name="menu_card_bg">#F0FDFD</color> <!-- Soft pastel with teal hint -->
+
+
+    <!-- Highlight color -->
+    <color name="highlight_cream">#FFF1E1</color>
+
+
+    <!-- ✨ (Optional) Soft Shadow Color for cards-->
+    <color name="shadow_soft">#22000000</color>
+    <!-- 13% black opacity, can be used for card elevation if custom shadow color needed. -->
+
+
+
+
+    <!-- Background and Text Defaults -->
+        <color name="background_light">#FFFFFF</color>
+        <color name="background_dark">#121212</color>
+        <color name="text_primary">#212121</color>
+        <color name="text_secondary">#757575</color>
+</resources>
