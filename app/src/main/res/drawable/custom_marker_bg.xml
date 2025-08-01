@@ -1,0 +1,15 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pin shape background (white border with drop tail) -->
+    <item>
+        <bitmap
+            android:src="@drawable/bg_marker_pill"
+            android:gravity="top|center_horizontal" />
+    </item>
+
+    <!-- Inner orange circle for icon background -->
+    <item android:top="10dp" android:bottom="8dp" android:left="8dp" android:right="8dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/accent_orange" />
+        </shape>
+    </item>
+</layer-list>

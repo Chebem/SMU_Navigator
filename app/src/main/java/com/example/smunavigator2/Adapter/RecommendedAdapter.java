@@ -1,13 +1,16 @@
 package com.example.smunavigator2.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.smunavigator2.Activity.DetailActivity;
 import com.example.smunavigator2.Domain.ItemDomain;
 import com.example.smunavigator2.databinding.ViewholderRecommendedBinding;
 
@@ -46,8 +49,14 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                 .into(holder.binding.picC);
 
         holder.itemView.setOnClickListener(v -> {
-            // handle click here
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("object", items.get(currentPosition));
+                context.startActivity(intent);
+            }
         });
+
     }
 
     @Override

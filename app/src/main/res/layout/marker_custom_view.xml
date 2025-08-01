@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_marker_pill"
+    android:paddingStart="8dp"
+    android:paddingEnd="12dp"
+    android:gravity="center_vertical"
+    android:elevation="4dp">
+
+    <ImageView
+        android:id="@+id/marker_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="6dp"
+        android:contentDescription="marker icon"
+        android:src="@drawable/campus" />
+
+    <TextView
+        android:id="@+id/marker_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Marker"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+</LinearLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/modeSelectorLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/main_bg_gradient2"
+    android:elevation="6dp"
+    android:gravity="center"
+    android:visibility="gone">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnWalk"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="Walk"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/blue_dark"
+        app:icon="@drawable/walk"
+        app:iconGravity="textStart"
+        app:iconPadding="4dp"
+        app:cornerRadius="24dp"
+        app:iconTint="@color/blue_dark"
+        android:layout_marginEnd="8dp"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDrive"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="Car"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/blue_dark"
+        app:icon="@drawable/car"
+        app:iconGravity="textStart"
+        app:iconPadding="4dp"
+        app:cornerRadius="24dp"
+        app:iconTint="@color/blue_dark"
+        android:layout_marginEnd="8dp"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBus"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="Bus"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/blue_dark"
+        app:icon="@drawable/bus_dir"
+        app:iconGravity="textStart"
+        app:iconPadding="4dp"
+        app:cornerRadius="24dp"
+        app:iconTint="@color/blue_dark"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

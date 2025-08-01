@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 🟤 Outer blurred shadow -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#33000000" /> <!-- semi-transparent black -->
+            <size android:width="36dp" android:height="36dp" />
+        </shape>
+    </item>
+
+    <!-- ⚪ White border + blue fill -->
+    <item android:left="2dp"
+        android:top="2dp"
+        android:right="2dp" android:bottom="2dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/accent_orange"/> <!-- blue fill -->
+            <stroke android:width="2dp" android:color="@android:color/white"/>
+        </shape>
+    </item>
+
+</layer-list>

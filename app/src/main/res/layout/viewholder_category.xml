@@ -28,5 +28,5 @@
         tools:visibility="visible"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:text="title"/>
+        android:text="@string/title"/>
 </LinearLayout>

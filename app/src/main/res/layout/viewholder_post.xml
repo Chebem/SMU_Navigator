@@ -1,10 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="120dp"
-             android:id="@+id/postImg"
-             android:scaleType="centerCrop"
-             android:background="@color/accent_light_blue"
-             android:layout_margin="4dp">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    android:layout_marginHorizontal="16dp">
 
-</ImageView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/main_bg_gradient3">
+
+        <!-- Image carousel -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/postImagePager"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:overScrollMode="never" />
+
+        <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+            android:id="@+id/dotsIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp" />
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/postTimeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 hrs ago"
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Username and Profile Pic -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePic"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/smu_logo"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@android:color/darker_gray"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/usernameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BemBem"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+
+
+        <!-- Caption -->
+        <TextView
+            android:id="@+id/captionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_caption_here"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="8dp" />
+
+        <!-- Comments or footer -->
+        <TextView
+            android:id="@+id/commentsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_comments"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

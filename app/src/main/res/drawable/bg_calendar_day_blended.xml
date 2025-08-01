@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#F7FAFC" /> <!-- light cloudy-blue (customize) -->
+    <corners android:radius="12dp" />
+    <stroke
+        android:width="0.5dp"
+        android:color="#D6E4F0" /> <!-- soft border -->
+</shape>

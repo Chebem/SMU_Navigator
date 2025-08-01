@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="215dp"
     android:layout_margin="8dp"
-    android:background="@drawable/white_corner_bg"
+    android:background="@drawable/gradient_corner_bg"
     android:elevation="3dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -63,8 +63,8 @@
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="@id/titleTxt"
         app:layout_constraintTop_toBottomOf="@+id/titleTxt"
-        app:srcCompat="@drawable/locationgif"
-        app:tint="@color/blue_dark" />
+        app:srcCompat="@drawable/location3"
+        app:tint="@color/alert_pink" />
 
     <TextView
         android:id="@+id/addressTxt"
@@ -85,7 +85,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="@id/imageView9"
         app:layout_constraintTop_toBottomOf="@+id/imageView9"
-        app:srcCompat="@drawable/clock" />
+        app:srcCompat="@drawable/clock2" />
 
     <TextView
         android:id="@+id/openTxt"

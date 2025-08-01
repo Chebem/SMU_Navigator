@@ -3,38 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="215dp"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@drawable/white_corner_bg"
-    android:elevation="3dp">
+    android:background="@drawable/gradient_corner_bg"
+    android:elevation="3dp"
+    android:padding="8dp">
 
+    <!-- Image -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/picC"
         android:layout_width="240dp"
         android:layout_height="130dp"
-        android:layout_margin="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.circleIMageView"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+    <!-- Title -->
     <TextView
         android:id="@+id/titleTxt"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="title"
+        android:text="@string/title"
+        android:textSize="14sp"
         android:textColor="@color/blue_dark"
-        android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/imageView7"
-        app:layout_constraintStart_toStartOf="@id/picC"
-        app:layout_constraintTop_toBottomOf="@+id/picC" />
+        app:layout_constraintTop_toBottomOf="@id/picC"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/imageView7" />
 
+    <!-- Rating -->
     <TextView
         android:id="@+id/scoreTxt"
         android:layout_width="wrap_content"
@@ -42,18 +44,19 @@
         android:text="5"
         android:textColor="@color/blue_dark"
         app:layout_constraintTop_toTopOf="@id/titleTxt"
-        app:layout_constraintEnd_toEndOf="@id/picC"
-        app:layout_constraintBottom_toBottomOf="@id/titleTxt" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/imageView7"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scoreTxt"
-        app:layout_constraintEnd_toStartOf="@+id/scoreTxt"
+        app:srcCompat="@drawable/star"
+        app:layout_constraintEnd_toStartOf="@id/scoreTxt"
         app:layout_constraintTop_toTopOf="@id/scoreTxt"
-        app:srcCompat="@drawable/star" />
+        app:layout_constraintBottom_toBottomOf="@id/scoreTxt"
+        android:layout_marginEnd="4dp"/>
+
+    <!-- Address -->
 
     <ImageView
         android:id="@+id/imageView9"
@@ -63,19 +66,22 @@
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="@id/titleTxt"
         app:layout_constraintTop_toBottomOf="@+id/titleTxt"
-        app:srcCompat="@drawable/locationgif"
-        app:tint="@color/blue_dark" />
+        app:srcCompat="@drawable/location3"
+        app:tint="@color/alert_pink" />
+
 
     <TextView
         android:id="@+id/addressTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="Address"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView9"
         app:layout_constraintStart_toEndOf="@id/imageView9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/imageView9"/>
+
+    <!-- Opening Hours -->
 
     <ImageView
         android:id="@+id/timeImage"
@@ -86,16 +92,17 @@
         app:layout_constraintStart_toStartOf="@id/imageView9"
         app:layout_constraintTop_toBottomOf="@+id/imageView9"
         app:srcCompat="@drawable/clock" />
-
     <TextView
         android:id="@+id/openTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Opening hours"
-        app:layout_constraintBottom_toBottomOf="@id/timeImage"
+        android:text="@string/opening_hours"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/timeImage"
-        app:layout_constraintTop_toTopOf="@+id/timeImage"/>
+        app:layout_constraintTop_toTopOf="@id/timeImage"
+        app:layout_constraintBottom_toBottomOf="@id/timeImage"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

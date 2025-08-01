@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/monthHeaderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/main_bg_gradient2">
+
+    <!-- Arrow and Month Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:baselineAligned="false">
+
+        <ImageView
+            android:id="@+id/prevMonthBtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/left_arrow"
+            android:contentDescription="@string/previous_month"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/blue_dark" />
+
+        <TextView
+            android:id="@+id/monthText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/may_2025"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_dark"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/nextMonthBtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/right_arrow"
+            android:contentDescription="@string/next_month"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/blue_dark" />
+    </LinearLayout>
+
+    <!-- Day-of-week labels row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="7"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp">
+
+        <TextView android:text="@string/sun" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/mon" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/tue" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/wed" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/thu" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/fri" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+        <TextView android:text="@string/sat" style="@style/CalendarDayLegendText" android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

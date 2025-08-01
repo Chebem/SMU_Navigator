@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_gravity="center">
+
+    <!-- 🔺 Red arrow (decorative, no accessibility needed) -->
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_gravity="top|center_horizontal"
+        android:src="@drawable/ic_location_arrow"
+        android:rotation="0"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
+
+    <!-- 🔴 Red dot (decorative, no accessibility needed) -->
+    <ImageView
+        android:id="@+id/dot"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_dot"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
+
+</FrameLayout>

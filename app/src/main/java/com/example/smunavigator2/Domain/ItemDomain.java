@@ -1,19 +1,100 @@
 package com.example.smunavigator2.Domain;
 
-
 import java.io.Serializable;
 
-public class ItemDomain implements Serializable
-{
-    private String id;               // Unique ID (optional if Firebase key is used)
-    private String name;             // Name of the facility
-    private String description;      // Short info about the building and its purpose
-    private String imagePath;        // URL from Firebase Storage
-    private String openingHours;     // E.g. "08:00 - 22:00"
-    private String contactNumber;    // E.g. "+82 43-649-1234"
-    private String locationDetails;  // Extra info like floor, block, directions
-    private double latitude;         // GPS location
+public class ItemDomain implements Mappable, Serializable {
+
+    private String id;
+    private String floors;
+    private String gender;
+
+
+
+    private String total_rooms;
+    private String building;
+    private int capacity;
+    private String supervisors;
+    private String name;
+    private String description;
+    private String imagePath;
+    private String openingHours;
+    private String contactNumber;
+    private String locationDetails;
+    private String category;
+
+
+    private double latitude;
     private double longitude;
+    private String Score;
+
+    // Required empty constructor for Firebase
+    public ItemDomain() {}
+
+    // Getters and Setters
+
+    public String getFloors() {
+        return floors;
+    }
+
+    public void setFloors(String floors) {
+        this.floors = floors;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    public String getTotal_rooms() {
+        return total_rooms;
+    }
+
+    public void setTotal_rooms(String total_rooms) {
+        this.total_rooms = total_rooms;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getSupervisors() {
+        return supervisors;
+    }
+
+    public void setSupervisors(String supervisors) {
+        this.supervisors = supervisors;
+    }
+    public String getScore() {
+        return Score;
+    }
+
+    public void setScore(String score) {
+        Score = score;
+    }
 
     public String getId() {
         return id;
@@ -86,9 +167,20 @@ public class ItemDomain implements Serializable
     public void setName(String name) {
         this.name = name;
     }
+
+    // ✅ Mappable interface methods
+    @Override
+    public double getLat() {
+        return latitude;
+    }
+
+    @Override
+    public double getLng() {
+        return longitude;
+    }
+
+    @Override
+    public String getType() {
+        return "Facility";
+    }
 }
-
-
-
-
-

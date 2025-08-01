@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/main_bg_gradient">
+    android:background="@drawable/main_bg_gradient2">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/main"
@@ -15,7 +15,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/main_bg_gradient"
+        android:background="@drawable/main_bg_gradient2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -26,7 +26,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/main_bg_gradient"
+            android:background="@drawable/main_bg_gradient2"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -37,7 +37,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="48dp"
-                android:background="@drawable/main_bg_gradient"
+                android:background="@drawable/gradient_corner_bg"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedCorner"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -145,7 +145,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Followers"
+                        android:text="@string/followers"
                         android:textAlignment="center"
                         android:textColor="@color/gray_dark"
                         android:textSize="16sp" />
@@ -229,7 +229,7 @@
                 android:id="@+id/view6"
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
-                android:background="@drawable/main_bg_gradient" />
+                android:background="@drawable/main_bg_gradient2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -242,7 +242,7 @@
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Followers"
+                    android:text="@string/followers"
                     android:textColor="@color/blue_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -270,7 +270,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/main_bg_gradient" />
+                android:background="@drawable/main_bg_gradient2" />
 
             <TextView
                 android:id="@+id/posts"
@@ -287,23 +287,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:layout_weight="1"/>
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"/>
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
+
+
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
         android:id="@+id/navigationBar"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_margin="24dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/stroke_white_bg"
         android:elevation="12dp"
-        android:padding="8dp"
+        android:padding="0dp"
         app:cnb_iconColor="@color/blue_dark"
-        app:cnb_iconSize="20sp"
+        app:cnb_iconSize="24dp"
         app:cnb_menuResource="@menu/menu_bottom"
         app:cnb_orientationMode="horizontal"
         app:cnb_radius="100dp"
@@ -311,6 +314,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/settingsIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/settings"
+        app:tint="@color/blue_dark"
+        android:contentDescription="@string/settings"
+        android:background="?selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
