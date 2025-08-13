@@ -24,7 +24,8 @@ Supports **English 🇬🇧** and **Korean 🇰🇷**, with real-time campus inf
 |-------------|------------------|--------------|
 
 
-|![FF5BB12A-ADBF-44F4-A6AE-5ECBBBFE1F0A_1_105_c](https://github.com/user-attachments/assets/e215269b-48f0-41fa-8042-ca1728b717fc) | ![Map](assets/screenshots/map.png) | ![Profile](assets/screenshots/profile.png) |
+|![FF5BB12A-ADBF-44F4-A6AE-5ECBBBFE1F0A_1_105_c](https://github.com/user-attachments/assets/e215269b-48f0-41fa-8042-ca1728b717fc) | ![A8A0D244-8CB3-43FD-B879-21B3B1D49557](https://github.com/user-attachments/assets/a18a16a9-516a-428a-8396-95903870566a)
+ | ![Profile](assets/screenshots/profile.png) |
 
 ---
 
