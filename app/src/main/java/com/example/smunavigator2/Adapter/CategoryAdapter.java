@@ -82,7 +82,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Viewho
         return items.size();
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder {
+    public static class Viewholder extends RecyclerView.ViewHolder {
         private final ViewholderCategoryBinding binding;
 
         public Viewholder(ViewholderCategoryBinding binding) {

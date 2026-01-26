@@ -42,8 +42,8 @@ import java.util.List;
 
 public class CityGuideActivity extends AppCompatActivity {
 
-    private RecyclerView subCategoryRecyclerView, popularRecyclerView, nearestRecyclerView;
-    private EditText searchInput;
+    private RecyclerView popularRecyclerView;
+    private RecyclerView nearestRecyclerView;
     private ResultViewModel categoryViewModel;
 
     //private SubCategoryAdapter subCategoryAdapter;
@@ -66,12 +66,12 @@ public class CityGuideActivity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         languageFab = findViewById(R.id.languageFab);
-        categorySpinner = findViewById(R.id.locationSp); // ✅ spinner initialized
+        categorySpinner = findViewById(R.id.locationSp); // spinner initialized
         isEnglish = getLanguagePreference();
 
         categoryViewModel = new ViewModelProvider(this).get(ResultViewModel.class);
         updateLanguageUI();
-        initCityLocation(); // ✅ correct method call
+        initCityLocation(); //  call method
 
         languageFab.setOnClickListener(v -> {
             isEnglish = !isEnglish;
@@ -82,9 +82,9 @@ public class CityGuideActivity extends AppCompatActivity {
 
         setupBottomNav(R.id.explore);
 
-        subCategoryRecyclerView = findViewById(R.id.recyclerViewCategory);
+        RecyclerView subCategoryRecyclerView = findViewById(R.id.recyclerViewCategory);
         subCategoryRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        searchInput = findViewById(R.id.searchInput);
+        EditText searchInput = findViewById(R.id.searchInput);
 
         /* searchInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -117,7 +117,7 @@ public class CityGuideActivity extends AppCompatActivity {
         loadPlaces(isEnglish ? "placesEn" : "placesKo", "All City Sections");
     }
 
-    private void initCityLocation() { // ✅ fixed signature
+    private void initCityLocation() { //  fixed signature
         DatabaseReference myRef = database.getReference("CityLocation");
         ArrayList<CityLocation> categoryList = new ArrayList<>();
 

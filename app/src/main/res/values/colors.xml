@@ -23,15 +23,15 @@
 
     <!-- App Color Scheme -->
 
-    <!-- 🌟 Main App Background Color -->
+    <!--  Main App Background Color -->
     <color name="background_main">#E0F7FA </color>
     <!-- Very light gray, almost white — clean and bright without being harsh. -->
 
-    <!-- 🏛️ Header, AppBar, Section Titles -->
+    <!--  Header, AppBar, Section Titles -->
     <color name="header_teal">#007991</color>
     <!-- Slight teal tone — matches Splash screen, keeps consistency. -->
 
-    <!-- 🗂️ Cards and Inner Item Background -->
+    <!--  Cards and Inner Item Background -->
     <color name="card_background">#FFFFFF</color>
     <!-- Pure white cards for contrast against the light background — looks clean. -->
 
@@ -45,11 +45,9 @@
     <color name="highlight_cream">#FFF1E1</color>
 
 
-    <!-- ✨ (Optional) Soft Shadow Color for cards-->
+    <!-- Soft Shadow Color for cards-->
     <color name="shadow_soft">#22000000</color>
     <!-- 13% black opacity, can be used for card elevation if custom shadow color needed. -->
-
-
 
 
     <!-- Background and Text Defaults -->

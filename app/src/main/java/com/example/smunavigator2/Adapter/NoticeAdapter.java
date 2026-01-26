@@ -17,9 +17,9 @@ import com.example.smunavigator2.R;
 import java.util.List;
 
 public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder> {
-        private Context context;
-        private List<NoticeModel> noticeList;
-        private boolean isEnglish;
+        private final Context context;
+        private final List<NoticeModel> noticeList;
+        private final boolean isEnglish;
 
         public NoticeAdapter(Context context, List<NoticeModel> noticeList, boolean isEnglish) {
             this.context = context;

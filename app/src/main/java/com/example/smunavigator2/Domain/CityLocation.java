@@ -4,15 +4,14 @@ import androidx.annotation.NonNull;
 
 public class CityLocation {
     private int Id;
-    private String loc;  // lowercase 'l' to match Firebase key
+    private String loc;
 
 
-    // 🔧 No-argument constructor for Firebase
     public CityLocation() {}
 
     public CityLocation(int id, String loc) {
        this.Id = id;
-       this.loc = loc;// Default constructor required for calls to DataSnapshot.getValue(Location.class)
+       this.loc = loc;
     }
 
     public int getId() {

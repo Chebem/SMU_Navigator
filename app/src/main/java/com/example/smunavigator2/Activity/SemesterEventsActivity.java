@@ -2,14 +2,12 @@ package com.example.smunavigator2.Activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +32,6 @@ import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.*;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class SemesterEventsActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
@@ -42,7 +39,7 @@ public class SemesterEventsActivity extends AppCompatActivity {
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
     private DatabaseReference eventRef;
-    private Map<LocalDate, List<Event>> allEvents = new HashMap<>();
+    private final Map<LocalDate, List<Event>> allEvents = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +138,7 @@ public class SemesterEventsActivity extends AppCompatActivity {
                     List<Event> events = allEvents.getOrDefault(date, new ArrayList<>());
                     eventAdapter = new EventAdapter(events);
                     eventRecyclerView.setAdapter(eventAdapter);
+                    assert events != null;
                     if (!events.isEmpty()) {
                         new EventDetailsDialog(SemesterEventsActivity.this, events).show();
                     }

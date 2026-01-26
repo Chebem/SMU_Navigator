@@ -26,7 +26,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.noticeWebView);
         backBtn = findViewById(R.id.backBtn);
-        progressBar = findViewById(R.id.progressBar); // 👈 Link ProgressBar from XML
+        progressBar = findViewById(R.id.progressBar); // ProgressBar from XML
 
         // 🔙 Back Button
         backBtn.setOnClickListener(v -> {
@@ -37,17 +37,17 @@ public class NoticeDetailActivity extends AppCompatActivity {
             }
         });
 
-        // 🌍 WebView Setup
+        // WebView Setup
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
-                progressBar.setVisibility(View.VISIBLE); // 👈 Show ProgressBar
+                progressBar.setVisibility(View.VISIBLE); // Show ProgressBar
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                progressBar.setVisibility(View.GONE); // 👈 Hide ProgressBar
+                progressBar.setVisibility(View.GONE); // Hide ProgressBar
             }
 
             @Override
@@ -59,7 +59,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
             }
         });
 
-        // 📥 Load HTML content
+        // Load HTML content
         String title = getIntent().getStringExtra("title");
         String htmlContent = getIntent().getStringExtra("html");
         setTitle(title);

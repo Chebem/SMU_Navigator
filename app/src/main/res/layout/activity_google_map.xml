@@ -221,7 +221,7 @@
                 android:backgroundTint="@color/white"
                 android:textColor="@color/blue_dark"
                 android:textSize="14sp"
-                app:icon="@drawable/ic_bar"
+                app:icon="@drawable/ic_bars"
                 app:iconGravity="textStart"
                 android:textAllCaps="false"
                 app:iconPadding="4dp"

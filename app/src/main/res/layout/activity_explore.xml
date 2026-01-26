@@ -36,10 +36,11 @@
                 android:id="@+id/langToggleBtn"
                 android:layout_width="48dp"
                 android:layout_height="36dp"
+                android:background="@drawable/stroke_white_bg"
                 android:text="EN"
                 android:textSize="12sp"
                 android:textColor="@color/white"
-                android:backgroundTint="@color/blue_light"
+                android:backgroundTint="@color/background_main"
                 android:textStyle="bold" />
         </LinearLayout>
 

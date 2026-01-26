@@ -16,7 +16,7 @@ public class ProfileModel {
     private static long timestamp;
     private String userId;
     public ArrayList<Follower> followers;
-    public Map<String, Post> posts;  // ✅ Correct type
+    public Map<String, Post> posts;  // Correct type
 
     public ProfileModel() {
     }
@@ -29,7 +29,7 @@ public class ProfileModel {
                         int followingNum,
                         int likes,
                         ArrayList<Follower> followers,
-                        Map<String, Post> posts) {  // ✅ FIX: use Map here too
+                        Map<String, Post> posts) {  //   use Map here
         this.profileName = profileName;
         this.profileImage = profileImage;
         this.department = department;

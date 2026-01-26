@@ -12,9 +12,9 @@ public class MarkerTagData {
     public double lng;
     public String floors;
     public String supervisors;
-    public String phoneNumber; // ✅ NEW FIELD
+    public String phoneNumber;
 
-    // ✅ Constructor for dorms
+    // Constructor for dorms
     public MarkerTagData(String name, String address, String hours, String description, String imageUrl, String category, String floors, String supervisors, double lat, double lng) {
         this.name = name;
         this.address = address;
@@ -29,7 +29,7 @@ public class MarkerTagData {
         this.lng = lng;
     }
 
-    // ✅ Constructor for stores with optional phoneNumber
+    // Constructor for stores and other facilities
     public MarkerTagData(String name, String address, String hours, String description, String imageUrl, String category, String phoneNumber, double lat, double lng) {
         this.name = name;
         this.address = address;

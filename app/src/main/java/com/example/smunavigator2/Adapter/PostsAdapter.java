@@ -25,12 +25,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> {
 
+
+
     private final List<Post> postList;
     private final OnPostClickListener clickListener;
+    private final Map<String, String> nameCache = new HashMap<>();
+    private final Map<String, String> imageCache = new HashMap<>();
 
     public interface OnPostClickListener {
         void onPostClick(Post post);
@@ -121,6 +127,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
         return postList.size();
     }
 
+    public void updatePosts(List<Post> newList) {
+        postList.clear();
+        if (newList != null) postList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
     public static class Viewholder extends RecyclerView.ViewHolder {
         ViewholderPostBinding binding;
 
@@ -128,5 +140,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
             super(binding.getRoot());
             this.binding = binding;
         }
+
     }
 }

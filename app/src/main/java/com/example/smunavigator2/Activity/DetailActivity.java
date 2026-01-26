@@ -39,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void getIntentExtra() {
         object = getIntent().getSerializableExtra("object");
+        assert object != null;
         Log.d("DetailType", "Object class: " + object.getClass().getSimpleName());
     }
 
@@ -150,7 +151,7 @@ public class DetailActivity extends AppCompatActivity {
                 intent.putExtra("storeCategory", category);
                 intent.putExtra("markerLayout", layoutKey);
 
-                // ✅ storeImage for all types
+                // storeImage for all types
                 String image = "";
                 if (object instanceof ItemDomain) image = ((ItemDomain) object).getImagePath();
                 else if (object instanceof ConvenienceFacility) image = ((ConvenienceFacility) object).getImagePath();

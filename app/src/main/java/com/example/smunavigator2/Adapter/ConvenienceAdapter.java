@@ -28,7 +28,7 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
         this.items = items;
     }
 
-    // 🔽 INSERT HERE
+
     public void setItems(List<ConvenienceFacility> newItems) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                 new ConvenienceDiffCallback(this.items, newItems)

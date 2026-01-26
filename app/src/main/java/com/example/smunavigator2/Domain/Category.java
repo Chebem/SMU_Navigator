@@ -4,7 +4,7 @@ public class Category
 {
     private int Id;
 
-    // ✅ Default constructor required for Firebase
+    // Default constructor required for Firebase
     public Category() {
     }
 

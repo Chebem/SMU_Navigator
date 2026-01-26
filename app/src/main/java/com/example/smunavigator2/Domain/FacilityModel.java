@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class FacilityModel implements Mappable, Serializable {
-    private Map<String, String> name; // Multilingual name map (e.g., {"en": "Library", "ko": "도서관"})
-    private String nameString;        // Fallback for single-language name from Firebase
+    private Map<String, String> name; // Multilingual name map from Firebase
+    private String nameString;        // Fallback single name string
     private String location;          // Display location or building name
     private String description;
     private String imagePath;

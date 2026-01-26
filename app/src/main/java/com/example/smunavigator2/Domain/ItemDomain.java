@@ -168,7 +168,7 @@ public class ItemDomain implements Mappable, Serializable {
         this.name = name;
     }
 
-    // ✅ Mappable interface methods
+    // Mappable interface methods
     @Override
     public double getLat() {
         return latitude;

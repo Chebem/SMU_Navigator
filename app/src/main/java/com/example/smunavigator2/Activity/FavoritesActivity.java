@@ -26,7 +26,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private FavoriteAdapter adapter;
-    private List<FavoriteItem> favoriteList = new ArrayList<>();
+    private final List<FavoriteItem> favoriteList = new ArrayList<>();
     private DatabaseReference favoriteRef;
 
     @Override
@@ -60,7 +60,7 @@ public class FavoritesActivity extends AppCompatActivity {
                 int index = favoriteList.indexOf(item);
                 if (index != -1) {
                     favoriteList.remove(index);
-                    adapter.notifyItemRemoved(index); // ✅ More efficient
+                    adapter.notifyItemRemoved(index); //  More efficient
                     Toast.makeText(this, getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -82,7 +82,7 @@ public class FavoritesActivity extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
 
-                // ✅ Hide loading, show list
+                // Hide loading, show list
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             }

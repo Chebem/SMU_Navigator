@@ -62,7 +62,7 @@ public class MapActivity extends AppCompatActivity {
         // 🔘 Category Buttons
         findViewById(R.id.btnFacilities).setOnClickListener(v -> {
             selectedCategory = "Facilities";
-            hideOverlay(); // 👈 hide before reload
+            hideOverlay(); // hide before reload
             loadMarkers();
         });
         findViewById(R.id.btnRestaurants).setOnClickListener(v -> {
@@ -104,7 +104,7 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onMapReady(@NonNull KakaoMap map) {
                 kakaoMap = map;
-                setLabelClickListener(); // ✅ Important!
+                setLabelClickListener(); //  Important for overlay
 
                 fetchCurrentLocationAndMoveCamera();
 
@@ -192,7 +192,7 @@ public class MapActivity extends AppCompatActivity {
             });
         }
 
-        // 🍽️ Stores, Cafes, Restaurants, etc.
+        // Stores, Cafes, Restaurants, etc.
         if (
                 selectedCategory.equals("Convenience") ||
                         selectedCategory.equals("Stores") ||
@@ -209,11 +209,11 @@ public class MapActivity extends AppCompatActivity {
                         ConvenienceFacility s = snap.getValue(ConvenienceFacility.class);
                         if (s == null || s.getLat() == 0) continue;
 
-                        // 🧠 Filter: Only show matching category
+                        //Only show matching category
                         if (!selectedCategory.equals("All") && !selectedCategory.equals("Facilities")
                                 && !selectedCategory.equalsIgnoreCase(s.getCategory())) continue;
 
-                        // 🎨 Choose marker layout by category
+                        // Choose marker layout by category
                         String layoutKey;
                         switch (s.getCategory()) {
                             case "Coffee":
@@ -249,7 +249,7 @@ public class MapActivity extends AppCompatActivity {
                 }
             });
 
-            setLabelClickListener(); // ✅ overlay popup
+            setLabelClickListener(); // overlay popup
         }
 
 
@@ -278,7 +278,7 @@ public class MapActivity extends AppCompatActivity {
             });
         }
 
-        setLabelClickListener(); // ✅ Needed for overlay
+        setLabelClickListener(); // Needed for overlay
     }
 
     private void setLabelClickListener() {
@@ -376,11 +376,11 @@ public class MapActivity extends AppCompatActivity {
 
                 fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
                     @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        if (locationResult != null && !locationResult.getLocations().isEmpty()) {
+                    public void onLocationResult(@NonNull LocationResult locationResult) {
+                        if (!locationResult.getLocations().isEmpty()) {
                             Location newLocation = locationResult.getLastLocation();
                             showLocationMarker(newLocation);
-                            fusedLocationClient.removeLocationUpdates(this); // ✅ Stop after one result
+                            fusedLocationClient.removeLocationUpdates(this); //
                         } else {
                             Log.e("MapDebug", "Real-time location fetch failed");
                         }
@@ -411,7 +411,7 @@ public class MapActivity extends AppCompatActivity {
                         layer.addLabel(LabelOptions.from(currentPos)
                                 .setStyles(styles)
                                 .setTag("You are here"));
-                        Log.d("MapDebug", "✅ Marker added at current location");
+                        Log.d("MapDebug", "Marker added at current location");
                     } else {
                         Log.e("MapDebug", "LabelLayer is null");
                     }

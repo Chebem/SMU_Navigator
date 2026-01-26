@@ -27,7 +27,7 @@ public class ExploreActivity extends AppCompatActivity {
 
     private RecyclerView noticeRecyclerView;
     private NoticeAdapter adapter;
-    private List<NoticeModel> noticeList = new ArrayList<>();
+    private final List<NoticeModel> noticeList = new ArrayList<>();
     private boolean isEnglish = true; // Toggle flag
 
     @Override

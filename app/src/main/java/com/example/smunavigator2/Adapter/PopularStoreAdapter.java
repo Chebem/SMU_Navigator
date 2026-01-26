@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,30 +20,81 @@ import com.example.smunavigator2.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapter.ViewHolder> {
 
-    private List<StoreModel> storeList;
+    private final List<StoreModel> storeList = new ArrayList<>();
     private OnItemClickListener listener;
-
-
 
     public interface OnItemClickListener {
         void onClick(StoreModel item);
     }
 
-    public PopularStoreAdapter(List<StoreModel> storeList) {
-        this.storeList = new ArrayList<>(storeList);
+    public PopularStoreAdapter(List<StoreModel> initialList) {
+        submitList(initialList);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
+    //using DiffUtil (replaces notifyDataSetChanged)
     public void submitList(List<StoreModel> updatedList) {
-        storeList.clear();
-        storeList.addAll(updatedList);
-        notifyDataSetChanged();
+        if (updatedList == null) updatedList = new ArrayList<>();
+
+        final List<StoreModel> newList = new ArrayList<>(updatedList);
+        final List<StoreModel> oldList = new ArrayList<>(this.storeList);
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return oldList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                StoreModel oldItem = oldList.get(oldItemPosition);
+                StoreModel newItem = newList.get(newItemPosition);
+
+                return safe(oldItem.getName()).equals(safe(newItem.getName()))
+                        && oldItem.getLat() == newItem.getLat()
+                        && oldItem.getLng() == newItem.getLng();
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                StoreModel oldItem = oldList.get(oldItemPosition);
+                StoreModel newItem = newList.get(newItemPosition);
+
+                return safe(oldItem.getName()).equals(safe(newItem.getName()))
+                        && safe(oldItem.getAddress()).equals(safe(newItem.getAddress()))
+                        && safe(oldItem.getCategory()).equals(safe(newItem.getCategory()))
+                        && safe(oldItem.getImagePath()).equals(safe(newItem.getImagePath()))
+                        && safeJoin(oldItem.getOpening_hours()).equals(safeJoin(newItem.getOpening_hours()))
+                        && safe(oldItem.getActivity()).equals(safe(newItem.getActivity()))
+                        && safe(oldItem.getPhone_number()).equals(safe(newItem.getPhone_number()))
+                        && safe(oldItem.getShortAddress()).equals(safe(newItem.getShortAddress()));
+            }
+        });
+
+        this.storeList.clear();
+        this.storeList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+
+    private String safeJoin(List<String> list) {
+        if (list == null) return "";
+        return TextUtils.join(", ", list);
     }
 
     @NonNull
@@ -59,8 +111,12 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
 
         holder.name.setText(item.getName());
 
-        // Format and clean address
-        String fullAddress = item.getAddress() != null ? item.getAddress().toLowerCase() : "";
+        // ✅ Locale-safe lowercasing (prevents Turkish 'i' bug)
+        String fullAddress = item.getAddress() != null
+                ? item.getAddress().toLowerCase(Locale.ROOT)
+                : "";
+
+        // Clean address
         fullAddress = fullAddress.replace("jecheon-si", "")
                 .replace("chungbuk", "")
                 .replace("republic of korea", "")
@@ -75,30 +131,25 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
         String imageUrl = item.getImagePath();
         String category = item.getCategory();
 
-        // Load image
-
+        // Category-specific placeholder
+        int placeholderRes = getPlaceholderImageRes(category);
 
         if (imageUrl == null || imageUrl.isEmpty()) {
-            // 🟡 No image URL, use category fallback directly
-            int fallbackRes = getFallbackImageRes(category);
             Glide.with(holder.itemView.getContext())
-                    .load(fallbackRes)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.placeholder_image)
+                    .load(placeholderRes)
+                    .circleCrop()
                     .into(holder.image);
         } else {
-            // 🟢 Valid URL, try loading it, fallback on failure
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image) // general loading placeholder
-                    .error(getFallbackImageRes(category)) // use category fallback if loading fails
+                    .placeholder(placeholderRes)
+                    .error(placeholderRes)
                     .circleCrop()
                     .into(holder.image);
         }
 
-        // Handle click: toggle address + open GoogleMapActivity
         holder.itemView.setOnClickListener(v -> {
-            // Toggle short/full address
+            // Toggle short/full address on tap
             if (holder.address.getText().toString().endsWith("...")) {
                 holder.address.setText(finalFullAddress);
             } else {
@@ -118,22 +169,19 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
                             : "Opening hours not available"
             );
             intent.putExtra("storeImage", item.getImagePath());
-            String layoutName = item.getCategory().equalsIgnoreCase("Restaurant") ? "food_marker" :
-                    item.getCategory().equalsIgnoreCase("Coffee") ? "coffee_marker" :
-                            "store_marker"; // default fallback
-
-            intent.putExtra("markerLayout", layoutName);
+            intent.putExtra("storeCategory", item.getCategory());
             intent.putExtra("storeDescription", item.getActivity() != null ? item.getActivity() : "");
 
-            // ✅ Use layoutKey mapping helper
+            // Map marker layout key (case-insensitive)
             String layoutKey = getMarkerLayoutKeyFromCategory(item.getCategory());
             intent.putExtra("markerLayout", layoutKey);
 
             context.startActivity(intent);
-            // Optional: call listener
+
             if (listener != null) listener.onClick(item);
         });
     }
+
     @Override
     public int getItemCount() {
         return storeList.size();
@@ -152,39 +200,71 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
         return result.toString().trim();
     }
 
-    private int getFallbackImageRes(String category) {
-        if (category == null) return R.drawable.smu_logo;
-        switch (category.toLowerCase()) {
+    /**
+     * ✅ Returns placeholder images for RecyclerView items (NOT map markers)
+     */
+    private int getPlaceholderImageRes(String category) {
+        if (category == null) return R.drawable.placeholder_image;
+
+        switch (category.toLowerCase(Locale.ROOT)) {
             case "restaurant":
             case "restaurants":
-                return R.drawable.ic_food;
+                return R.drawable.food_placehlolder;
+
             case "coffee":
-                return R.drawable.cafe2;
+                return R.drawable.coffee_placehlolder;
+
             case "mart":
-                return R.drawable.ic_shop;
+                return R.drawable.shop_placeholder;
+
             case "convenience":
-                return R.drawable.ic_store;
+                return R.drawable.convenience_placehlolder;
+
             case "accommodation":
-                return R.drawable.dorm;
+            case "dorms":
+                return R.drawable.accommodation_placehlolder;
+
             case "bars":
-                return R.drawable.ic_bar;
+                return R.drawable.bar_placehlolder;
+
+            case "facilities":
+                return R.drawable.facilties;
+
             default:
-                return R.drawable.smu_logo; // fallback
+                return R.drawable.placeholder_image;
         }
     }
 
+    /**Returns layout keys for MAP MARKERS */
     private String getMarkerLayoutKeyFromCategory(String category) {
         if (category == null) return "store_marker";
-        switch (category) {
-            case "Coffee": return "coffee_marker";
-            case "Restaurant":
-            case "Restaurants": return "food_marker";
-            case "Dorms": return "dorm_marker";
-            case "Facilities": return "facilities_marker";
-            case "Convenience": return "convenience_marker";
-            case "Bars": return "bars_marker";     // ✅ Match layout filename
-            case "Mart": return "mart_marker";     // ✅ Match layout filename
-            default: return "store_marker";        // fallback
+
+        switch (category.toLowerCase(Locale.ROOT)) {
+            case "coffee":
+                return "coffee_marker";
+
+            case "restaurant":
+            case "restaurants":
+                return "food_marker";
+
+            case "dorms":
+            case "accommodation":
+                return "dorm_marker";
+
+            case "facilities":
+                return "facilities_marker";
+
+            case "convenience":
+                return "convenience_marker";
+
+            case "bars":
+                return "bars_marker";
+
+            case "mart":
+                return "mart_marker";
+
+            default:
+                return "store_marker";
         }
     }
 

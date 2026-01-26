@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 public class Location {
     private int Id;
-    private String loc;  // lowercase 'l' to match Firebase key
+    private String loc;  // lowercase to match Firebase key
 
 
-    // 🔧 No-argument constructor for Firebase
+    // No-argument constructor for Firebase
     public Location() {}
 
     public Location(int id, String loc) {

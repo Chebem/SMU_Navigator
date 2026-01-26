@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,14 +25,13 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UploadPostActivity extends AppCompatActivity {
 
-    private RecyclerView imageRecycler;
     private ImagePreviewAdapter adapter;
-    private List<Uri> imageUris = new ArrayList<>();
-    private Button uploadBtn;
+    private final List<Uri> imageUris = new ArrayList<>();
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
@@ -54,8 +52,8 @@ public class UploadPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_post);
 
-        imageRecycler = findViewById(R.id.imageRecycler);
-        uploadBtn = findViewById(R.id.uploadBtn);
+        RecyclerView imageRecycler = findViewById(R.id.imageRecycler);
+        Button uploadBtn = findViewById(R.id.uploadBtn);
         adapter = new ImagePreviewAdapter(imageUris, new ImagePreviewAdapter.OnImageRemoveListener() {
             @Override
             public void onRemove(int position) {
@@ -96,7 +94,7 @@ public class UploadPostActivity extends AppCompatActivity {
 
     private void uploadImagesToFirebase() {
         List<String> uploadedUrls = new ArrayList<>();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         int total = imageUris.size();
 
         for (Uri uri : imageUris) {
@@ -120,7 +118,7 @@ public class UploadPostActivity extends AppCompatActivity {
 
         HashMap<String, Object> postMap = new HashMap<>();
         postMap.put("imageUrls", urls);
-        postMap.put("mainImage", urls.get(0)); // 👈 Add this
+        postMap.put("mainImage", urls.get(0)); //
         postMap.put("caption", caption);
         postMap.put("timestamp", System.currentTimeMillis());
         postMap.put("userId", uid);

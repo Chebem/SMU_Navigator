@@ -44,7 +44,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<FollowersAdapter.View
         return list.size();
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder {
+    public static class Viewholder extends RecyclerView.ViewHolder {
         ViewholderFollowersBinding binding;
 
         public Viewholder(ViewholderFollowersBinding binding) {

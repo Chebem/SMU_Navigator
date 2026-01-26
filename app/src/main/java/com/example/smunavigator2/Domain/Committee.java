@@ -27,7 +27,7 @@ public class Committee implements Mappable, Serializable {
     // 🔧 Required empty constructor for Firebase
     public Committee() {}
 
-    // ✅ All-fields constructor (excluding lat/lng, which are set separately)
+    // All-fields constructor for your own use
     public Committee(String title, String imageUrl, String location, String openingHours, float score) {
         this.title = title;
         this.imageUrl = imageUrl;
@@ -36,7 +36,7 @@ public class Committee implements Mappable, Serializable {
         this.score = score;
     }
 
-    // ✅ Getters
+    //  Getters
     public String getTitle() {
         return title;
     }
@@ -69,7 +69,7 @@ public class Committee implements Mappable, Serializable {
         return longitude;
     }
 
-    // ✅ Mappable interface implementation
+    // Mappable interface implementation
     @Override
     public double getLat() {
         return latitude;
@@ -95,7 +95,7 @@ public class Committee implements Mappable, Serializable {
         return imageUrl;
     }
 
-    // ✅ Setters
+    // Setters
     public void setTitle(String title) {
         this.title = title;
     }

@@ -17,8 +17,9 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_TYPE_ADD = 0;
     private static final int VIEW_TYPE_IMAGE = 1;
 
-    private List<Uri> imageUris;
+    private final List<Uri> imageUris;
     private final OnImageRemoveListener listener;
+
 
 
     public interface OnImageRemoveListener {
@@ -80,7 +81,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    class AddViewHolder extends RecyclerView.ViewHolder {
+    static class AddViewHolder extends RecyclerView.ViewHolder {
         public AddViewHolder(@NonNull View itemView) {
             super(itemView);
         }

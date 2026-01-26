@@ -14,7 +14,7 @@ import com.example.smunavigator2.R;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
-    private List<NotificationModel> list;
+    private final List<NotificationModel> list;
 
     public NotificationAdapter(List<NotificationModel> list) {
         this.list = list;

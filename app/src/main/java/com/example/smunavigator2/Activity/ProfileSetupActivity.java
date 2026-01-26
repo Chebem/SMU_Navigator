@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smunavigator2.databinding.ActivityProfileSetupBinding;
@@ -19,10 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ProfileSetupActivity extends AppCompatActivity {
@@ -82,7 +81,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         if (selectedImageUri != null) {
             String filename = UUID.randomUUID().toString() + ".jpg";
-            StorageReference fileRef = storageRef.child(auth.getCurrentUser().getUid()).child("profile.jpg");
+            StorageReference fileRef = storageRef.child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("profile.jpg");
 
             fileRef.putFile(selectedImageUri)
                     .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
@@ -95,7 +94,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
     }
 
     private void saveToDatabase(String name, String bio, String imageUrl) {
-        String uid = auth.getCurrentUser().getUid();
+        String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         String department = binding.departmentInput.getText().toString().trim();
         HashMap<String, Object> profileMap = new HashMap<>();
         profileMap.put("profileName", name);

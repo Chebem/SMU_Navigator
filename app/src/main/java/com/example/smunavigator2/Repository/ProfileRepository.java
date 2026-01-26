@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProfileRepository {
     private final DatabaseReference profileRef;
@@ -26,7 +27,7 @@ public class ProfileRepository {
     public ProfileRepository() {
         profileRef = FirebaseDatabase.getInstance("https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("profiles")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         profileLiveData = new MutableLiveData<>();
     }
 

@@ -1,5 +1,6 @@
 package com.example.smunavigator2.Repository;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -23,7 +24,7 @@ public class ResultsRepository {
         firebaseDatabase.getReference("SubCategory")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot snapshot) {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
                         List<CategoryModel> lists = new ArrayList<>();
                         for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                             CategoryModel item = childSnapshot.getValue(CategoryModel.class);
@@ -35,7 +36,7 @@ public class ResultsRepository {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError error) {
+                    public void onCancelled(@NonNull DatabaseError error) {
                         listData.setValue(new ArrayList<>());
                     }
                 });
@@ -49,7 +50,7 @@ public class ResultsRepository {
         firebaseDatabase.getReference(nodeName)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot snapshot) {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
                         List<StoreModel> places = new ArrayList<>();
 
                         for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
@@ -79,7 +80,7 @@ public class ResultsRepository {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError error) {
+                    public void onCancelled(@NonNull DatabaseError error) {
                         listData.setValue(new ArrayList<>());
                     }
                 });

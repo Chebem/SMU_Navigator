@@ -15,6 +15,7 @@ import com.example.smunavigator2.Domain.FavoriteItem;
 import com.example.smunavigator2.R;
 
 import java.util.List;
+import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder> {
 
@@ -45,7 +46,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
 
         holder.name.setText(place.getName());
         holder.category.setText(place.getCategory());
-        holder.distance.setText(String.format("%.1f km", place.getDistance()));
+        holder.distance.setText(String.format(Locale.getDefault(), "%.1f km", place.getDistance()));
         holder.favoriteCount.setText(String.valueOf(place.getFavoriteCount()));
         Glide.with(context).load(place.getImageUrl()).into(holder.image);
 

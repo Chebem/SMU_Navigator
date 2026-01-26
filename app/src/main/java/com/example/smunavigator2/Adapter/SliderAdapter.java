@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
 
     private Context context;
-    private ArrayList<SliderItems> sliderItems;
-    private ViewPager2 viewPager2;
+    private final ArrayList<SliderItems> sliderItems;
+    private final ViewPager2 viewPager2;
 
     public SliderAdapter(ArrayList<SliderItems> sliderItems, ViewPager2 viewPager2) {
         this.sliderItems = sliderItems;
@@ -53,7 +53,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     }
 
     public class SliderViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
+        private final ImageView imageView;
 
         public SliderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,7 +62,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         public void setImage(SliderItems sliderItem) {
             Glide.with(context)
-                    .load(sliderItem.getUrl()) // ✅ Use instance not class name
+                    .load(sliderItem.getUrl())
                     .into(imageView);
         }
     }

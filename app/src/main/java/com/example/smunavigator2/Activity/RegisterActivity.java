@@ -6,20 +6,17 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.smunavigator2.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText nameInput, registerEmailInput, registerPasswordInput, registerConfirmPasswordInput;
-    private TextView registerBtn, loginRedirect;
     private FirebaseAuth mAuth;
 
     @Override
@@ -27,7 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // ✅ App Check initialization
+        // App Check initialization
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
         firebaseAppCheck.installAppCheckProviderFactory(
                 PlayIntegrityAppCheckProviderFactory.getInstance()
@@ -42,8 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
         registerEmailInput = findViewById(R.id.registerEmailInput);
         registerPasswordInput = findViewById(R.id.registerPasswordInput);
         registerConfirmPasswordInput = findViewById(R.id.registerConfirmPasswordInput);
-        registerBtn = findViewById(R.id.registerBtn);
-        loginRedirect = findViewById(R.id.loginRedirect);
+        TextView registerBtn = findViewById(R.id.registerBtn);
+        TextView loginRedirect = findViewById(R.id.loginRedirect);
 
         // Register button click
         registerBtn.setOnClickListener(v -> registerUser());
@@ -81,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Registration failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
@@ -31,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // ✅ App Check with Play Integrity
+        //  App Check with Play Integrity
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
         firebaseAppCheck.installAppCheckProviderFactory(
                 PlayIntegrityAppCheckProviderFactory.getInstance()
@@ -39,16 +41,16 @@ public class LoginActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        // 🔁 Auto-login if already signed in
+        // Auto-login if already signed in
         if (auth.getCurrentUser() != null) {
             checkUserProfile(auth.getCurrentUser().getUid());
             return;
         }
 
-        // 👤 Login button
+        //  Login button
         binding.loginBtn.setOnClickListener(v -> doLogin());
 
-        // 📝 Sign-up navigation
+        //  Sign-up navigation
         binding.signInLink.setOnClickListener(v -> {
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
@@ -75,10 +77,10 @@ public class LoginActivity extends AppCompatActivity {
 
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                String uid = auth.getCurrentUser().getUid();
+                String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
                 checkUserProfile(uid);
             } else {
-                Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Login failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 binding.loginBtn.setEnabled(true);
                 binding.progressBar.setVisibility(View.GONE);
             }

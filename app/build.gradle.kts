@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,6 +8,15 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.0"
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
+
+val localProps = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val kakaoKey: String = localProps.getProperty("KAKAO_MAP_API_KEY") ?: ""
 
 android {
     namespace = "com.example.smunavigator2"
@@ -16,12 +27,19 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
-        }
         versionName = "1.0"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+
+        buildConfigField(
+            "String",
+            "KAKAO_MAP_API_KEY",
+            "\"$kakaoKey\""
+        )
     }
 
     buildTypes {
@@ -31,17 +49,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "2.1.0" // ✅ Match Kotlin plugin
+        kotlinCompilerExtensionVersion = "2.1.0"
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true // ✅ Enable desugaring
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -52,6 +71,7 @@ android {
         compose = true
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 
     buildToolsVersion = "35.0.1"
@@ -74,10 +94,10 @@ android {
 
 dependencies {
     // ✅ Latest Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(platform(libs.androidx.compose.bom.v20250401))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.coil.compose)
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
@@ -119,6 +139,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.androidx.activity)
     implementation(libs.play.services.maps)
+    implementation(libs.firebase.crashlytics)
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     //Calender
@@ -144,7 +165,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.10.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 

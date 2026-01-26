@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
 
-        // ✅ Initialize App Check (SafetyNet)
+        // Initialize App Check (SafetyNet)
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
         firebaseAppCheck.installAppCheckProviderFactory(
                 PlayIntegrityAppCheckProviderFactory.getInstance()
@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    badgeView.setVisibility(View.VISIBLE); // 🔴 show red dot
+                    badgeView.setVisibility(View.VISIBLE); // show red dot
                 } else {
                     badgeView.setVisibility(View.GONE); // hide red dot
                 }
@@ -153,7 +153,7 @@ public class MainActivity extends BaseActivity {
         // Setup Bottom Navigation
         setupBottomNav(R.id.home);
 
-        // ✅ Correctly Load GIFs into ImageViews
+        //  Correctly Load GIFs into ImageViews
         Glide.with(this)
                 .asGif()
                 .load(R.drawable.bus) // your animated bus schedule gif
@@ -179,14 +179,14 @@ public class MainActivity extends BaseActivity {
                 .load(R.drawable.worldwide) // your animated chat gif
                 .into((ImageView) findViewById(R.id.smutalkIcon));
 
-        loadUserGreeting(); // 👈 Add this after setContentView and other setups
+        loadUserGreeting(); //  after setContentView and other setups
     }
 
     private void initCommittee() {
-        String node = getLanguageBasedNode("committee"); // will resolve to committeeEn or committeeKr
+        String node = getLanguageBasedNode("committee"); //  to committeeEn or committeeKr
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(node);
 
-        binding.progressBarCommittee.setVisibility(View.VISIBLE); // ← Add a ProgressBar with this ID in XML
+        binding.progressBarCommittee.setVisibility(View.VISIBLE); //  ProgressBar with this ID in XML
 
         ArrayList<Committee> list = new ArrayList<>();
 
@@ -243,7 +243,7 @@ public class MainActivity extends BaseActivity {
                 feedList.clear();
 
                 for (DataSnapshot profileSnap : snapshot.getChildren()) {
-                    if (profileSnap.hasChild("posts")) { // ✅ check first
+                    if (profileSnap.hasChild("posts")) { //
                         DataSnapshot postsSnap = profileSnap.child("posts");
 
                         for (DataSnapshot postSnap : postsSnap.getChildren()) {

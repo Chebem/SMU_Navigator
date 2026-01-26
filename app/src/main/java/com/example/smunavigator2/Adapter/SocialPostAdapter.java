@@ -50,7 +50,7 @@ public class SocialPostAdapter extends RecyclerView.Adapter<SocialPostAdapter.So
 
         holder.binding.usernameTxt.setText("User"); // Set real username if fetched
 
-        // 📝 Set caption and time
+        // Set caption and time
         holder.binding.captionTxt.setText(post.getCaption());
         holder.binding.postTimeTxt.setText(TimeUtils.getTimeAgo(post.getTimestamp()));
     }

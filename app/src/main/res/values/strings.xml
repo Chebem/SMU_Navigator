@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SMU Navigator</string>
     <string name="explore_smu_and_jecheon_nall_with_a_tap">Explore SMU and Jecheon.\nAll with a Tap!</string>
@@ -143,5 +144,4 @@
     <string name="smu_navigator">SMU Navigator</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="log_out">Log Out</string>
-
 </resources>

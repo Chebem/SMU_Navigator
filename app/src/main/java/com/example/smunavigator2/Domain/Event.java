@@ -2,7 +2,7 @@ package com.example.smunavigator2.Domain;
 
 public class Event {
     private String title;
-    private String time; // Optional – you can change it to null or "" if unused
+    private String time; //
 
     public Event() {
         // Required for Firebase

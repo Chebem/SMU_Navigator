@@ -3,7 +3,7 @@ package com.example.smunavigator2.Domain;
 import java.io.Serializable;
 
 public class ConvenienceFacility implements Mappable, Serializable {
-    private String id; // Firebase key (e.g., "CULibrary")
+    private String id; // Firebase key for the facility
     private String name;
     private String description;
     private String location;
@@ -31,7 +31,7 @@ public class ConvenienceFacility implements Mappable, Serializable {
         return longitude;
     }
 
-    // ✅ Getter and Setter for ID
+    // Getter and Setter for ID
     public String getId() {
         return id;
     }
@@ -40,7 +40,7 @@ public class ConvenienceFacility implements Mappable, Serializable {
         this.id = id;
     }
 
-    // ✅ Standard getters and setters
+
     public String getName() {
         return name;
     }

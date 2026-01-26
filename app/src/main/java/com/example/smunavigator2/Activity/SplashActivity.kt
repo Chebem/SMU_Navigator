@@ -32,24 +32,24 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ Initialize Firebase
+        // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
-        // ✅ Initialize App Check with Play Integrity
+        // Initialize App Check with Play Integrity
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
             PlayIntegrityAppCheckProviderFactory.getInstance()
         )
         Log.d("SplashActivity", "App Check initialized")
 
-        // 🎞 Load mascot animation
+        //  Load mascot animation
         Glide.with(this)
             .asGif()
-            .load(R.drawable.snu_mascot2)
+            .load(R.drawable.smu_mascot2)
             .into(binding.gifMascot)
 
-        // 🚀 "Get Started" button takes user to Login
+        // Get Started button click listener
         binding.startBtn.setOnClickListener {
             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()

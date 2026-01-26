@@ -72,6 +72,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -103,8 +104,8 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_map);
 
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // ✅ LEGAL placement
-        favoriteRef = FirebaseDatabase.getInstance().getReference("favorites").child(userId); // ✅ also safe here
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(); // placement
+        favoriteRef = FirebaseDatabase.getInstance().getReference("favorites").child(userId);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -241,7 +242,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             filterByCategory("All");
         }
 
-        // ✅ Unified overlay handler
+        // Unified overlay handler
         googleMap.setOnMarkerClickListener(marker -> {
             Object tag = marker.getTag();
             LatLng pos = marker.getPosition();
@@ -266,7 +267,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                             info.hours,
                             info.description,
                             info.imageUrl,
-                            info.phoneNumber, // ✅ add this line
+                            info.phoneNumber,
                             pos.latitude,
                             pos.longitude
                     );
@@ -280,7 +281,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         googleMap.setOnCameraIdleListener(() -> {
             LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
 
-            // 🔁 Fallback to Google Places (if Firebase is empty)
+            // Fallback to Google Places (if Firebase is empty)
             switch (selectedCategory) {
                 case "Restaurants":
                     fetchNearbyRealPlacesWithCustomMarkers(bounds, "restaurant");

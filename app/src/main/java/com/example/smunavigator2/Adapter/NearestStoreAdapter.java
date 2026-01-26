@@ -44,7 +44,7 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
         notifyDataSetChanged();
     }
 
-    @NonNull
+
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -93,15 +93,10 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
                             : "Opening hours not available"
             );
             intent.putExtra("storeImage", item.getImagePath());
-            String layoutName = item.getCategory().equalsIgnoreCase("Restaurant") ? "food_marker" :
-                    item.getCategory().equalsIgnoreCase("Coffee") ? "coffee_marker" :
-                            "store_marker"; // default fallback
-            intent.putExtra("storeCategory", item.getCategory()); // ✅ Add this line
-
-            intent.putExtra("markerLayout", layoutName);
+            intent.putExtra("storeCategory", item.getCategory());
             intent.putExtra("storeDescription", item.getActivity() != null ? item.getActivity() : "");
 
-            // ✅ Use layoutKey mapping helper
+            // ✅ Use layoutKey mapping helper for MAP MARKERS
             String layoutKey = getMarkerLayoutKeyFromCategory(item.getCategory());
             intent.putExtra("markerLayout", layoutKey);
 
@@ -111,44 +106,76 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
             if (listener != null) listener.onClick(item);
         });
 
-        // Load image
+        // Load image with category-specific PLACEHOLDER (not marker)
         String imageUrl = item.getImagePath();
         String category = item.getCategory();
 
         if (imageUrl == null || imageUrl.isEmpty()) {
-            // Use category fallback drawable
-            int fallbackRes = getFallbackImageRes(category);
+            // ✅ Use PLACEHOLDER image (different from map marker)
+            int placeholderRes = getPlaceholderImageRes(category);
             Glide.with(holder.itemView.getContext())
-                    .load(fallbackRes)
+                    .load(placeholderRes)
+                    .circleCrop()
                     .into(holder.image);
         } else {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_marker_food)
+                    .placeholder(getPlaceholderImageRes(category)) // Use category placeholder
                     .circleCrop()
-                    .error(getFallbackImageRes(category)) // fallback if image loading fails
+                    .error(getPlaceholderImageRes(category)) // Fallback to placeholder
                     .into(holder.image);
         }
     }
 
-    private int getFallbackImageRes(String category) {
-        if (category == null) return R.drawable.smu_logo;
+
+    private int getPlaceholderImageRes(String category) {
+        if (category == null) return R.drawable.placeholder_marker_food;
+
         switch (category.toLowerCase()) {
             case "restaurant":
             case "restaurants":
-                return R.drawable.smu_logo;
+                return R.drawable.food_placehlolder; //
+
             case "coffee":
-                return R.drawable.smu_logo;
+                return R.drawable.coffee_placehlolder;
+
             case "mart":
-                return R.drawable.smu_logo;
+                return R.drawable.shop_placeholder;
+
             case "convenience":
-                return R.drawable.smu_logo;
+                return R.drawable.convenience_placehlolder;
+
             case "accommodation":
-                return R.drawable.smu_logo;
+            case "dorms":
+                return R.drawable.accommodation_placehlolder;
+
             case "bars":
-                return R.drawable.smu_logo;
+                return R.drawable.bar_placehlolder;
+
+            case "facilities":
+                return R.drawable.facilties;
+
             default:
-                return R.drawable.smu_logo; // fallback
+                return R.drawable.placeholder_marker_food;
+        }
+    }
+
+    /**
+     * ✅ EXISTING: Returns layout keys for MAP MARKERS (used in GoogleMapActivity)
+     * This is SEPARATE from placeholders
+     */
+    private String getMarkerLayoutKeyFromCategory(String category) {
+        if (category == null) return "store_marker";
+        switch (category) {
+            case "Coffee": return "coffee_marker";
+            case "Restaurant":
+            case "Restaurants": return "food_marker";
+            case "Dorms": return "dorm_marker";
+            case "Facilities": return "facilities_marker";
+            case "Convenience": return "convenience_marker";
+            case "Bars": return "bars_marker";
+            case "Mart": return "mart_marker";
+            default: return "store_marker";
         }
     }
 
@@ -168,21 +195,6 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
         }
         result.append("...");
         return result.toString().trim();
-    }
-
-    private String getMarkerLayoutKeyFromCategory(String category) {
-        if (category == null) return "store_marker";
-        switch (category) {
-            case "Coffee": return "coffee_marker";
-            case "Restaurant":
-            case "Restaurants": return "food_marker";
-            case "Dorms": return "dorm_marker";
-            case "Facilities": return "facilities_marker";
-            case "Convenience": return "convenience_marker";
-            case "Bars": return "bars_marker";     // ✅ Match layout filename
-            case "Mart": return "mart_marker";     // ✅ Match layout filename
-            default: return "store_marker";        // fallback
-        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -40,16 +40,16 @@ public class OthersAdapter extends RecyclerView.Adapter<OthersAdapter.Viewholder
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
         FacilityModel item = items.get(position);
 
-        // ✅ Set title (English if available, fallback to nameString or "Facility")
+        // Set title (English if available, fallback to nameString or "Facility")
         holder.binding.titleTxt.setText(item.getName());
 
-        // ✅ Set description
+        //  Set description
         holder.binding.addressTxt.setText(item.getDescription());
 
-        // ✅ Set operating hours or fallback
+        // Set operating hours or fallback
         holder.binding.openTxt.setText(item.getOperatingHours());
 
-        // ✅ Load image with fallback
+        // Load image with fallback
         if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
             Glide.with(context)
                     .load(item.getImagePath())
@@ -60,7 +60,7 @@ public class OthersAdapter extends RecyclerView.Adapter<OthersAdapter.Viewholder
             holder.binding.picC.setImageResource(R.drawable.pic_1);
         }
 
-        // ✅ On item click
+        // On item click
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {

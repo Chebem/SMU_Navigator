@@ -78,6 +78,7 @@
             android:layout_height="32dp"
             android:layout_marginEnd="16dp"
             android:src="@drawable/facebook"
+            android:background="@drawable/stroke_blue_bg"
             android:contentDescription="Facebook" />
 
         <ImageView
@@ -85,7 +86,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/google"
+            android:src="@drawable/ic_google"
+            android:background="@drawable/stroke_white_bg"
             android:contentDescription="Google" />
 
         <androidx.appcompat.widget.AppCompatButton
