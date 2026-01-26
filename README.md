@@ -32,12 +32,12 @@
 
 ##  App Screenshots / Demo
 
-![Home Screen:] (screenshots/Home Screen.png)
-![Map Screen:] (screenshots/Map Nav Screen.png)
-![Campus / City Guide:] (screenshots/CampusNav Screen.png)
-![Profile Screen:] (screenshots/Login in Screen.png)
-![Notice Screen:] (screenshots/SMU Notice Screen.png)
-![Calendar Screen:] (screenshots/Calendar Screen.png)
+! [Home Screen] (screenshots/Home Screen.png)
+! [Map Screen] (screenshots/Map Nav Screen.png)
+! [Campus / City Guide] (screenshots/CampusNav Screen.png)
+! [Profile Screen] (screenshots/Login in Screen.png)
+! [Notice Screen] (screenshots/SMU Notice Screen.png)
+! [Calendar Screen] (screenshots/Calendar Screen.png)
 - Demo Video: 
 
 ---
