@@ -36,6 +36,8 @@ captures/
 *.jks
 *.keystore
 
+.idea/
+
 # =====================
 # Firebase / Secrets
 # =====================
