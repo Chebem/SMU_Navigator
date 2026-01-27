@@ -93,7 +93,7 @@ android {
 }
 
 dependencies {
-    // ✅ Latest Compose BOM
+    // Latest Compose BOM
     implementation(platform(libs.androidx.compose.bom.v20250401))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
@@ -107,8 +107,6 @@ dependencies {
     implementation ("com.kakao.maps.open:android:2.12.8")
     implementation ("com.android.volley:volley:1.2.1")
     implementation ("com.google.maps.android:android-maps-utils:2.3.0")
-
-
 
 
     // Core
@@ -144,18 +142,12 @@ dependencies {
 
     //Calender
     implementation ("com.kizitonwose.calendar:view:2.6.2")
-    // Add this under dependencies
+
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.tbuonomo:dotsindicator:4.3")
-
-
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
-
-
-
 
 
     // Java 8+ Desugaring
@@ -172,7 +164,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 }
 
-// ✅ Global resolution if needed
+// Global resolution
 configurations.all {
     resolutionStrategy {
         force("androidx.core:core-ktx:1.16.0")
