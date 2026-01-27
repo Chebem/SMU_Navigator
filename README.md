@@ -45,11 +45,8 @@
 ## 📄 Conference Paper & Poster Presentation  
 **MITA International Conference 2025**
 
-This mobile application project was extended into a **research write-up** and submitted as a **conference abstract/paper**, which was **accepted** and presented in a **poster session** at an international academic conference in **2025**.
+This mobile application project was extended into a **research write-up** and submitted as a **conference abstract/paper**, which was **accepted** and presented in a **poster session** at an international academic conference in **2025** and published on **"springer.com"**.
 
-- No awards are claimed  
-- **Conference attendance certificate available**  
-- Poster and abstract materials available upon request  
 
 🔗 **Paper / Abstract Link:**  
 [View Conference Paper](https://link.springer.com/chapter/10.1007/978-981-95-3141-7_19)
