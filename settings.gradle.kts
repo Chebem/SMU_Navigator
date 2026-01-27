@@ -8,11 +8,11 @@ pluginManagement {
 
     }
     plugins {
-        id("com.android.application") version "8.9.2"
+        id("com.android.application") version "8.9.3"
         id("org.jetbrains.kotlin.android") version "2.1.0"
-        id("com.google.gms.google-services") version "4.4.0"
-        id("com.google.firebase.crashlytics") version "2.9.9"
-        id("org.jetbrains.kotlin.plugin.compose") version "2.1.0" // 👈 REQUIRED
+        id("com.google.gms.google-services") version "4.4.4"
+        id("com.google.firebase.crashlytics") version "3.0.6"
+        id("org.jetbrains.kotlin.plugin.compose") version "2.1.0" //
     }
 }
 
