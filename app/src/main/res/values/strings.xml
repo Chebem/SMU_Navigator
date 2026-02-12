@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SMU Navigator</string>
+    <string name="app_name" translatable="false">SMU Navigator</string>
     <string name="explore_smu_and_jecheon_nall_with_a_tap">Explore SMU and Jecheon.\nAll with a Tap!</string>
     <string name="sign_in">Sign In</string>
     <string name="get_started">get started</string>
@@ -148,4 +148,6 @@
     <string name="enter_your_email2">Enter Your Email2</string>
     <string name="enter_your_password2">Enter Your Password</string>
     <string name="profile_image">Profile Image</string>
+    <string name="distance">Distance</string>
+    <string name="places" />
 </resources>
