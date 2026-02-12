@@ -11,7 +11,7 @@ https://github.com/user-attachments/assets/852722cb-45c3-403b-8310-dabf9307e886
 
 ## ✨ Key Features
 
-- **Bilingual UI (KO/EN)** for local and international users
+- **Bilingual UI (KO/EN)** for local and international students
 - **Campus & City Navigation** with categorized locations
 - **Google Maps integration** (markers, navigation-style browsing)
 - **Category-based filtering** (e.g., faculties, dorms, stores, cafes)
@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/89862122-6b26-45de-871f-056a6f621564
 - Demo Video(ENG):
 https://github.com/user-attachments/assets/2df5fd9a-ea45-4ef5-91b4-18232034d36b
 
-## 📄 Conference Paper & Poster Presentation  
+##  Conference Paper & Poster Presentation  
 **MITA International Conference 2025**
 
 This mobile application project was extended into a **research write-up** and submitted as a **conference abstract/paper**, which was **accepted** and presented in a **poster session** at an international academic conference in **2025** and published on **"springer.com"**.
