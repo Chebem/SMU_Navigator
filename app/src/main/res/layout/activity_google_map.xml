@@ -321,7 +321,7 @@
                             android:id="@+id/placeHours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/hours1"
+                            android:text="@string/Hours"
                             android:maxLines="2"
                             android:ellipsize="end"
                             android:textSize="14sp"
