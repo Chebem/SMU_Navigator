@@ -25,7 +25,7 @@
     <string name="my_profile">내 프로필</string>
     <string name="smu_campus">세명대 캠퍼스</string>
     <string name="search">검색</string>
-    <string name="find_stores_restaurants_product">가게, 음식점, 상품을 찾아보세요...</string>
+    <string name="find_stores_restaurants_product">가게, 음식점, 상품을 찾아보세요"...."</string>
     <string name="title_activity_google_map">구글 지도</string>
     <string name="open_label">영업 시간:</string>
     <string name="open_with_hours">영업 시간:\n%1$s</string>
@@ -52,7 +52,7 @@
     <string name="notice_board">공지 게시판</string>
     <string name="smu_notices">세명대 공지사항</string>
     <string name="back">뒤로</string>
-    <string name="search_places">장소 검색...</string>
+    <string name="search_places">"장소 검색"</string>
     <string name="facilties">시설</string>
     <string name="dorms">기숙사</string>
     <string name="conveniences">편의점</string>
@@ -103,7 +103,7 @@
     <string name="already_have_an_account_sign_in1">계정 이미 있습니까?, 로그인하세요</string>
     <string name="make_a_post">게시물 작성</string>
     <string name="add_location">위치 추가</string>
-    <string name="write_here">여기에 작성...</string>
+    <string name="write_here">여기에 작성"....</string>
     <string name="share_your_post">게시물 공유</string>
     <string name="meeting_location">모임 장소</string>
     <string name="activity_schedule">활동 일정</string>
@@ -119,7 +119,7 @@
     <string name="dine_in_takeaway_delivery">매장 식사 · 포장 · 배달</string>
     <string name="hours_10_am_10_pm">영업 시간: 오전 10시 - 오후 10시</string>
     <string name="rating">평점</string>
-    <string name="your_caption_here">여기에 캡션을 작성하세요...</string>
+    <string name="your_caption_here">여기에 캡션을 작성하세요"...."</string>
     <string name="removed_from_favorites">즐겨찾기에서 제거되었습니다</string>
     <string name="failed_to_load_favorites">즐겨찾기를 불러오지 못했습니다</string>
     <string name="_0_comments">댓글 0개</string>
@@ -146,6 +146,7 @@
     <string name="smu_navigator">SMU 길라잡이</string>
     <string name="edit_profile">프로필 편집</string>
     <string name="log_out">로그아웃</string>
+    <string name="profile_image">Profile Image</string>
 
 
 </resources>
