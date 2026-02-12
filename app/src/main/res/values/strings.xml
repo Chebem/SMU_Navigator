@@ -21,7 +21,7 @@
     <string name="michael_mabinuola">Michael Mabinuola</string>
     <string name="back_to_home">Back to Home</string>
     <string name="view_all">View All</string>
-    <string name="departments">📚 Departments</string>
+    <string name="departments">Departments</string>
     <string name="my_profile">My Profile</string>
     <string name="smu_campus">SMU Campus</string>
     <string name="search">Search</string>
@@ -66,7 +66,7 @@
     <string name="my_location">My Location</string>
     <string name="store_title">Store Title</string>
     <string name="address_info">Address info</string>
-    <string name="hours1">Hours</string>
+    <string name="Hours">Hours</string>
     <string name="call_store1">Call Store</string>
     <string name="favorite">Favorite</string>
     <string name="_7_min">7 min</string>
@@ -144,4 +144,7 @@
     <string name="smu_navigator">SMU Navigator</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="log_out">Log Out</string>
+    <string name="enter_your_name2">Enter Your Name2</string>
+    <string name="enter_your_email2">Enter Your Email2</string>
+    <string name="enter_your_password2">Enter Your Password</string>
 </resources>
