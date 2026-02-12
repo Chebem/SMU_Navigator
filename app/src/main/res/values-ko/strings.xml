@@ -147,6 +147,8 @@
     <string name="edit_profile">프로필 편집</string>
     <string name="log_out">로그아웃</string>
     <string name="profile_image">Profile Image</string>
+    <string name="distance">Distance</string>
+    <string name="places" />
 
 
 </resources>
