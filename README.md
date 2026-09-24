@@ -32,11 +32,11 @@
 
 ## App Demo
 \
+
+
+
+- Demo Video(KR): 
 https://github.com/user-attachments/assets/89862122-6b26-45de-871f-056a6f621564
-
-
-- Demo Video: 
-
 ---
 
 ## 📄 Conference Paper & Poster Presentation  
