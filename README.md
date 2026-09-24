@@ -30,14 +30,11 @@
 
 ---
 
-## App Screenshots
+## App Demo
+\
+https://github.com/user-attachments/assets/89862122-6b26-45de-871f-056a6f621564
 
-![Home Screen](screenshots/Home_Screen.png)
-![Map Screen](screenshots/Map_Nav_Screen.png)
-![Campus / City Guide](screenshots/CampusNav_Screen.png)
-![Profile Screen](screenshots/Login_Screen.png)
-![Notice Screen](screenshots/SMU_Notice_Screen.png)
-![Calendar Screen](screenshots/Calendar_Screen.png)
+
 - Demo Video: 
 
 ---
