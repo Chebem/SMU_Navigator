@@ -148,7 +148,7 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
             Intent intent = null;
             if (id == R.id.home) intent = new Intent(this, MainActivity.class);
-            else if (id == R.id.explore) intent = new Intent(this, CampusActivity.class);
+            else if (id == R.id.explore) intent = new Intent(this, ExploreActivity.class);
             else if (id == R.id.favorite) intent = new Intent(this, FavoritesActivity.class);
             else if (id == R.id.profile) intent = new Intent(this, ProfilePageActivity.class);
             else if (id == R.id.post) intent = new Intent(this, UploadPostActivity.class);
