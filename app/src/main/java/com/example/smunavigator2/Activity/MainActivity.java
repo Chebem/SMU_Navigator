@@ -59,8 +59,6 @@ public class MainActivity extends BaseActivity {
                 PlayIntegrityAppCheckProviderFactory.getInstance()
         );
 
-
-
         // Set up View Binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -127,7 +125,6 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(MainActivity.this, GoogleMapActivity.class);
             startActivity(intent);
         });
-
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -142,13 +139,10 @@ public class MainActivity extends BaseActivity {
             Log.e("KyHash", "Error", e);
         }
 
-
-
         // Set up Recommended RecyclerView
         binding.recommendedView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
-
 
         // Setup Bottom Navigation
         setupBottomNav(R.id.home);
@@ -332,7 +326,6 @@ public class MainActivity extends BaseActivity {
             return baseNode + "En";
         }
     }
-
 
 
     private void applyIntroAnimations() {
