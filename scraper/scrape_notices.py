@@ -1,10 +1,14 @@
-"""Scrape Semyung University notices with Crawl4AI and sync them to Firebase RTDB `Notices/{board_num}`.
+"""Scrape Semyung University notice boards with Crawl4AI and sync them to Firebase RTDB `Notices/{board_num}`.
+
+board_num is one site-wide counter, so ids never collide across boards. A post listed on
+several boards is stored once, tagged in `categories/{key}: true` (first board = `category`).
 
 Env vars (each key: JSON string in *_JSON, or a file path in *_FILE for local runs):
   FIREBASE_SA_JSON / FIREBASE_SA_FILE     Firebase Admin service account (project smu-navigator). Required unless DRY_RUN=1.
   TRANSLATE_SA_JSON / TRANSLATE_SA_FILE   Cloud Translation service account (project smu-navigator-460213).
   FIREBASE_DB_URL    RTDB URL (default: smu-navigator asia-southeast1).
-  PAGES              list pages to scan (default 1; use 3 on first run).
+  PAGES              list pages to scan per board (default 1; use 3 on first run).
+  BOARDS             comma-separated board keys to scan (default: all in BOARDS).
   DRY_RUN=1          print results instead of writing to Firebase.
   TRANSLATE=0        skip KO->EN translation (English fields fall back to Korean).
   NOTIFY=0           skip FCM push for new notices.
@@ -24,14 +28,22 @@ from crawl4ai import AsyncWebCrawler, BrowserConfig, CacheMode, CrawlerRunConfig
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 
 SITE = "https://www.semyung.ac.kr"
-BASE = f"{SITE}/prog/vwBoard/bbs01/kor/sub08_02_01"
-MNO = "sub08_02_01"
+# (key, bbs id, menu no, Korean name, English name). Skipped on purpose: 입찰공고 (vendor bids),
+# 정보보호 (inactive since 2024), 교원채용 (faculty hiring) - not useful for students.
+BOARDS = [
+    ("general", "bbs01", "sub08_02_01", "일반공지", "General"),
+    ("academic", "bbs06", "sub08_02_03", "장학 및 학사안내", "Scholarships & Academics"),
+    ("events", "bbs04", "sub08_02_08", "행사안내", "Events"),
+    ("jobs", "bbs05", "sub08_02_07", "채용공고", "Jobs"),
+]
 DB_URL = os.getenv("FIREBASE_DB_URL", "https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app/")
 PAGES = int(os.getenv("PAGES", "1"))
 DRY_RUN = os.getenv("DRY_RUN") == "1"
 TRANSLATE = os.getenv("TRANSLATE", "1") != "0"
 NOTIFY = os.getenv("NOTIFY", "1") != "0"
 LIMIT = int(os.getenv("LIMIT", "0")) or None
+if os.getenv("BOARDS"):
+    BOARDS = [b for b in BOARDS if b[0] in os.environ["BOARDS"].split(",")]
 MAX_PUSH = 5  # more new notices than this in one run (e.g. first run) -> no push spam
 REQUEST_DELAY_S = 1.0
 USER_AGENT = "SMUNavigatorBot/1.0 (+https://github.com/Chebem/SMU_Navigator)"
@@ -60,11 +72,15 @@ def board_num(href):
     return (parse_qs(urlparse(href or "").query).get("board_num") or [None])[0]
 
 
-def view_url(num):
-    return f"{BASE}/view.do?board_num={num}&mno={MNO}"
+def board_base(board):
+    return f"{SITE}/prog/vwBoard/{board[1]}/kor/{board[2]}"
 
 
-def parse_list(extracted_json):
+def view_url(board, num):
+    return f"{board_base(board)}/view.do?board_num={num}&mno={board[2]}"
+
+
+def parse_list(extracted_json, board):
     rows = {}
     for r in json.loads(extracted_json or "[]"):
         num = board_num(r.get("href"))
@@ -77,9 +93,20 @@ def parse_list(extracted_json):
             "date": clean(r.get("date")),
             "views": int(re.sub(r"\D", "", r.get("views") or "") or 0),
             "pinned": bool(clean(r.get("pinned"))),
-            "url": view_url(num),
+            "url": view_url(board, num),
+            "category": board[0],
+            "categories": {board[0]: True},
         }
     return rows
+
+
+def merge_rows(rows, new_rows):
+    for num, row in new_rows.items():
+        if num in rows:  # same post on another board: keep first board's data, add the category
+            rows[num]["categories"].update(row["categories"])
+            rows[num]["pinned"] = rows[num]["pinned"] or row["pinned"]
+        else:
+            rows[num] = row
 
 
 def parse_detail(html):
@@ -200,26 +227,33 @@ async def main():
 
     async with AsyncWebCrawler(config=browser) as crawler:
         rows = {}
-        for page in range(1, PAGES + 1):
-            res = await crawler.arun(f"{BASE}/list.do?pageIndex={page}", config=list_cfg)
-            if not res.success:
-                sys.exit(f"list page {page} failed: {res.error_message}")
-            rows.update(parse_list(res.extracted_content))
-            await asyncio.sleep(REQUEST_DELAY_S)
-
-        if not rows:
-            sys.exit("0 notices parsed - the board layout may have changed")  # fails the workflow -> email alert
+        for board in BOARDS:
+            found = {}
+            for page in range(1, PAGES + 1):
+                res = await crawler.arun(f"{board_base(board)}/list.do?pageIndex={page}", config=list_cfg)
+                if not res.success:
+                    sys.exit(f"{board[3]} list page {page} failed: {res.error_message}")
+                found.update(parse_list(res.extracted_content, board))
+                await asyncio.sleep(REQUEST_DELAY_S)
+            if not found:  # fails the workflow -> email alert
+                sys.exit(f"0 notices parsed on {board[3]} - the board layout may have changed")
+            print(f"{board[3]} ({board[0]}): {len(found)} notices")
+            merge_rows(rows, found)
 
         known = set() if DRY_RUN else existing_ids()
         new_ids = [n for n in rows if n not in known][:LIMIT]
-        print(f"{len(rows)} notices on {PAGES} page(s), {len(new_ids)} new")
+        print(f"{len(rows)} unique notices on {len(BOARDS)} board(s) x {PAGES} page(s), {len(new_ids)} new")
 
         from firebase_admin import db  # noqa: E402 (only used when not DRY_RUN)
 
-        # Existing notices: refresh cheap fields only.
+        # Existing notices: refresh cheap fields; categories are merged per key, never replaced
         if not DRY_RUN:
             for n in set(rows) - set(new_ids):
-                db.reference(f"Notices/{n}").update({"views": rows[n]["views"], "pinned": rows[n]["pinned"]})
+                db.reference(f"Notices/{n}").update({
+                    "views": rows[n]["views"],
+                    "pinned": rows[n]["pinned"],
+                    **{f"categories/{c}": True for c in rows[n]["categories"]},
+                })
 
         created = []
         for n in new_ids:
