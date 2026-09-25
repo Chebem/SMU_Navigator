@@ -150,4 +150,7 @@
     <string name="profile_image">Profile Image</string>
     <string name="distance">Distance</string>
     <string name="places" />
+    <string name="marker_icon">Marker icon</string>
+    <string name="_2_hrs_ago">2 hrs ago</string>
+    <string name="bembem">BemBem</string>
 </resources>
