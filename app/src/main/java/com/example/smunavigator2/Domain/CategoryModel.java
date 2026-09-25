@@ -7,16 +7,13 @@ public class CategoryModel implements Serializable {
     private String nameKo;
     private String nameEn;
     private String ImagePath;
-    private String categoryId;  // <--- ADD THIS
+    private String categoryId;
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
 
     // Required empty constructor for Firebase
     public CategoryModel() {}
 
-    public CategoryModel(String id, String nameKo, String nameEn, String imagePath) {
+    public CategoryModel(String id, String nameKo, String nameEn, String ImagePath, String categoryId) {
         this.id = id;
         this.nameKo = nameKo;
         this.nameEn = nameEn;
@@ -59,4 +56,8 @@ public class CategoryModel implements Serializable {
     public void setImagePath(String ImagePath) {
         this.ImagePath = ImagePath;
     }
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
 }
+
