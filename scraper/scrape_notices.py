@@ -156,6 +156,7 @@ def parse_detail(html):
 class Translator:
     def __init__(self, credentials_info):
         self.client = None
+        self.cache = {}  # short repeated strings (department names) are translated once per run
         if not TRANSLATE:
             return
         try:
@@ -166,6 +167,11 @@ class Translator:
             self.client = translate_v2.Client(credentials=creds)
         except Exception as e:  # missing creds / API disabled -> fall back to Korean
             print(f"[warn] translation disabled: {e}")
+
+    def cached_to_en(self, text):
+        if text not in self.cache:
+            self.cache[text] = self.to_en(text)
+        return self.cache[text]
 
     def to_en(self, text, html=False):
         if not text or self.client is None:
@@ -250,6 +256,7 @@ async def main():
         if not DRY_RUN:
             for n in set(rows) - set(new_ids):
                 db.reference(f"Notices/{n}").update({
+                    "department_en": translator.cached_to_en(rows[n]["department"]),
                     "views": rows[n]["views"],
                     "pinned": rows[n]["pinned"],
                     **{f"categories/{c}": True for c in rows[n]["categories"]},
@@ -268,6 +275,7 @@ async def main():
             notice.update({k: v for k, v in detail.items() if v})
             notice["text_ko"] = str(res.markdown.raw_markdown if res.markdown else "").strip()
             notice["title_en"] = translator.to_en(notice["title_ko"])
+            notice["department_en"] = translator.cached_to_en(notice["department"])
             notice["text_en"] = translator.to_en(notice["text_ko"])
             notice["html_en"] = translator.to_en(notice["html_ko"], html=True)
             notice["scrapedAt"] = int(time.time() * 1000)
