@@ -40,7 +40,7 @@ public class ProfileRepository {
                 ProfileModel profile = snapshot.getValue(ProfileModel.class);
                 if (profile == null) profile = new ProfileModel();
 
-                // ✅ Parse posts as Map<String, Post>
+                // Parse posts as Map<String, Post>
                 Map<String, Post> postMap = new HashMap<>();
                 for (DataSnapshot postSnap : snapshot.child("posts").getChildren()) {
                     Post post = postSnap.getValue(Post.class);
@@ -50,7 +50,7 @@ public class ProfileRepository {
                 }
                 profile.posts = postMap;
 
-                // ✅ Parse followers as List
+                // Parse followers as List
                 ArrayList<Follower> followerList = new ArrayList<>();
                 if (snapshot.child("followers").exists()) {
                     for (DataSnapshot followerSnap : snapshot.child("followers").getChildren()) {
