@@ -7,7 +7,7 @@ Env vars (each key: JSON string in *_JSON, or a file path in *_FILE for local ru
   FIREBASE_SA_JSON / FIREBASE_SA_FILE     Firebase Admin service account (project smu-navigator). Required unless DRY_RUN=1.
   TRANSLATE_SA_JSON / TRANSLATE_SA_FILE   Cloud Translation service account (project smu-navigator-460213).
   FIREBASE_DB_URL    RTDB URL (default: smu-navigator asia-southeast1).
-  PAGES              list pages to scan per board (default 1; use 3 on first run).
+  PAGES              list pages to scan per board (default 3).
   BOARDS             comma-separated board keys to scan (default: all in BOARDS).
   DRY_RUN=1          print results instead of writing to Firebase.
   TRANSLATE=0        skip KO->EN translation (English fields fall back to Korean).
@@ -37,7 +37,7 @@ BOARDS = [
     ("jobs", "bbs05", "sub08_02_07", "채용공고", "Jobs"),
 ]
 DB_URL = os.getenv("FIREBASE_DB_URL", "https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app/")
-PAGES = int(os.getenv("PAGES", "1"))
+PAGES = int(os.getenv("PAGES", "3"))
 DRY_RUN = os.getenv("DRY_RUN") == "1"
 TRANSLATE = os.getenv("TRANSLATE", "1") != "0"
 NOTIFY = os.getenv("NOTIFY", "1") != "0"
@@ -156,6 +156,7 @@ def parse_detail(html):
 class Translator:
     def __init__(self, credentials_info):
         self.client = None
+        self.cache = {}  # short repeated strings (department names) are translated once per run
         if not TRANSLATE:
             return
         try:
@@ -166,6 +167,11 @@ class Translator:
             self.client = translate_v2.Client(credentials=creds)
         except Exception as e:  # missing creds / API disabled -> fall back to Korean
             print(f"[warn] translation disabled: {e}")
+
+    def cached_to_en(self, text):
+        if text not in self.cache:
+            self.cache[text] = self.to_en(text)
+        return self.cache[text]
 
     def to_en(self, text, html=False):
         if not text or self.client is None:
@@ -250,6 +256,7 @@ async def main():
         if not DRY_RUN:
             for n in set(rows) - set(new_ids):
                 db.reference(f"Notices/{n}").update({
+                    "department_en": translator.cached_to_en(rows[n]["department"]),
                     "views": rows[n]["views"],
                     "pinned": rows[n]["pinned"],
                     **{f"categories/{c}": True for c in rows[n]["categories"]},
@@ -268,6 +275,7 @@ async def main():
             notice.update({k: v for k, v in detail.items() if v})
             notice["text_ko"] = str(res.markdown.raw_markdown if res.markdown else "").strip()
             notice["title_en"] = translator.to_en(notice["title_ko"])
+            notice["department_en"] = translator.cached_to_en(notice["department"])
             notice["text_en"] = translator.to_en(notice["text_ko"])
             notice["html_en"] = translator.to_en(notice["html_ko"], html=True)
             notice["scrapedAt"] = int(time.time() * 1000)

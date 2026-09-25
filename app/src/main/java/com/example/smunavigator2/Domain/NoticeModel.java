@@ -1,6 +1,7 @@
 package com.example.smunavigator2.Domain;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class NoticeModel implements Serializable {
     public String id;
@@ -88,12 +89,15 @@ public class NoticeModel implements Serializable {
 
     public String title_en;
     public String department;
+    public String department_en;
     public String date;
     public String url;
     public String text_ko;
     public String text_en;
     public String html_ko;
     public String html_en;
+    public String category;                // first board the notice was found on: general, academic, events, jobs
+    public Map<String, Boolean> categories; // every board it appears on
 
     public NoticeModel() {
         // Required for Firebase

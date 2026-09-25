@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
     inputs:
       pages:
-        description: "List pages to scan (use 3 on the first run)"
-        default: "1"
+        description: "List pages to scan per board"
+        default: "3"
 
 permissions:
   contents: read
@@ -38,5 +38,5 @@ jobs:
         env:
           FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SA_JSON }}
           TRANSLATE_SA_JSON: ${{ secrets.TRANSLATE_SA_JSON }}
-          PAGES: ${{ inputs.pages || '1' }}
+          PAGES: ${{ inputs.pages || '3' }}
         run: python scraper/scrape_notices.py
