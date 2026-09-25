@@ -44,3 +44,14 @@ captures/
 google-services.json
 
 
+
+# Private planning notes
+.claude/PLANNING.md
+
+# Scraper
+scraper/.venv/
+__pycache__/
+scraper/*.json
+*service-account*.json
+*serviceAccountKey*.json
+*-firebase-adminsdk-*.json

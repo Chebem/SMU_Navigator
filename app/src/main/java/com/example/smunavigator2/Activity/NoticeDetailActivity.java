@@ -37,7 +37,9 @@ public class NoticeDetailActivity extends AppCompatActivity {
         });
 
         // WebView Setup
-        webView.getSettings().setJavaScriptEnabled(true);
+        // Notice HTML is scraped from an external site: never run its scripts
+        webView.getSettings().setJavaScriptEnabled(false);
+        webView.getSettings().setAllowFileAccess(false);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
