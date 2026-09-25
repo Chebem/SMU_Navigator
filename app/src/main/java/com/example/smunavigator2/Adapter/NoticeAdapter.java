@@ -38,7 +38,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeView
         public void onBindViewHolder(@NonNull NoticeViewHolder holder, int position) {
             NoticeModel notice = noticeList.get(position);
             holder.title.setText(isEnglish ? notice.title_en : notice.title_ko);
-            holder.dept.setText(notice.department);
+            holder.dept.setText(isEnglish && notice.department_en != null ? notice.department_en : notice.department);
             holder.date.setText(notice.date);
 
             holder.itemView.setOnClickListener(v -> {
