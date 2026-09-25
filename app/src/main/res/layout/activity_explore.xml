@@ -55,6 +55,23 @@
             android:textColor="@color/blue_dark"
             android:layout_margin="16dp" />
 
+        <!-- Category filter (chips added in ExploreActivity) -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/categoryChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true"
+                app:singleSelection="true"
+                app:selectionRequired="true" />
+        </HorizontalScrollView>
+
         <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/noticeRecyclerView"
