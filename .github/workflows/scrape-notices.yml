@@ -2,7 +2,7 @@ name: Scrape notices
 
 on:
   schedule:
-    - cron: "0 */2 * * *" # every 2 hours (UTC)
+    - cron: "0 23 * * *" # daily at 08:00 KST (23:00 UTC)
   workflow_dispatch:
     inputs:
       pages:
