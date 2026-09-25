@@ -36,7 +36,7 @@
             android:id="@+id/postTimeTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2 hrs ago"
+            android:text="@string/_2_hrs_ago"
             android:textSize="12sp"
             android:textColor="#999999"
             android:layout_marginTop="4dp"/>
@@ -64,7 +64,7 @@
                 android:id="@+id/usernameTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BemBem"
+                android:text="@string/bembem"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
