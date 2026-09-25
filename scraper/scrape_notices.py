@@ -88,15 +88,22 @@ def parse_detail(html):
     if body is None:
         return None
 
-    for tag in body.select("script, style"):
+    # Sanitize: upstream HTML is untrusted and is shown in the app's WebView
+    for tag in body.select("script, style, iframe, object, embed, form, input, button, link, meta, base"):
         tag.decompose()
+    for tag in body.find_all(True):
+        for attr in list(tag.attrs):
+            # event handlers (onclick, onerror, ...) and noisy editor attributes
+            if attr.lower().startswith(("on", "data-")) or attr.lower() in ("srcdoc", "formaction"):
+                del tag[attr]
     for tag in body.select("[src]"):
         tag["src"] = urljoin(SITE, tag["src"])
-    for tag in body.select("a[href]"):
+    for tag in body.select("[href]"):
         tag["href"] = urljoin(SITE, tag["href"])
-    for tag in body.find_all(True):  # drop noisy editor attributes
-        for attr in [a for a in tag.attrs if a.startswith("data-")]:
-            del tag[attr]
+    for tag in body.select("[src], [href]"):  # only allow web links (no javascript:, data:, file:)
+        for attr in ("src", "href"):
+            if tag.get(attr) and not tag[attr].lower().startswith(("http://", "https://")):
+                del tag[attr]
 
     attachments = []
     for form in soup.select('#download form[action*="filedown.do"]'):
