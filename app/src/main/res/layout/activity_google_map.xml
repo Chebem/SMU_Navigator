@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Activity.GoogleMapActivity">
 
-    <!-- 🗺️ Google Map Fragment -->
+    <!--  Google Map Fragment -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/googleMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 🔍 Search + Back Bar with shadow -->
+    <!-- Search + Back Bar with shadow -->
     <androidx.cardview.widget.CardView
         android:id="@+id/searchBarRow"
         android:layout_width="0dp"
@@ -52,11 +52,12 @@
             <EditText
                 android:id="@+id/searchInput"
                 android:layout_width="0dp"
+                android:inputType="text"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:autofillHints=""
                 android:hint="@string/search_places"
                 android:imeOptions="actionSearch"
-                android:inputType="text"
                 android:background="@drawable/rounded_white_card"
                 android:drawableStart="@drawable/search_icon"
                 android:paddingHorizontal="12dp"
@@ -233,7 +234,7 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- 🔁 FAB: Switch back to Kakao Map -->
+    <!--  FAB: Switch back to Kakao Map -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMyLocation"
         android:layout_width="wrap_content"
@@ -246,9 +247,9 @@
         app:rippleColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <!-- 📌 Popup Overlay (Now bigger and scrollable) -->
-    <androidx.cardview.widget.CardView
 
+    <!-- Popup Overlay -->
+    <androidx.cardview.widget.CardView
         android:id="@+id/markerOverlayCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -271,7 +272,7 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- 📷 Image + Info Row -->
+                <!-- Image + Info Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -281,6 +282,7 @@
                         android:id="@+id/placeImage"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:contentDescription="@string/places"
                         android:scaleType="centerCrop"
                         android:src="@drawable/cafe2" />
 
@@ -289,7 +291,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="16dp">
+                        android:paddingStart="16dp"
+                        android:paddingEnd="8dp"
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:id="@+id/placeTitle"
@@ -304,7 +308,7 @@
                             android:id="@+id/placeDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" "
+                            android:text="@string/distance"
                             android:textSize="14sp"
                             android:textColor="@color/gray_dark"
                             android:layout_marginTop="4dp"/>
@@ -374,7 +378,7 @@
                             style="@android:style/Widget.Button" />
 
 
-                        <!-- 🚶 Walk Button -->
+                        <!-- Walk Button -->
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btnWalk"
                             android:layout_width="wrap_content"
@@ -393,7 +397,7 @@
                             android:tint="@android:color/white"
                             style="@android:style/Widget.Button" />
 
-                        <!-- ➤ Directions Arrow Button -->
+                        <!-- Directions Arrow Button -->
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btnOpenMaps"
                             android:layout_width="wrap_content"
@@ -416,7 +420,7 @@
             </LinearLayout>
         </ScrollView>
     </androidx.cardview.widget.CardView>
-    <!-- 🚗 Include the mode selector panel here -->
+    <!-- Include the mode selector panel here -->
     <include
         android:id="@+id/modeSelectorLayout"
         layout="@layout/popup_transport_mode"
