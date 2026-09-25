@@ -369,7 +369,8 @@ public class MapActivity extends AppCompatActivity {
             if (location != null) {
                 showLocationMarker(location);
             } else {
-                // 🆕 Updated to use the new Builder pattern
+                //
+                // Updated to use the new Builder pattern
                 LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L)
                         .setMinUpdateIntervalMillis(5000L)
                         .build();
