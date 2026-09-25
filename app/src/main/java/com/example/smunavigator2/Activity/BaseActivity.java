@@ -20,8 +20,6 @@ public class BaseActivity extends AppCompatActivity
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-
-
     }
 
     public BaseActivity() {
