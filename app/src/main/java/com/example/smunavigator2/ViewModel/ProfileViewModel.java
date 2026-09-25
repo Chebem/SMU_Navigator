@@ -7,11 +7,10 @@ import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.Repository.ProfileRepository;
 
 public class ProfileViewModel extends ViewModel {
-    private ProfileRepository repository;
-    private  LiveData<ProfileModel> profileModelLiveData;
+    private final LiveData<ProfileModel> profileModelLiveData;
 
     public ProfileViewModel() {
-        repository = new ProfileRepository();
+        ProfileRepository repository = new ProfileRepository();
         profileModelLiveData= repository.getProfileLiveData();
         }
 
