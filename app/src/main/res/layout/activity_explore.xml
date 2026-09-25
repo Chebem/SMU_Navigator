@@ -34,8 +34,13 @@
 
             <Button
                 android:id="@+id/langToggleBtn"
-                android:layout_width="48dp"
+                android:layout_width="56dp"
                 android:layout_height="36dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingHorizontal="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:background="@drawable/stroke_white_bg"
                 android:text="EN"
                 android:textSize="12sp"
@@ -55,7 +60,7 @@
             android:textColor="@color/blue_dark"
             android:layout_margin="16dp" />
 
-        <!-- Category filter (chips added in ExploreActivity) -->
+        <!-- Category filter chips added  -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
