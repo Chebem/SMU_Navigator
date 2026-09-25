@@ -8,7 +8,7 @@ public class Category
     public Category() {
     }
 
-    // Optional: Constructor for your own use
+    // Constructor for  own use
     public Category(int id, String imagePath, String name) {
         this.Id = id;
         this.ImagePath = imagePath;
