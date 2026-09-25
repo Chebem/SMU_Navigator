@@ -1,3 +1,4 @@
+import org.gradle.api.JavaVersion.VERSION_11
 import java.util.Properties
 
 plugins {
@@ -58,8 +59,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = VERSION_11
+        targetCompatibility = VERSION_11
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -93,78 +94,74 @@ android {
 }
 
 dependencies {
-    // Latest Compose BOM
-    implementation(platform(libs.androidx.compose.bom.v20250401))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.coil.compose)
-    implementation("androidx.compose.ui:ui-tooling-preview")
+    // Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
+
+    // Compose UI
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("androidx.compose.ui:ui-graphics:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation("androidx.compose.material:material:1.5.0")
     implementation("androidx.compose.material3:material3:1.2.1")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
-    //KakaoMap
-    implementation ("com.kakao.maps.open:android:2.12.8")
-    implementation ("com.android.volley:volley:1.2.1")
-    implementation ("com.google.maps.android:android-maps-utils:2.3.0")
-
+    // KakaoMap
+    implementation("com.kakao.maps.open:android:2.12.8")
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.google.maps.android:android-maps-utils:2.3.0")
 
     // Core
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth-ktx")
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-messaging")
+    implementation(libs.google.firebase.storage.ktx)
+    implementation(libs.google.firebase.messaging)
     implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-database")
-    implementation ("com.google.firebase:firebase-appcheck:17.0.0")
-    implementation ("com.google.firebase:firebase-appcheck-playintegrity:17.0.0")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.1")
 
     // UI Libraries
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-beta01")
-    implementation("com.airbnb.android:lottie:6.1.0")
-    implementation("com.github.ismaeldivita:chip-navigation-bar:1.3.2")
+    implementation(libs.lottie)
+    implementation(libs.chip.navigation.bar)
+    implementation(libs.circleimageview)
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
 
     // Glide
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation(libs.androidx.activity)
-    implementation(libs.play.services.maps)
-    implementation(libs.firebase.crashlytics)
-    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation("com.github.bumptech.glide:glide:5.0.5")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.appcheck.playintegrity)
+    annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
-    //Calender
-    implementation ("com.kizitonwose.calendar:view:2.6.2")
+    // Calendar / ViewPager
+    implementation("com.kizitonwose.calendar:view:2.6.2")
+//    implementation(libs.androidx.viewpager2)
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
-
-    implementation ("com.google.android.material:material:1.11.0")
-    implementation ("com.tbuonomo:dotsindicator:4.3")
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
-
+    // Play Services
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Java 8+ Desugaring
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.10.1")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
 }
 
-// Global resolution
+// Global resolution if needed
 configurations.all {
     resolutionStrategy {
         force("androidx.core:core-ktx:1.16.0")
