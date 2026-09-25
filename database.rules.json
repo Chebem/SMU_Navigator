@@ -1,0 +1,32 @@
+{
+  "rules": {
+    // Any other top-level node (placesEn, Notices, Category, dormitoriesEn, ...) is
+    // readable by signed-in users and never writable from the app.
+    // Edit that content in the Firebase console, which bypasses these rules.
+    "$node": {
+      ".read": "auth != null",
+      ".write": false
+    },
+
+    "profiles": {
+      // Whole node is read for the social feed (MainActivity.initSocialFeed)
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "favorites": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "notifications": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}
