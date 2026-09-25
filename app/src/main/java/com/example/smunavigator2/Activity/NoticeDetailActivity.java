@@ -16,7 +16,6 @@ import com.example.smunavigator2.R;
 public class NoticeDetailActivity extends AppCompatActivity {
 
     private WebView webView;
-    private ImageButton backBtn;
     private ProgressBar progressBar;
 
     @Override
@@ -25,7 +24,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notice_detail);
 
         webView = findViewById(R.id.noticeWebView);
-        backBtn = findViewById(R.id.backBtn);
+        ImageButton backBtn = findViewById(R.id.backBtn);
         progressBar = findViewById(R.id.progressBar); // ProgressBar from XML
 
         // 🔙 Back Button
