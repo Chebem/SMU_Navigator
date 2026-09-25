@@ -108,23 +108,31 @@ public class DetailActivity extends AppCompatActivity {
 
             if (object instanceof ItemDomain) {
                 ItemDomain item = (ItemDomain) object;
-                lat = item.getLat(); lng = item.getLng();
-                name = item.getName(); category = item.getCategory();
+                lat = item.getLat();
+                lng = item.getLng();
+                name = item.getName();
+                category = item.getCategory();
 
             } else if (object instanceof ConvenienceFacility) {
                 ConvenienceFacility f = (ConvenienceFacility) object;
-                lat = f.getLat(); lng = f.getLng();
-                name = f.getName(); category = f.getCategory();
+                lat = f.getLat();
+                lng = f.getLng();
+                name = f.getName();
+                category = f.getCategory();
 
             } else if (object instanceof FacilityModel) {
                 FacilityModel f = (FacilityModel) object;
-                lat = f.getLat(); lng = f.getLng();
-                name = f.getName(); category = f.getCategory();
+                lat = f.getLat();
+                lng = f.getLng();
+                name = f.getName();
+                category = f.getCategory();
 
             } else if (object instanceof Committee) {
                 Committee c = (Committee) object;
-                lat = c.getLat(); lng = c.getLng();
-                name = c.getTitle(); category = "Committee";
+                lat = c.getLat();
+                lng = c.getLng();
+                name = c.getTitle();
+                category = "Committee";
             }
 
             // 🔁 Assign layoutKey by category
@@ -132,10 +140,8 @@ public class DetailActivity extends AppCompatActivity {
                 case "Coffee": layoutKey = "coffee_marker"; break;
                 case "Dorms": layoutKey = "dorm_marker"; break;
                 case "Restaurant": layoutKey = "food_marker"; break;
-                case "Stores": layoutKey = "store_marker"; break;
                 case "Convenience": layoutKey = "convenience_marker"; break;
-                case "Facilities":
-                case "Facilties": layoutKey = "facilities_marker"; break;
+                case "Facilities": layoutKey = "facilities_marker"; break;
                 case "Park": layoutKey = "park_marker"; break;
                 case "Sports": layoutKey = "sports_marker"; break;
                 default: layoutKey = "store_marker"; break;
