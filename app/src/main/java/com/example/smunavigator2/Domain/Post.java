@@ -7,7 +7,7 @@ public class Post {
 
     public String mainImage;
     private String caption;
-    private String userId; // 🔑 Important for user profile lookup
+    private String userId; //  Important for user profile lookup
     private long timestamp; // Optional for sorting by date
 
     public Post() {
