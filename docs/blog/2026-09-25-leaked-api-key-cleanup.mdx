@@ -1,0 +1,184 @@
+---
+title: "I Pushed My Google Maps API Key to GitHub. Here's How I Cleaned It Up."
+date: 2026-09-25
+author: Chukwuka Chebem Yvette
+tags: [android, security, firebase, google-maps, gradle]
+summary: A leaked API key led to a full cleanup of SMU Navigator — rotating keys, moving secrets out of source, locking down Firebase, and fixing four bugs that were hiding in uncommitted changes.
+---
+
+# I Pushed My Google Maps API Key to GitHub. Here's How I Cleaned It Up.
+
+SMU Navigator is an Android campus guide for Sangmyung University. It uses Google Maps,
+Kakao Map, and Firebase (Auth, Realtime Database, Storage). On September 25, 2026, Google sent
+me this:
+
+> **Public API Key Alert:** A publicly accessible Google API key (`AIzaSy…cX38`) was detected
+> in your public GitHub repository.
+
+This post covers what leaked, what I did about it, and the build and crash bugs I found
+along the way.
+
+## What broke
+
+### 1. Two Google keys were public on GitHub
+
+| Key | Where it lived | Branches |
+|---|---|---|
+| Maps key `AIzaSy…cX38` | `gradle.properties`, `AndroidManifest.xml`, and 3× hardcoded in `GoogleMapActivity.java` | `main`, `public` |
+| Firebase key `AIzaSy…EAs` | an old `app/src/google-services.json` | `main` history |
+
+The confusing part: in `gradle.properties` the Maps key sat under the name
+`KAKAO_MAP_API_KEY`. A wrong label makes it easy to miss what a secret actually is.
+The real Kakao key was only ever in `local.properties`, which git ignores, so it never leaked.
+
+### 2. The Realtime Database rules were wide open
+
+Firebase had been sending security alerts for a while. The rules let anyone read and write,
+so anyone who had the leaked Firebase key could read or wipe the database.
+
+### 3. Other Firebase and Kakao warnings
+
+- **Firebase was downgraded to the free Spark plan** because the billing account went inactive.
+  The Directions, Distance Matrix, and Places APIs need billing to work.
+- **The Kakao app was marked inactive** after 180 days without use and is scheduled
+  for deletion on Feb 13, 2027.
+
+### 4. The build was broken by uncommitted changes
+
+When I built the project to check the key fix, I found these:
+
+- **Wrong Kakao SDK.** `build.gradle.kts` had been changed to
+  `net.daum.mf.map:openSDK:1.4.1`, the old v1 SDK, which no longer exists in any repository.
+  The code imports `com.kakao.vectormap.*` from the v2 SDK.
+- **Missing libraries.** The calendar library (`com.kizitonwose.calendar:view`) and
+  `material3` were gone from the dependency list, so the layouts and Compose theme no longer compiled.
+- **Fake functions in `Theme.kt`.** When `material3` went missing, Android Studio's
+  "Create function" quick-fix generated a fake `MaterialTheme(...)` that just calls `TODO()`,
+  plus an import of `org.checkerframework.checker.units.qual.K`.
+
+### 5. Two crashes waiting to happen
+
+- **`BaseActivity.getWindow()` returned `null`.** An override had been added:
+  ```java
+  public Window getWindow() {
+      return null;
+  }
+  ```
+  `onCreate` immediately calls `getWindow().setFlags(...)`, so `MainActivity` (the home screen)
+  and `CampusActivity` would crash with a `NullPointerException` the moment they opened.
+- **`CategoryModel` lost its empty constructor.** `ResultsRepository` loads subcategories with
+  `snapshot.getValue(CategoryModel.class)`, which requires a no-argument constructor. Without
+  one, Firebase throws a `DatabaseException` at runtime. The class had also picked up a
+  meaningless generic parameter: `class CategoryModel<categoryId>`.
+
+## What I fixed
+
+### Rotated and restricted the key
+
+Removing a key from the code doesn't un-leak it. Bots scan GitHub for keys within minutes,
+so the only real fix is making the old key useless. In Google Cloud Console I:
+
+1. Regenerated the Maps key and deleted the old one.
+2. Limited it to the four APIs the app actually uses: **Maps SDK for Android, Directions
+   API, Distance Matrix API, Places API**.
+
+> **Gotcha:** Google warned me about "active usage" when I first saved the restrictions,
+> because my list left out APIs the app was calling. Check your code to see which APIs you
+> really use before you restrict a key.
+
+> **Gotcha 2:** An "Android apps" application restriction only works for the Maps SDK.
+> Directions, Distance Matrix, and Places are called as plain web requests through Volley,
+> and Google rejects those when the key is restricted to Android apps.
+
+### Moved the key out of source code
+
+The project already used the
+[Secrets Gradle Plugin](https://github.com/google/secrets-gradle-plugin), which reads
+`local.properties` (already in `.gitignore`) and exposes each entry as both a `BuildConfig`
+field and a manifest placeholder.
+
+```properties
+# local.properties (never committed)
+MAPS_API_KEY=AIza...
+```
+
+```xml
+<!-- AndroidManifest.xml -->
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="${MAPS_API_KEY}" />
+```
+
+```java
+// GoogleMapActivity.java
+String apiKey = BuildConfig.MAPS_API_KEY;
+```
+
+I also deleted the mislabeled `KAKAO_MAP_API_KEY=AIza…` line from `gradle.properties`.
+
+### Locked down the Realtime Database
+
+I read through the code to see which paths the app reads and writes, then wrote rules to match
+(`database.rules.json`):
+
+```json
+{
+  "rules": {
+    "$node": { ".read": "auth != null", ".write": false },
+    "profiles": {
+      ".read": "auth != null",
+      "$uid": { ".write": "auth != null && auth.uid === $uid" }
+    },
+    "favorites": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "notifications": {
+      "$uid": { ".read": "auth != null && auth.uid === $uid" }
+    }
+  }
+}
+```
+
+> **Gotcha:** In Realtime Database rules, access granted higher up **can't be taken away**
+> further down. My first draft put `".read": "auth != null"` at the root, which would have let
+> every signed-in user read everyone's favorites. A `$node` wildcard fixes this, because
+> named nodes like `favorites` don't fall under it.
+
+> **Gotcha 2:** I tested the rules in the Rules Playground and kept getting "denied." The
+> Location field had leading spaces (`"   /placesEn"`), so it was testing a node that
+> doesn't exist.
+
+### Fixed the build and the crashes
+
+- Restored `com.kakao.maps.open:android:2.12.8`, `com.kizitonwose.calendar:view:2.6.2`, and
+  `androidx.compose.material3:material3:1.2.1`.
+- Restored `Theme.kt` to its last committed version.
+- Removed the `getWindow()` override from `BaseActivity`.
+- Restored the empty constructor in `CategoryModel` and removed the stray generic.
+
+After these fixes, `assembleDebug` passes and the app launches on an emulator without crashing.
+
+## Still to do
+
+- **Clean the git history.** The old keys are still visible in past commits. They no longer
+  work, but `git filter-repo --replace-text` followed by a force-push would remove them entirely.
+- **Stop the app writing to shared data.** `ResultViewModel` and `ResultsRepository` write
+  `opening_hours` back into shared store data when it's in the wrong format. The new rules
+  block that write, so the data should be fixed once in the Console instead.
+- **Fix billing** if Directions and Distance Matrix are needed again.
+- **Reactivate the Kakao app** before Feb 13, 2027.
+
+## Lessons
+
+1. **Treat a leaked key as compromised right away.** Rotate it first, then clean up.
+2. **Keep secrets in `local.properties` or a secrets manager**, and never hardcode them.
+   Grep for `AIza` before every push.
+3. **Name secrets for what they are.** A Google key called `KAKAO_MAP_API_KEY` is how
+   this one slipped through.
+4. **Don't trust IDE quick-fixes blindly.** "Create function" turned a missing dependency
+   into code that compiles and crashes at runtime.
+5. **Build after changing dependencies.** Four of the problems here came from a rewritten
+   dependency list that nobody had built.
