@@ -7,7 +7,7 @@ Env vars (each key: JSON string in *_JSON, or a file path in *_FILE for local ru
   FIREBASE_SA_JSON / FIREBASE_SA_FILE     Firebase Admin service account (project smu-navigator). Required unless DRY_RUN=1.
   TRANSLATE_SA_JSON / TRANSLATE_SA_FILE   Cloud Translation service account (project smu-navigator-460213).
   FIREBASE_DB_URL    RTDB URL (default: smu-navigator asia-southeast1).
-  PAGES              list pages to scan per board (default 1; use 3 on first run).
+  PAGES              list pages to scan per board (default 3).
   BOARDS             comma-separated board keys to scan (default: all in BOARDS).
   DRY_RUN=1          print results instead of writing to Firebase.
   TRANSLATE=0        skip KO->EN translation (English fields fall back to Korean).
@@ -37,7 +37,7 @@ BOARDS = [
     ("jobs", "bbs05", "sub08_02_07", "채용공고", "Jobs"),
 ]
 DB_URL = os.getenv("FIREBASE_DB_URL", "https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app/")
-PAGES = int(os.getenv("PAGES", "1"))
+PAGES = int(os.getenv("PAGES", "3"))
 DRY_RUN = os.getenv("DRY_RUN") == "1"
 TRANSLATE = os.getenv("TRANSLATE", "1") != "0"
 NOTIFY = os.getenv("NOTIFY", "1") != "0"
