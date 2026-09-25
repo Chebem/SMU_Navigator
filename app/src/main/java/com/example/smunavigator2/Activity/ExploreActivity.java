@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExploreActivity extends AppCompatActivity {
@@ -68,6 +69,13 @@ public class ExploreActivity extends AppCompatActivity {
                         noticeList.add(notice);
                     }
                 }
+
+                // Newest first: by date (yyyy-MM-dd), then by board number for same-day notices
+                noticeList.sort(Comparator
+                        .comparing((NoticeModel n) -> n.date != null ? n.date : "")
+                        .thenComparing(n -> n.id != null ? n.id.length() : 0)
+                        .thenComparing(n -> n.id != null ? n.id : "")
+                        .reversed());
 
                 adapter.notifyDataSetChanged();
             }
