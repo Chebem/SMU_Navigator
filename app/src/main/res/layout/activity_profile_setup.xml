@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
+    android:padding="80dp"
     android:background="@drawable/main_bg_gradient2">
 
     <!-- Profile Image Selection -->
@@ -14,7 +14,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/ic_add_photo"
-        android:contentDescription="Profile Image"
+        android:contentDescription="@string/profile_image"
         app:civ_border_width="2dp"
         app:civ_border_color="@color/white"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,71 +35,83 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Name Input -->
+
+    <!-- Department Input -->
+
+    <!-- Bio Input -->
+
+    <!-- Save Button -->
+
     <EditText
         android:id="@+id/nameInput"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_marginTop="72dp"
+        android:autofillHints=""
+        android:background="@drawable/gradient_corner_bg"
         android:hint="@string/enter_your_name"
+        android:inputType="textPersonName"
+        android:padding="12dp"
         android:textColor="@color/text_primary"
         android:textColorHint="#cccccc"
-        android:background="@drawable/gradient_corner_bg"
-        android:padding="12dp"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/selectImageHint"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectImageHint" />
 
-    <!-- Department Input -->
     <EditText
         android:id="@+id/departmentInput"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:autofillHints=""
+        android:background="@drawable/gradient_corner_bg"
         android:hint="@string/enter_your_department"
+        android:inputType="text|textNoSuggestions"
+        android:padding="12dp"
         android:textColor="@color/text_primary"
         android:textColorHint="#cccccc"
-        android:background="@drawable/gradient_corner_bg"
-        android:padding="12dp"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/nameInput"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameInput" />
 
-    <!-- Bio Input -->
     <EditText
         android:id="@+id/bioInput"
         android:layout_width="0dp"
         android:layout_height="100dp"
-        android:hint="@string/write_a_short_bio"
-        android:textColor="@color/background_dark"
-        android:textColorHint="#cccccc"
+        android:layout_marginTop="40dp"
+        android:autofillHints=""
         android:background="@drawable/gradient_corner_bg"
         android:gravity="top|start"
-        android:padding="14dp"
-        android:textSize="16sp"
+        android:hint="@string/write_a_short_bio"
         android:inputType="textMultiLine"
         android:maxLines="5"
-        app:layout_constraintTop_toBottomOf="@+id/departmentInput"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="14dp"
+        android:textColor="@color/background_dark"
+        android:textColorHint="#cccccc"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departmentInput" />
 
-    <!-- Save Button -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveProfileBtn"
-        android:layout_width="350dp"
+        android:layout_width="200dp"
         android:layout_height="60dp"
         android:background="@drawable/rounded_button2"
         android:textColor="@color/white"
         android:text="@string/save_profile"
         android:textSize="22sp"
-        android:paddingStart="64dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:padding="4dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="36dp"
-        android:drawableEnd="@drawable/back"
         style="@android:style/Widget.Button"
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@+id/bioInput"
