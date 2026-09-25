@@ -89,6 +89,7 @@ public class NoticeModel implements Serializable {
 
     public String title_en;
     public String department;
+    public String department_en;
     public String date;
     public String url;
     public String text_ko;
