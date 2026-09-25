@@ -1,5 +1,6 @@
 package com.example.smunavigator2.Activity;
 
+import com.example.smunavigator2.BuildConfig;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -54,6 +55,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+//Map related imports
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -97,14 +99,13 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private DatabaseReference favoriteRef;
-    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_map);
 
-        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(); // placement
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(); // placement
         favoriteRef = FirebaseDatabase.getInstance().getReference("favorites").child(userId);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -230,10 +231,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
 
-            // ✅ Manually zoom in to selected place
+            // Manually zoom in to selected place
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 17f));
 
-            // 🛑 Do NOT call filterByCategory again here
+            // Do NOT call filterByCategory again here
         } else {
             LatLng center = new LatLng(lat, lng);
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 16));
@@ -377,7 +378,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     place.getDescription(),
                                     place.getImagePath(),
                                     place.getCategory(),
-                                   null, // ✅ Pass phone number
+                                   null, // Pass phone number
                                     getMarkerLayoutKeyFromCategory(place.getCategory())
                             );
                         }
@@ -480,10 +481,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     s.getName(),
                                     s.getLocation(),
                                     s.getOperating_hours(),
-                                    s.getDescription(),         // ✅ Correct position for description
+                                    s.getDescription(),         // Correct position for description
                                     s.getImagePath(),
-                                    s.getCategory(),            // ✅ category
-                                    getMarkerLayoutKeyFromCategory(s.getCategory()), // ✅ layoutKey
+                                    s.getCategory(),            // category
+                                    getMarkerLayoutKeyFromCategory(s.getCategory()), // layoutKey
                                     null // ✅ Added missing phone number argument
                             );
                         }
@@ -540,7 +541,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void fetchNearbyRealPlacesWithCustomMarkers(LatLngBounds bounds, String categoryType) {
-        String apiKey = "AIzaSyDh2Tshp2CYwKMuyrFEgv02b9WWpa5cX38"; // 🔐 Use your real Google Maps API key
+        String apiKey = BuildConfig.MAPS_API_KEY;
         LatLng center = bounds.getCenter();
 
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
@@ -687,7 +688,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 "origin=" + origin.latitude + "," + origin.longitude +
                 "&destination=" + destination.latitude + "," + destination.longitude +
                 "&mode=" + mode +
-                "&key=AIzaSyDh2Tshp2CYwKMuyrFEgv02b9WWpa5cX38";
+                "&key=" + BuildConfig.MAPS_API_KEY;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -763,7 +764,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 moveToCurrentLocation();
 
-                // ✅ Safely enable location layer with try-catch
+                // Safely enable location layer with try-catch
                 if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     try {
                         googleMap.setMyLocationEnabled(true);
@@ -778,7 +779,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void fetchDistanceAndDuration(LatLng origin, LatLng destination, TextView targetTextView) {
-        String apiKey = "AIzaSyDh2Tshp2CYwKMuyrFEgv02b9WWpa5cX38"; // real key
+        String apiKey = BuildConfig.MAPS_API_KEY;
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?" +
                 "origins=" + origin.latitude + "," + origin.longitude +
                 "&destinations=" + destination.latitude + "," + destination.longitude +
@@ -964,7 +965,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 return R.layout.convenience_marker;
 
             case "bars_marker": return R.layout.bars_marker;
-            case "mart_marker": return R.layout.store_marker;
 
             case "store_marker":
             case "Stores":
@@ -985,11 +985,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     //overlay for store
-
     private void showStoreOverlay(String title, String address, String hours, String description, String imageUrl, double storeLat, double storeLng) {
         placeTitle.setText(title != null ? title : "No name");
 
-        // 📝 Prefer showing description if available
+        //  Prefer showing description if available
         if (description != null && !description.trim().isEmpty()) {
             placeAddress.setText(description.trim());
         } else {
@@ -1005,7 +1004,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             placeAddress.setText(shortAddress);
         }
 
-        // ⏰ Format hours if structured
+        //  Format hours if structured
         if (hours != null && !hours.trim().isEmpty()) {
             if (hours.contains("Monday")) {
                 placeHours.setText(getString(R.string.open_with_hours, formatOpeningHours(hours)));
@@ -1030,7 +1029,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
 
-        // 🖼️ Load image or fallback
+        //  Load image or fallback
         if (imageUrl != null) {
             Glide.with(this).load(imageUrl).into(placeImage);
         } else {
@@ -1069,7 +1068,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             placeImage.setImageResource(R.drawable.smu_logo);
         }
 
-        // 🔁 Distance logic from user's location to dorm coordinates
+        // Distance logic from user's location to dorm coordinates
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 if (location != null) {
