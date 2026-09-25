@@ -9,6 +9,9 @@ on:
         description: "List pages to scan (use 3 on the first run)"
         default: "1"
 
+permissions:
+  contents: read
+
 concurrency:
   group: scrape-notices
   cancel-in-progress: false
