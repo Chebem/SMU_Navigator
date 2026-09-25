@@ -25,7 +25,7 @@
     <string name="my_profile">내 프로필</string>
     <string name="smu_campus">세명대 캠퍼스</string>
     <string name="search">검색</string>
-    <string name="find_stores_restaurants_product">가게, 음식점, 상품을 찾아보세요"...."</string>
+    <string name="find_stores_restaurants_product">가게, 음식점, 상품을 찾아보세요</string>
     <string name="title_activity_google_map">구글 지도</string>
     <string name="open_label">영업 시간:</string>
     <string name="open_with_hours">영업 시간:\n%1$s</string>
@@ -88,7 +88,7 @@
     <string name="search_places1">장소 검색</string>
     <string name="settings">설정</string>
     <string name="enter_your_name">이름을 입력하세요</string>
-    <string name="write_a_short_bio">간단한 자기소개를 써보세요...</string>
+    <string name="write_a_short_bio">간단한 자기소개를 써보세요</string>
     <string name="save_profile">프로필 저장</string>
     <string name="tap_to_select_profile_image">탭하여 프로필 이미지 선택</string>
     <string name="full_name">이름</string>
@@ -119,7 +119,7 @@
     <string name="dine_in_takeaway_delivery">매장 식사 · 포장 · 배달</string>
     <string name="hours_10_am_10_pm">영업 시간: 오전 10시 - 오후 10시</string>
     <string name="rating">평점</string>
-    <string name="your_caption_here">여기에 캡션을 작성하세요"...."</string>
+    <string name="your_caption_here">여기에 캡션을 작성하세요</string>
     <string name="removed_from_favorites">즐겨찾기에서 제거되었습니다</string>
     <string name="failed_to_load_favorites">즐겨찾기를 불러오지 못했습니다</string>
     <string name="_0_comments">댓글 0개</string>
