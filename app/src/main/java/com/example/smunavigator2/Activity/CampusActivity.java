@@ -342,16 +342,14 @@ public class CampusActivity extends BaseActivity {
         initOthersFromNode(node);
     }
 
-
+    private boolean getLanguagePreference() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        return prefs.getBoolean(LANGUAGE_KEY, false);
+    }
 
     private void saveLanguagePreference(boolean isEnglish) {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         prefs.edit().putBoolean(LANGUAGE_KEY, isEnglish).apply();
-    }
-
-    private boolean getLanguagePreference() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return prefs.getBoolean(LANGUAGE_KEY, false);
     }
 
     private void setupBottomNav(int selectedItemId) {
