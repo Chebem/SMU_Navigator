@@ -24,10 +24,17 @@ public class ProfileRepository {
     private final DatabaseReference profileRef;
     private final MutableLiveData<ProfileModel> profileLiveData;
 
+    private final String myUid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
     public ProfileRepository() {
+        this(null);
+    }
+
+    /** Loads {@code userId}'s profile; null means the signed-in user. */
+    public ProfileRepository(String userId) {
         profileRef = FirebaseDatabase.getInstance("https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("profiles")
-                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                .child(userId != null ? userId : myUid);
         profileLiveData = new MutableLiveData<>();
     }
 
@@ -61,6 +68,11 @@ public class ProfileRepository {
                     }
                 }
                 profile.followers = followerList;
+
+                // Counts come from the lists themselves, so they can't drift
+                profile.followersNum = (int) snapshot.child("followers").getChildrenCount();
+                profile.followingNum = (int) snapshot.child("following").getChildrenCount();
+                profile.followedByMe = snapshot.child("followers").hasChild(myUid);
 
                 profileLiveData.setValue(profile);
             }
