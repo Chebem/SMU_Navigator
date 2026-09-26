@@ -1,8 +1,10 @@
 package com.example.smunavigator2.Adapter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.smunavigator2.Activity.ProfilePageActivity;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.TimeUtils;
@@ -114,6 +117,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
                     Log.e("PostsAdapter", "Failed to load user info", error.toException());
                 }
             });
+        }
+
+        // Tap the author's photo or name -> their profile
+        if (userId != null && !userId.isEmpty()) {
+            View.OnClickListener openProfile = v -> {
+                Intent intent = new Intent(v.getContext(), ProfilePageActivity.class);
+                intent.putExtra(ProfilePageActivity.EXTRA_USER_ID, userId);
+                v.getContext().startActivity(intent);
+            };
+            holder.binding.profilePic.setOnClickListener(openProfile);
+            holder.binding.usernameTxt.setOnClickListener(openProfile);
         }
 
         // 🔹 Post click handler
