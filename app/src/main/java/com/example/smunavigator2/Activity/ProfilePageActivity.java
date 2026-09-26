@@ -3,6 +3,7 @@ package com.example.smunavigator2.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -25,16 +26,28 @@ import com.example.smunavigator2.databinding.ActivityProfilePageBinding;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProfilePageActivity extends AppCompatActivity implements PostsAdapter.OnPostClickListener {
 
+    /** Intent extra: whose profile to show. Missing = the signed-in user. */
+    public static final String EXTRA_USER_ID = "userId";
+
     private ActivityProfilePageBinding binding;
     private PostsAdapter postsAdapter;
+
+    private String myUid;
+    private String viewedUid;
+    private boolean isOwnProfile;
+    private boolean followedByMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,26 +73,23 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
         binding.followersList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String requestedUid = getIntent().getStringExtra(EXTRA_USER_ID);
+        isOwnProfile = requestedUid == null || requestedUid.equals(myUid);
+        viewedUid = isOwnProfile ? myUid : requestedUid;
+        setupFollowButton();
+
         ProfileViewModel viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        viewModel.getProfileModelLiveData().observe(this, profileModel -> {
+        viewModel.getProfileModelLiveData(viewedUid).observe(this, profileModel -> {
             if (profileModel == null) return;
+            followedByMe = profileModel.followedByMe;
+            updateFollowButtonText();
 
             Log.d("ProfileDebug", "Data loaded: " + profileModel);
 
-            binding.nameText.setText(
-                    profileModel.profileName != null && !profileModel.profileName.isEmpty()
-                            ? profileModel.profileName : "Michael Test"
-            );
-
-            binding.departmentText.setText(
-                    profileModel.department != null && !profileModel.department.isEmpty()
-                            ? profileModel.department : "Department of Computer Science"
-            );
-
-            binding.aboutText.setText(
-                    profileModel.about != null && !profileModel.about.isEmpty()
-                            ? profileModel.about : "This is test about."
-            );
+            binding.nameText.setText(profileModel.profileName != null ? profileModel.profileName : "");
+            binding.departmentText.setText(profileModel.department != null ? profileModel.department : "");
+            binding.aboutText.setText(profileModel.about != null ? profileModel.about : "");
 
             binding.followersTxt.setText(String.valueOf(profileModel.followersNum));
             binding.followingTxt.setText(String.valueOf(profileModel.followingNum));
@@ -134,6 +144,51 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         setupBottomNav(R.id.profile);
     }
 
+    // Own profile: "Edit profile". Someone else's: Follow / Following, and no settings menu.
+    private void setupFollowButton() {
+        if (isOwnProfile) {
+            binding.followBtn.setText(R.string.edit_profile);
+            binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class)));
+        } else {
+            binding.settingsIcon.setVisibility(View.GONE);
+            binding.followBtn.setOnClickListener(v -> toggleFollow());
+            updateFollowButtonText();
+        }
+    }
+
+    private void updateFollowButtonText() {
+        if (!isOwnProfile) binding.followBtn.setText(followedByMe ? R.string.following_state : R.string.follow);
+    }
+
+    // Writes both sides at once: profiles/{them}/followers/{me} and profiles/{me}/following/{them}
+    private void toggleFollow() {
+        binding.followBtn.setEnabled(false);
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        db.child("profiles").child(myUid).get().addOnCompleteListener(me -> {
+            Map<String, Object> updates = new HashMap<>();
+            String followerPath = "profiles/" + viewedUid + "/followers/" + myUid;
+            String followingPath = "profiles/" + myUid + "/following/" + viewedUid;
+            if (followedByMe) {
+                updates.put(followerPath, null);
+                updates.put(followingPath, null);
+            } else {
+                DataSnapshot mine = me.isSuccessful() ? me.getResult() : null;
+                Map<String, Object> follower = new HashMap<>();
+                follower.put("name", mine != null ? mine.child("profileName").getValue(String.class) : null);
+                follower.put("imageUrl", mine != null ? mine.child("profileImage").getValue(String.class) : null);
+                updates.put(followerPath, follower);
+                updates.put(followingPath, true);
+            }
+            db.updateChildren(updates).addOnCompleteListener(task -> {
+                binding.followBtn.setEnabled(true);
+                if (!task.isSuccessful()) {
+                    Toast.makeText(this, R.string.follow_failed, Toast.LENGTH_SHORT).show();
+                }
+                // On success the profile listener fires and updates the button and counts
+            });
+        });
+    }
+
     @Override
     public void onPostClick(Post post) {
         Toast.makeText(this, "Clicked post by userId: " + post.getUserId(), Toast.LENGTH_SHORT).show();
@@ -144,7 +199,8 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         bottomNav.setItemSelected(selectedItemId, true);
 
         bottomNav.setOnItemSelectedListener(id -> {
-            if (id == selectedItemId) return;
+            // On someone else's profile, the Profile tab goes back to your own
+            if (id == selectedItemId && isOwnProfile) return;
 
             Intent intent = null;
             if (id == R.id.home) intent = new Intent(this, MainActivity.class);
