@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smunavigator2.Adapter.FavoriteAdapter;
 import com.example.smunavigator2.Domain.FavoriteItem;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.DistanceUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
@@ -78,9 +79,13 @@ public class FavoritesActivity extends AppCompatActivity {
                 favoriteList.clear();
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     FavoriteItem item = snap.getValue(FavoriteItem.class);
-                    favoriteList.add(item);
+                    if (item != null) favoriteList.add(item);
                 }
                 adapter.notifyDataSetChanged();
+
+                // Distance is worked out live, never stored
+                DistanceUtils.resolveOrigin(FavoritesActivity.this,
+                        (lat, lng, fromUser) -> adapter.setOrigin(lat, lng, fromUser));
 
                 // Hide loading, show list
                 progressBar.setVisibility(View.GONE);
