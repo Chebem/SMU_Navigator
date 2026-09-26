@@ -1,6 +1,7 @@
 package com.example.smunavigator2.Activity;
 
 import com.example.smunavigator2.BuildConfig;
+import com.example.smunavigator2.Utils.DistanceUtils;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -778,12 +779,26 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    // Straight-line distance right away (works even with no saved location),
+    // then Google's walking distance + time when the student's own location is known
+    private void showDistanceTo(double lat, double lng) {
+        boolean isEnglish = DistanceUtils.isEnglishLocale();
+        placeDistance.setText(isEnglish ? "Locating…" : "위치 확인 중…");
+        DistanceUtils.resolveOrigin(this, (originLat, originLng, fromUser) -> {
+            float meters = DistanceUtils.meters(originLat, originLng, lat, lng);
+            placeDistance.setText(DistanceUtils.label(meters, fromUser, isEnglish));
+            if (fromUser) {
+                fetchDistanceAndDuration(new LatLng(originLat, originLng), new LatLng(lat, lng), placeDistance);
+            }
+        });
+    }
+
     private void fetchDistanceAndDuration(LatLng origin, LatLng destination, TextView targetTextView) {
         String apiKey = BuildConfig.MAPS_API_KEY;
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?" +
                 "origins=" + origin.latitude + "," + origin.longitude +
                 "&destinations=" + destination.latitude + "," + destination.longitude +
-                "&mode=walking&language=en&key=" + apiKey;
+                "&mode=walking&language=" + (DistanceUtils.isEnglishLocale() ? "en" : "ko") + "&key=" + apiKey;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -1016,17 +1031,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // ✅ Use lat/lng instead of geocoding
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
-                    LatLng dest = new LatLng(storeLat, storeLng); //
-                    fetchDistanceAndDuration(origin, dest, placeDistance);
-                }
-            });
-        } else {
-            placeDistance.setText(""); // Or "Location unavailable"
-        }
+        showDistanceTo(storeLat, storeLng);
 
 
         //  Load image or fallback
@@ -1069,17 +1074,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // Distance logic from user's location to dorm coordinates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
-                    LatLng dest = new LatLng(dormLat, dormLng);
-                    fetchDistanceAndDuration(origin, dest, placeDistance); // ➕ Ensure `placeDistance` TextView exists
-                }
-            });
-        } else {
-            placeDistance.setText(""); // Or use "Location unavailable"
-        }
+        showDistanceTo(dormLat, dormLng);
         // 🧭 Show direction options
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1145,17 +1140,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // 📍 Distance display
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
-                    LatLng dest = new LatLng(placeLat, placeLng);
-                    fetchDistanceAndDuration(origin, dest, placeDistance);
-                }
-            });
-        } else {
-            placeDistance.setText("");
-        }
+        showDistanceTo(placeLat, placeLng);
 
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
