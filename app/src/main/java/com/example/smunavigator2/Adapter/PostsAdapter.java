@@ -2,6 +2,7 @@ package com.example.smunavigator2.Adapter;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +84,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
 
         // 🔹 Set caption and timestamp
         holder.binding.captionText.setText(post.getCaption());
+        holder.binding.captionText.setVisibility(TextUtils.isEmpty(post.getCaption()) ? View.GONE : View.VISIBLE);
         // Old posts have no timestamp (0 = 1970), so hide the time instead of "20722 days ago"
         if (post.getTimestamp() > 0) {
             holder.binding.postTimeTxt.setVisibility(View.VISIBLE);
@@ -107,8 +109,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
                     if (!holder.itemView.isAttachedToWindow()) return;
                     Glide.with(holder.itemView.getContext())
                             .load(profileImage)
-                            .placeholder(R.drawable.smu_logo)
-                            .error(R.drawable.image_error)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .fallback(R.drawable.ic_default_avatar)
                             .listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
