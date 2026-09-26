@@ -136,6 +136,8 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true)));
         } else {
             binding.settingsIcon.setVisibility(View.GONE);
+            binding.backBtn.setVisibility(View.VISIBLE);
+            binding.backBtn.setOnClickListener(v -> finish());
             binding.followBtn.setOnClickListener(v -> toggleFollow());
             updateFollowButtonText();
         }
