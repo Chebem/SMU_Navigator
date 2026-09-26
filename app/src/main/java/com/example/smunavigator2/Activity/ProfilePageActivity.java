@@ -93,7 +93,6 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
             binding.followersTxt.setText(String.valueOf(profileModel.followersNum));
             binding.followingTxt.setText(String.valueOf(profileModel.followingNum));
-            binding.likesTxt.setText(String.valueOf(profileModel.likes));
 
             Glide.with(this)
                     .load(profileModel.profileImage)
@@ -103,18 +102,10 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
                     profileModel.followers != null ? profileModel.followers : new ArrayList<>()
             ));
 
-            List<Post> postList = new ArrayList<>();
-            if (profileModel.posts != null) {
-                for (Map.Entry<String, ProfileModel.Post> entry : profileModel.posts.entrySet()) {
-                    ProfileModel.Post oldPost = entry.getValue();
-                    postList.add(new Post(
-                            oldPost.getImageUrls(),
-                            oldPost.getCaption(),
-                            oldPost.getUserId(),
-                            oldPost.getTimestamp()
-                    ));
-                }
-            }
+            List<Post> postList = profileModel.posts != null
+                    ? new ArrayList<>(profileModel.posts.values()) : new ArrayList<>();
+            postList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
+            binding.postsCountTxt.setText(String.valueOf(postList.size()));
 
             postsAdapter.updatePosts(postList);
         });
