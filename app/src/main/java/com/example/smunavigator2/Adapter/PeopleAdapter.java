@@ -75,8 +75,9 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.Viewholder
         holder.binding.personDepartment.setText(person.department);
         holder.binding.personDepartment.setVisibility(TextUtils.isEmpty(person.department) ? View.GONE : View.VISIBLE);
         Glide.with(holder.itemView.getContext()).load(person.imageUrl)
-                .placeholder(R.drawable.smu_logo)
-                .error(R.drawable.smu_logo)
+                .placeholder(R.drawable.ic_default_avatar)
+                .error(R.drawable.ic_default_avatar)
+                .fallback(R.drawable.ic_default_avatar)
                 .into(holder.binding.personPic);
 
         holder.itemView.setOnClickListener(v -> v.getContext().startActivity(
