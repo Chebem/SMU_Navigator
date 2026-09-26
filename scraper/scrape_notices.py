@@ -1,19 +1,3 @@
-"""Scrape Semyung University notice boards with Crawl4AI and sync them to Firebase RTDB `Notices/{board_num}`.
-
-board_num is one site-wide counter, so ids never collide across boards. A post listed on
-several boards is stored once, tagged in `categories/{key}: true` (first board = `category`).
-
-Env vars (each key: JSON string in *_JSON, or a file path in *_FILE for local runs):
-  FIREBASE_SA_JSON / FIREBASE_SA_FILE     Firebase Admin service account (project smu-navigator). Required unless DRY_RUN=1.
-  TRANSLATE_SA_JSON / TRANSLATE_SA_FILE   Cloud Translation service account (project smu-navigator-460213).
-  FIREBASE_DB_URL    RTDB URL (default: smu-navigator asia-southeast1).
-  PAGES              list pages to scan per board (default 3).
-  BOARDS             comma-separated board keys to scan (default: all in BOARDS).
-  DRY_RUN=1          print results instead of writing to Firebase.
-  TRANSLATE=0        skip KO->EN translation (English fields fall back to Korean).
-  NOTIFY=0           skip FCM push for new notices.
-  LIMIT              max new notices to fetch this run (default: no limit).
-"""
 
 import asyncio
 import json
