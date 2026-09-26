@@ -226,6 +226,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initSocialFeed() {
+        binding.findPeopleBtn.setOnClickListener(v ->
+                startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_SEARCH, null)));
+
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("profiles");
         binding.progressBarSocial.setVisibility(View.VISIBLE);
 
