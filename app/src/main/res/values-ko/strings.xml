@@ -165,4 +165,9 @@
     <plurals name="comments_count">
         <item quantity="other">댓글 %d개</item>
     </plurals>
+    <string name="find_people">사람 찾기</string>
+    <string name="search_people_hint">이름 또는 학과로 검색</string>
+    <string name="no_people_found">검색 결과가 없습니다</string>
+    <string name="no_followers_yet">아직 팔로워가 없습니다</string>
+    <string name="not_following_anyone">아직 팔로우한 사람이 없습니다</string>
 </resources>
