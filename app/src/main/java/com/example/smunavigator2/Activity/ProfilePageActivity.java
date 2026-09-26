@@ -126,7 +126,7 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             popup.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.menu_edit_profile) {
-                    startActivity(new Intent(this, ProfileSetupActivity.class));
+                    startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true));
                     return true;
                 } else if (id == R.id.menu_logout) {
                     FirebaseAuth.getInstance().signOut();
@@ -148,7 +148,7 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
     private void setupFollowButton() {
         if (isOwnProfile) {
             binding.followBtn.setText(R.string.edit_profile);
-            binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class)));
+            binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true)));
         } else {
             binding.settingsIcon.setVisibility(View.GONE);
             binding.followBtn.setOnClickListener(v -> toggleFollow());
