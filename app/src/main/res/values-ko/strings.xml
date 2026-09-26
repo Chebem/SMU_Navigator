@@ -156,4 +156,13 @@
     <string name="places" />
 
 
+    <string name="like">좋아요</string>
+    <string name="comments">댓글</string>
+    <string name="write_a_comment">댓글을 입력하세요…</string>
+    <string name="send">보내기</string>
+    <string name="no_comments_yet">아직 댓글이 없습니다. 첫 댓글을 남겨 보세요!</string>
+    <string name="action_failed">문제가 발생했습니다. 다시 시도해 주세요.</string>
+    <plurals name="comments_count">
+        <item quantity="other">댓글 %d개</item>
+    </plurals>
 </resources>
