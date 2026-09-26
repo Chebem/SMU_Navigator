@@ -251,13 +251,14 @@ public class MainActivity extends BaseActivity {
                                 && post.getMainImage() == null) continue;
 
                         if (post.getUserId() == null) post.setUserId(profileSnap.getKey());
+                        post.setPostId(postSnap.getKey());
                         feedList.add(post);
                     }
                 }
                 feedList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
 
                 binding.socialFeedRecycler.setLayoutManager(
-                        new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false)
+                        new LinearLayoutManager(MainActivity.this)
                 );
 
                 PostsAdapter adapter = new PostsAdapter(feedList, post -> {
