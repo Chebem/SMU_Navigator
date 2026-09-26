@@ -89,7 +89,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
                     }))
                     .addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
         } else {
-            saveToDatabase(name, bio, "");
+            saveToDatabase(name, bio, null); // no new photo: keep the current one
         }
     }
 
@@ -100,12 +100,10 @@ public class ProfileSetupActivity extends AppCompatActivity {
         profileMap.put("profileName", name);
         profileMap.put("about", bio);
         profileMap.put("department", department);
-        profileMap.put("profileImage", imageUrl);
-        profileMap.put("followersNum", 0);
-        profileMap.put("followingNum", 0);
-        profileMap.put("likes", 0);
+        if (imageUrl != null) profileMap.put("profileImage", imageUrl); // keep the old photo if none was picked
 
-        databaseRef.child(uid).setValue(profileMap).addOnCompleteListener(task -> {
+        // updateChildren, not setValue: setValue would wipe posts, followers and following
+        databaseRef.child(uid).updateChildren(profileMap).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Profile saved!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, ProfilePageActivity.class));
