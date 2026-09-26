@@ -12,7 +12,13 @@
       // Whole node is read for the social feed (MainActivity.initSocialFeed)
       ".read": "auth != null",
       "$uid": {
-        ".write": "auth != null && auth.uid === $uid"
+        ".write": "auth != null && auth.uid === $uid",
+        // Following someone: you may add or remove only your own entry in their followers list
+        "followers": {
+          "$followerUid": {
+            ".write": "auth != null && auth.uid === $followerUid"
+          }
+        }
       }
     },
 
