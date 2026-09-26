@@ -103,6 +103,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
 
                     holder.binding.usernameTxt.setText(username != null ? username : "Unknown");
 
+                    // The screen may have closed while this loaded; Glide crashes on a destroyed activity
+                    if (!holder.itemView.isAttachedToWindow()) return;
                     Glide.with(holder.itemView.getContext())
                             .load(profileImage)
                             .placeholder(R.drawable.smu_logo)
