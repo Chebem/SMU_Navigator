@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.Domain.ProfileModel.Follower;
 import com.example.smunavigator2.Domain.Post;
+import com.example.smunavigator2.Utils.PostParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,13 +45,17 @@ public class ProfileRepository {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("FIREBASE_DEBUG", "Data snapshot: " + snapshot);
 
-                ProfileModel profile = snapshot.getValue(ProfileModel.class);
-                if (profile == null) profile = new ProfileModel();
+                // Read fields one by one: some old profiles store numbers as text, which crashes getValue(ProfileModel.class)
+                ProfileModel profile = new ProfileModel();
+                profile.profileName = snapshot.child("profileName").getValue(String.class);
+                profile.profileImage = snapshot.child("profileImage").getValue(String.class);
+                profile.department = snapshot.child("department").getValue(String.class);
+                profile.about = snapshot.child("about").getValue(String.class);
 
                 // Parse posts as Map<String, Post>
                 Map<String, Post> postMap = new HashMap<>();
                 for (DataSnapshot postSnap : snapshot.child("posts").getChildren()) {
-                    Post post = postSnap.getValue(Post.class);
+                    Post post = PostParser.parse(postSnap);
                     if (post != null) {
                         post.setPostId(postSnap.getKey());
                         if (post.getUserId() == null) post.setUserId(snapshot.getKey());
