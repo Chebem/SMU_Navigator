@@ -16,9 +16,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.example.smunavigator2.Adapter.FollowersAdapter;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Post;
+import com.example.smunavigator2.Utils.FollowUtils;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.ViewModel.ProfileViewModel;
@@ -26,15 +26,10 @@ import com.example.smunavigator2.databinding.ActivityProfilePageBinding;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProfilePageActivity extends AppCompatActivity implements PostsAdapter.OnPostClickListener {
 
@@ -71,7 +66,9 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         postsAdapter = new PostsAdapter(new ArrayList<>(), this);
         binding.postList.setAdapter(postsAdapter);
 
-        binding.followersList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // Tap a count to see who follows this profile, or who it follows
+        binding.followersColumn.setOnClickListener(v -> startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_FOLLOWERS, viewedUid)));
+        binding.followingColumn.setOnClickListener(v -> startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_FOLLOWING, viewedUid)));
 
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String requestedUid = getIntent().getStringExtra(EXTRA_USER_ID);
@@ -81,6 +78,7 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
         ProfileViewModel viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         viewModel.getProfileModelLiveData(viewedUid).observe(this, profileModel -> {
+            binding.progressBar.setVisibility(View.GONE);
             if (profileModel == null) return;
             followedByMe = profileModel.followedByMe;
             updateFollowButtonText();
@@ -97,10 +95,6 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             Glide.with(this)
                     .load(profileModel.profileImage)
                     .into(binding.profileImg);
-
-            binding.followersList.setAdapter(new FollowersAdapter(
-                    profileModel.followers != null ? profileModel.followers : new ArrayList<>()
-            ));
 
             List<Post> postList = profileModel.posts != null
                     ? new ArrayList<>(profileModel.posts.values()) : new ArrayList<>();
@@ -151,32 +145,14 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         if (!isOwnProfile) binding.followBtn.setText(followedByMe ? R.string.following_state : R.string.follow);
     }
 
-    // Writes both sides at once: profiles/{them}/followers/{me} and profiles/{me}/following/{them}
     private void toggleFollow() {
         binding.followBtn.setEnabled(false);
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        db.child("profiles").child(myUid).get().addOnCompleteListener(me -> {
-            Map<String, Object> updates = new HashMap<>();
-            String followerPath = "profiles/" + viewedUid + "/followers/" + myUid;
-            String followingPath = "profiles/" + myUid + "/following/" + viewedUid;
-            if (followedByMe) {
-                updates.put(followerPath, null);
-                updates.put(followingPath, null);
-            } else {
-                DataSnapshot mine = me.isSuccessful() ? me.getResult() : null;
-                Map<String, Object> follower = new HashMap<>();
-                follower.put("name", mine != null ? mine.child("profileName").getValue(String.class) : null);
-                follower.put("imageUrl", mine != null ? mine.child("profileImage").getValue(String.class) : null);
-                updates.put(followerPath, follower);
-                updates.put(followingPath, true);
+        FollowUtils.setFollowing(myUid, viewedUid, !followedByMe).addOnCompleteListener(task -> {
+            binding.followBtn.setEnabled(true);
+            if (!task.isSuccessful()) {
+                Toast.makeText(this, R.string.follow_failed, Toast.LENGTH_SHORT).show();
             }
-            db.updateChildren(updates).addOnCompleteListener(task -> {
-                binding.followBtn.setEnabled(true);
-                if (!task.isSuccessful()) {
-                    Toast.makeText(this, R.string.follow_failed, Toast.LENGTH_SHORT).show();
-                }
-                // On success the profile listener fires and updates the button and counts
-            });
+            // On success the profile listener fires and updates the button and counts
         });
     }
 
