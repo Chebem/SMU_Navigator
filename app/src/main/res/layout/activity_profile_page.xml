@@ -40,6 +40,9 @@
                 android:background="@drawable/gradient_corner_bg"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedCorner"
+                app:strokeColor="@color/blue_dark"
+                app:strokeWidth="2dp"
+                android:padding="1dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <!-- Name -->
