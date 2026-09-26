@@ -78,7 +78,11 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
         ProfileViewModel viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         viewModel.getProfileModelLiveData(viewedUid).observe(this, profileModel -> {
-            binding.progressBar.setVisibility(View.GONE);
+            // First data in: fade the loading screen out
+            if (binding.loadingOverlay.getVisibility() == View.VISIBLE) {
+                binding.loadingOverlay.animate().alpha(0f).setDuration(200)
+                        .withEndAction(() -> binding.loadingOverlay.setVisibility(View.GONE));
+            }
             if (profileModel == null) return;
             followedByMe = profileModel.followedByMe;
             updateFollowButtonText();
@@ -94,6 +98,9 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
 
             Glide.with(this)
                     .load(profileModel.profileImage)
+                    .placeholder(R.drawable.ic_default_avatar)
+                    .error(R.drawable.ic_default_avatar)
+                    .fallback(R.drawable.ic_default_avatar) // no photo set
                     .into(binding.profileImg);
 
             List<Post> postList = profileModel.posts != null
