@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.smunavigator2.databinding.ActivityProfileSetupBinding;
@@ -45,6 +48,13 @@ public class ProfileSetupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityProfileSetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Android 15 draws under the status bar; keep the back arrow below it so it's tappable
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         auth = FirebaseAuth.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference("profileImages");
