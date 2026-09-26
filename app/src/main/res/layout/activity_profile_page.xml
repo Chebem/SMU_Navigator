@@ -299,5 +299,20 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
+    <!-- Back: only on someone else's profile, returns to where you came from -->
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:padding="16dp"
+        android:src="@drawable/back3"
+        android:contentDescription="@string/back"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
