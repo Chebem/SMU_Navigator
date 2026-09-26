@@ -79,7 +79,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
 
         // 🔹 Set caption and timestamp
         holder.binding.captionText.setText(post.getCaption());
-        holder.binding.postTimeTxt.setText(TimeUtils.getTimeAgo(post.getTimestamp()));
+        // Old posts have no timestamp (0 = 1970), so hide the time instead of "20722 days ago"
+        if (post.getTimestamp() > 0) {
+            holder.binding.postTimeTxt.setVisibility(View.VISIBLE);
+            holder.binding.postTimeTxt.setText(TimeUtils.getTimeAgo(post.getTimestamp()));
+        } else {
+            holder.binding.postTimeTxt.setVisibility(View.GONE);
+        }
 
         // 🔹 Load user profile data
         String userId = post.getUserId();
