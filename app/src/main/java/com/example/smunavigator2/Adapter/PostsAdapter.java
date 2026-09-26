@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,10 +18,13 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.smunavigator2.Activity.ProfilePageActivity;
+import com.example.smunavigator2.Dialog.CommentsBottomSheet;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.TimeUtils;
 import com.example.smunavigator2.databinding.ViewholderPostBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -136,10 +140,55 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
             holder.binding.usernameTxt.setOnClickListener(openProfile);
         }
 
+        bindLikes(holder, post);
+
+        // Comments: count now, full list + reply box in a sheet
+        holder.binding.commentsText.setText(holder.itemView.getResources()
+                .getQuantityString(R.plurals.comments_count, post.getComments().size(), post.getComments().size()));
+        holder.binding.commentBtn.setOnClickListener(v -> {
+            if (post.getUserId() == null || post.getPostId() == null) return;
+            CommentsBottomSheet.show(v.getContext(), post.getUserId(), post.getPostId(), count -> {
+                if (holder.getBindingAdapterPosition() == RecyclerView.NO_POSITION) return;
+                holder.binding.commentsText.setText(v.getResources()
+                        .getQuantityString(R.plurals.comments_count, count, count));
+            });
+        });
+
         // 🔹 Post click handler
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) clickListener.onPostClick(post);
         });
+    }
+
+    // Like / unlike: likes/{myUid} = true under the post; count and heart update right away
+    private void bindLikes(@NonNull Viewholder holder, Post post) {
+        FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+        Map<String, Boolean> likes = post.getLikes();
+        showLikeState(holder, me != null && likes.containsKey(me.getUid()), likes.size());
+
+        holder.binding.likeBtn.setOnClickListener(v -> {
+            if (me == null || post.getUserId() == null || post.getPostId() == null) return;
+            String uid = me.getUid();
+            boolean nowLiked = !likes.containsKey(uid);
+            if (nowLiked) likes.put(uid, true); else likes.remove(uid);
+            showLikeState(holder, nowLiked, likes.size());
+
+            DatabaseReference likeRef = FirebaseDatabase.getInstance().getReference("profiles")
+                    .child(post.getUserId()).child("posts").child(post.getPostId()).child("likes").child(uid);
+            (nowLiked ? likeRef.setValue(true) : likeRef.removeValue()).addOnFailureListener(e -> {
+                // Undo the optimistic change
+                if (nowLiked) likes.remove(uid); else likes.put(uid, true);
+                if (holder.getBindingAdapterPosition() != RecyclerView.NO_POSITION) {
+                    showLikeState(holder, !nowLiked, likes.size());
+                }
+                Toast.makeText(v.getContext(), R.string.action_failed, Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+    private void showLikeState(@NonNull Viewholder holder, boolean liked, int count) {
+        holder.binding.likeIcon.setImageResource(liked ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
+        holder.binding.likeCountTxt.setText(String.valueOf(count));
     }
 
     @Override
