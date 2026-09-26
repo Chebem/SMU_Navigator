@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.Domain.ProfileModel.Follower;
-import com.example.smunavigator2.Domain.ProfileModel.Post;
+import com.example.smunavigator2.Domain.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +52,8 @@ public class ProfileRepository {
                 for (DataSnapshot postSnap : snapshot.child("posts").getChildren()) {
                     Post post = postSnap.getValue(Post.class);
                     if (post != null) {
+                        post.setPostId(postSnap.getKey());
+                        if (post.getUserId() == null) post.setUserId(snapshot.getKey());
                         postMap.put(postSnap.getKey(), post);
                     }
                 }
