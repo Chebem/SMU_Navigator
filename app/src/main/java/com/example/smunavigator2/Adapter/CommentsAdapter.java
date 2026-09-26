@@ -40,7 +40,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Viewho
         holder.binding.commentText.setText(comment.text);
         holder.binding.commentTime.setText(comment.timestamp > 0 ? TimeUtils.getTimeAgo(comment.timestamp) : "");
         holder.binding.commentAuthorName.setText("");
-        holder.binding.commentAuthorPic.setImageResource(R.drawable.smu_logo);
+        holder.binding.commentAuthorPic.setImageResource(R.drawable.ic_default_avatar);
         if (comment.userId == null) return;
 
         // Tag the row so a late reply for a recycled row is ignored
@@ -52,7 +52,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Viewho
                     String image = snapshot.child("profileImage").getValue(String.class);
                     holder.binding.commentAuthorName.setText(name != null ? name : "Unknown");
                     Glide.with(holder.itemView.getContext()).load(image)
-                            .placeholder(R.drawable.smu_logo)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .fallback(R.drawable.ic_default_avatar)
                             .into(holder.binding.commentAuthorPic);
                 });
 
