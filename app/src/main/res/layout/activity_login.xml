@@ -102,13 +102,14 @@
                 android:layout_marginEnd="32dp"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/forgotPasswordLink"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="8dp"
                 android:textColor="@color/blue_dark"
                 android:text="@string/forgot_password"
-                android:layout_marginTop="8dp"
-                android:textAlignment="viewEnd"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="24dp"
                 android:textSize="14sp"/>
 
 
