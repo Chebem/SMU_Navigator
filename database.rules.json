@@ -18,6 +18,25 @@
           "$followerUid": {
             ".write": "auth != null && auth.uid === $followerUid"
           }
+        },
+        "posts": {
+          "$postId": {
+            // Liking: you may set or remove only your own like, on a post that exists
+            "likes": {
+              "$likerUid": {
+                ".write": "auth != null && auth.uid === $likerUid && root.child('profiles').child($uid).child('posts').child($postId).exists()",
+                ".validate": "newData.val() === true"
+              }
+            },
+            // Commenting: anyone signed in may add a comment as themselves; only the author may delete it
+            // (the post owner can also delete any comment through the profiles/$uid rule above)
+            "comments": {
+              "$commentId": {
+                ".write": "auth != null && root.child('profiles').child($uid).child('posts').child($postId).exists() && ((!data.exists() && newData.child('userId').val() === auth.uid) || (data.child('userId').val() === auth.uid && !newData.exists()))",
+                ".validate": "newData.hasChildren(['userId', 'text', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 500 && newData.child('timestamp').isNumber()"
+              }
+            }
+          }
         }
       }
     },
