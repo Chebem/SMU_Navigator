@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.smunavigator2.Activity.GoogleMapActivity;
 import com.example.smunavigator2.Domain.StoreModel;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.DistanceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,12 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
     private List<StoreModel> storeList;
     private OnItemClickListener listener;
+
+    // Where distances are measured from (student or campus), set by the screen
+    private double originLat = DistanceUtils.CAMPUS_LAT;
+    private double originLng = DistanceUtils.CAMPUS_LNG;
+    private boolean originIsUser = false;
+    private boolean isEnglish = true;
 
 
     public interface OnItemClickListener {
@@ -36,6 +43,14 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setOrigin(double lat, double lng, boolean fromUser, boolean isEnglish) {
+        this.originLat = lat;
+        this.originLng = lng;
+        this.originIsUser = fromUser;
+        this.isEnglish = isEnglish;
+        notifyDataSetChanged();
     }
 
     public void submitList(List<StoreModel> updatedList) {
@@ -69,6 +84,19 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
         String shortAddress = trimToMaxWords(fullAddress, 5);
         holder.address.setText(shortAddress);
+
+        // Real distance + place type instead of the layout's placeholder text
+        float meters = DistanceUtils.meters(originLat, originLng, item.getLat(), item.getLng());
+        String distance = DistanceUtils.label(meters, originIsUser, isEnglish);
+        holder.info.setText(item.getActivity() != null && !item.getActivity().isEmpty()
+                ? distance + " · " + item.getActivity() : distance);
+
+        if (item.getOpening_hours() != null && !item.getOpening_hours().isEmpty()) {
+            holder.hours.setVisibility(View.VISIBLE);
+            holder.hours.setText(item.getOpening_hours().get(0));
+        } else {
+            holder.hours.setVisibility(View.GONE);
+        }
 
         // Track expansion state
         String finalFullAddress = fullAddress;
@@ -199,13 +227,15 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView name, address;
+        TextView name, address, info, hours;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.storeImage);
             name = itemView.findViewById(R.id.storeName);
             address = itemView.findViewById(R.id.storeAddress);
+            info = itemView.findViewById(R.id.storeInfo);
+            hours = itemView.findViewById(R.id.storeHours);
         }
     }
 }
