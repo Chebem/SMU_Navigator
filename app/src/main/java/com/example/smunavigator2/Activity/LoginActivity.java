@@ -14,6 +14,7 @@ import com.example.smunavigator2.databinding.ActivityLoginBinding;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
         //  Login button
         binding.loginBtn.setOnClickListener(v -> doLogin());
 
+        //  Forgot password: send a reset link to the email typed above
+        binding.forgotPasswordLink.setOnClickListener(v -> sendPasswordReset());
+
         //  Sign-up navigation
         binding.signInLink.setOnClickListener(v -> {
             Intent intent = new Intent(this, RegisterActivity.class);
@@ -84,6 +88,24 @@ public class LoginActivity extends AppCompatActivity {
                 binding.loginBtn.setEnabled(true);
                 binding.progressBar.setVisibility(View.GONE);
             }
+        });
+    }
+
+    private void sendPasswordReset() {
+        String email = binding.emailInput.getText().toString().trim();
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.emailInput.setError(getString(R.string.reset_enter_email));
+            binding.emailInput.requestFocus();
+            return;
+        }
+
+        binding.forgotPasswordLink.setEnabled(false);
+        auth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+            binding.forgotPasswordLink.setEnabled(true);
+            // Same message whether or not the account exists, so emails can't be probed
+            int message = task.isSuccessful() || task.getException() instanceof FirebaseAuthInvalidUserException
+                    ? R.string.reset_email_sent : R.string.reset_email_failed;
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         });
     }
 
