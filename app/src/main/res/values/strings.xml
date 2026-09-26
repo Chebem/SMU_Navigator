@@ -78,6 +78,9 @@
     <string name="your_password">Your Password</string>
     <string name="enter_your_password">Enter Your Password</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_enter_email">Enter your email above first</string>
+    <string name="reset_email_sent">If an account exists for this email, a reset link has been sent</string>
+    <string name="reset_email_failed">Couldn\'t send the reset email. Please try again.</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="tap_go_explore">Tap.Go.Explore!</string>
     <string name="where_do_you_wanna_go">Where do you wanna go?</string>
