@@ -1,5 +1,7 @@
 package com.example.smunavigator2.Domain;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,13 @@ public class ProfileModel {
     private static String caption;
     private static long timestamp;
     private String userId;
+    // Stored as followers/{uid}: {...}; read by hand in ProfileRepository (Firebase can't map it to a list)
+    @Exclude
     public ArrayList<Follower> followers;
+
+    // Set by ProfileRepository: whether the signed-in user follows this profile
+    @Exclude
+    public boolean followedByMe;
     public Map<String, Post> posts;  // Correct type
 
     public ProfileModel() {
