@@ -6,7 +6,7 @@ title: SMU Navigator — Privacy Policy
 
 **Effective date:** 2026-09-26  ·  [한국어](#개인정보처리방침-한국어)
 
-SMU Navigator ("the app") is a student-made campus and city guide for Semyung University in Jecheon, Korea. It is an independent student project and is **not an official app of Semyung University**.
+SMU Navigator ("the app") is a campus and city guide for students of Semyung University in Jecheon, Korea. It is an independent project by a Semyung University graduate and is **not an official app of Semyung University**.
 
 This policy explains what information the app collects, why, who it is shared with, and how you can delete it.
 
@@ -54,7 +54,7 @@ The app shows notices published on Semyung University's public website, with Eng
 You can delete your account at any time:
 
 - **In the app:** Profile → Settings → **Delete account**. This deletes your account, profile, posts, profile photo, follows and favorites.
-- **By email:** send a request from the email address of your account to **[CONTACT EMAIL]** with the subject "Delete my SMU Navigator account". We delete your account and data within 30 days.
+- **By email:** send a request from the email address of your account to **me@chebemyvette.com** with the subject "Delete my SMU Navigator account". We delete your account and data within 30 days.
 
 Crash reports that are not linked to your account may remain for up to 90 days.
 
@@ -78,7 +78,7 @@ If we change this policy, we will update this page and the effective date above.
 
 ## 10. Contact
 
-Questions or requests: **[CONTACT EMAIL]**
+Questions or requests: **me@chebemyvette.com**
 
 ---
 
@@ -86,7 +86,7 @@ Questions or requests: **[CONTACT EMAIL]**
 
 **시행일:** 2026-09-26
 
-SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스·도시 안내 앱으로, 학생이 개발한 독립 프로젝트이며 **세명대학교의 공식 앱이 아닙니다**.
+SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스·도시 안내 앱으로, 세명대학교 졸업생이 개발한 독립 프로젝트이며 **세명대학교의 공식 앱이 아닙니다**.
 
 ## 1. 수집하는 정보
 
@@ -123,7 +123,7 @@ SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스
 ## 5. 계정 및 데이터 삭제
 
 - **앱에서:** 프로필 → 설정 → **계정 삭제**. 계정, 프로필, 게시물, 프로필 사진, 팔로우, 즐겨찾기가 삭제됩니다.
-- **이메일로:** 계정 이메일 주소로 **[CONTACT EMAIL]** 에 "SMU Navigator 계정 삭제" 제목으로 요청하시면 30일 이내에 삭제합니다.
+- **이메일로:** 계정 이메일 주소로 **me@chebemyvette.com** 에 "SMU Navigator 계정 삭제" 제목으로 요청하시면 30일 이내에 삭제합니다.
 
 계정과 연결되지 않은 오류 보고는 최대 90일간 남아 있을 수 있습니다.
 
@@ -147,4 +147,4 @@ SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스
 
 ## 10. 문의
 
-**[CONTACT EMAIL]**
+**me@chebemyvette.com**
