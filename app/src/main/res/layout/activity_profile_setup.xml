@@ -5,7 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="80dp"
+    android:clipToPadding="false"
     android:background="@drawable/main_bg_gradient2">
+
+    <!-- Back (only when editing an existing profile; first-time setup can't be skipped).
+         Translated out of the 80dp padding into the top-left corner. -->
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/back3"
+        android:contentDescription="@string/back"
+        android:translationX="-64dp"
+        android:translationY="-56dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Profile Image Selection -->
     <de.hdodenhof.circleimageview.CircleImageView
