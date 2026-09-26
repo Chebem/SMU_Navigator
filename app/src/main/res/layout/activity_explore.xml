@@ -68,13 +68,13 @@
             android:clipToPadding="false"
             android:paddingHorizontal="16dp">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/categoryChips"
+            <!-- Outlined MaterialButtons (same style as the map filters), added in ExploreActivity -->
+            <LinearLayout
+                android:id="@+id/categoryFilters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleLine="true"
-                app:singleSelection="true"
-                app:selectionRequired="true" />
+                android:orientation="horizontal"
+                android:paddingVertical="4dp" />
         </HorizontalScrollView>
 
         <!-- RecyclerView -->
