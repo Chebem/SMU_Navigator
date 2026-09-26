@@ -158,4 +158,14 @@
     <string name="marker_icon">Marker icon</string>
     <string name="_2_hrs_ago">2 hrs ago</string>
     <string name="bembem">BemBem</string>
+    <string name="like">Like</string>
+    <string name="comments">Comments</string>
+    <string name="write_a_comment">Write a comment…</string>
+    <string name="send">Send</string>
+    <string name="no_comments_yet">No comments yet. Be the first!</string>
+    <string name="action_failed">Something went wrong. Please try again.</string>
+    <plurals name="comments_count">
+        <item quantity="one">%d Comment</item>
+        <item quantity="other">%d Comments</item>
+    </plurals>
 </resources>
