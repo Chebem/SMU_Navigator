@@ -47,7 +47,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Viewho
         holder.itemView.setTag(comment.userId);
         FirebaseDatabase.getInstance().getReference("profiles").child(comment.userId).get()
                 .addOnSuccessListener(snapshot -> {
-                    if (!comment.userId.equals(holder.itemView.getTag())) return;
+                    if (!comment.userId.equals(holder.itemView.getTag()) || !holder.itemView.isAttachedToWindow()) return;
                     String name = snapshot.child("profileName").getValue(String.class);
                     String image = snapshot.child("profileImage").getValue(String.class);
                     holder.binding.commentAuthorName.setText(name != null ? name : "Unknown");
