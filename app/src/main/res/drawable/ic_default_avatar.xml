@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shown wherever a user has no profile photo (grey person silhouette) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <path
+        android:fillColor="#DFE5E7"
+        android:pathData="M48,0a48,48 0,1 1,0 96a48,48 0,1 1,0 -96z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,20a16,16 0,1 1,0 32a16,16 0,1 1,0 -32z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,58c-16,0 -29,8 -32,20a48,48 0,0 0,64 0c-3,-12 -16,-20 -32,-20z" />
+</vector>
