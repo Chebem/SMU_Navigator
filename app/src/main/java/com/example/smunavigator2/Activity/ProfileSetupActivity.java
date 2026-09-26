@@ -8,10 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.smunavigator2.databinding.ActivityProfileSetupBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +27,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ProfileSetupActivity extends AppCompatActivity {
+
+    /** Intent extra: true when editing an existing profile (shows Back, pre-fills the form). */
+    public static final String EXTRA_EDITING = "editing";
+    private boolean editing;
 
     private ActivityProfileSetupBinding binding;
     private Uri selectedImageUri;
@@ -46,6 +52,28 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         binding.profileImage.setOnClickListener(v -> openImagePicker());
         binding.saveProfileBtn.setOnClickListener(v -> saveUserProfile());
+
+        editing = getIntent().getBooleanExtra(EXTRA_EDITING, false);
+        if (editing) {
+            binding.backBtn.setVisibility(View.VISIBLE);
+            binding.backBtn.setOnClickListener(v -> finish());
+            loadCurrentProfile();
+        }
+    }
+
+    // Fill the form with the saved profile so editing one field doesn't mean retyping the rest
+    private void loadCurrentProfile() {
+        String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+        databaseRef.child(uid).get().addOnSuccessListener(snapshot -> {
+            if (isFinishing() || isDestroyed()) return;
+            binding.nameInput.setText(snapshot.child("profileName").getValue(String.class));
+            binding.departmentInput.setText(snapshot.child("department").getValue(String.class));
+            binding.bioInput.setText(snapshot.child("about").getValue(String.class));
+            String image = snapshot.child("profileImage").getValue(String.class);
+            if (image != null && !image.isEmpty() && selectedImageUri == null) {
+                Glide.with(this).load(image).into(binding.profileImage);
+            }
+        });
     }
 
     private void openImagePicker() {
@@ -106,7 +134,8 @@ public class ProfileSetupActivity extends AppCompatActivity {
         databaseRef.child(uid).updateChildren(profileMap).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Profile saved!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, ProfilePageActivity.class));
+                // Editing: go back to the profile that's already open (it updates live)
+                if (!editing) startActivity(new Intent(this, ProfilePageActivity.class));
                 finish();
             } else {
                 Toast.makeText(this, "Failed to save profile", Toast.LENGTH_SHORT).show();
