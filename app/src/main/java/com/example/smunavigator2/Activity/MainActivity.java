@@ -305,13 +305,14 @@ public class MainActivity extends BaseActivity {
                         binding.textView14.setText(greeting);
                     }
 
-                    // Update profile image
-                    if (imageUrl != null && !imageUrl.isEmpty()) {
-                        Glide.with(MainActivity.this)
-                                .load(imageUrl)
-                                .placeholder(R.drawable.profile)
-                                .into(binding.imageView);
-                    }
+                    // Update profile image (default avatar when none is set)
+                    if (isFinishing() || isDestroyed()) return;
+                    Glide.with(MainActivity.this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .fallback(R.drawable.ic_default_avatar)
+                            .into(binding.imageView);
                 } else {
                     Log.d("MainActivity", "Profile not found in database.");
                 }
