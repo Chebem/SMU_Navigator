@@ -21,6 +21,7 @@ import com.example.smunavigator2.Adapter.CommitteeAdapter;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Committee;
 import com.example.smunavigator2.Domain.Post;
+import com.example.smunavigator2.Utils.PostParser;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.databinding.ActivityMainBinding;
@@ -241,7 +242,7 @@ public class MainActivity extends BaseActivity {
 
                 for (DataSnapshot profileSnap : snapshot.getChildren()) {
                     for (DataSnapshot postSnap : profileSnap.child("posts").getChildren()) {
-                        Post post = postSnap.getValue(Post.class);
+                        Post post = PostParser.parse(postSnap);
                         if (post == null || "private".equals(post.getVisibility())) continue;
 
                         // Old posts only stored a single "imageUrl"
