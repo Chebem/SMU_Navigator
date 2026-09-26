@@ -45,6 +45,10 @@
             android:name=".Activity.RegisterActivity"
             android:exported="true" />
         <activity
+            android:name=".Activity.PeopleActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".Activity.ProfileSetupActivity"
             android:exported="true" />
         <activity
