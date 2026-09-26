@@ -13,6 +13,8 @@
     <string name="about">소개</string>
     <string name="hi_user">%1$s님, 안녕</string>
     <string name="follow">팔로우</string>
+    <string name="following_state">팔로잉 중</string>
+    <string name="follow_failed">팔로우를 변경하지 못했습니다. 다시 시도해 주세요.</string>
     <string name="followers">팔로워</string>
     <string name="likes">좋아요</string>
     <string name="followings">팔로잉</string>
