@@ -2,7 +2,9 @@ package com.example.smunavigator2.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,8 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smunavigator2.Adapter.NoticeAdapter;
 import com.example.smunavigator2.Domain.NoticeModel;
 import com.example.smunavigator2.R;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,7 +44,7 @@ public class ExploreActivity extends AppCompatActivity {
             {"jobs", "Jobs", "채용공고"},
     };
     private String selectedCategory = "all";
-    private ChipGroup categoryChips;
+    private LinearLayout categoryFilters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +65,10 @@ public class ExploreActivity extends AppCompatActivity {
             langToggleBtn.setText(isEnglish ? "EN" : "KR");
             adapter = new NoticeAdapter(this, noticeList, isEnglish);
             noticeRecyclerView.setAdapter(adapter);
-            updateChipLabels();
+            updateFilterLabels();
         });
 
-        setupCategoryChips();
+        setupCategoryFilters();
         fetchNoticesFromFirebase(); // 🔥 live data from Firebase
     }
 
@@ -103,33 +104,45 @@ public class ExploreActivity extends AppCompatActivity {
         });
     }
 
-    private void setupCategoryChips() {
-        categoryChips = findViewById(R.id.categoryChips);
+    // Same look as the map filters (activity_map.xml): outlined, rounded, white; selected one filled
+    private void setupCategoryFilters() {
+        categoryFilters = findViewById(R.id.categoryFilters);
+        float dp = getResources().getDisplayMetrics().density;
         for (String[] category : CATEGORIES) {
-            Chip chip = new Chip(this);
-            chip.setTag(category[0]);
-            chip.setCheckable(true);
-            chip.setCheckedIconVisible(false);
-            chip.setChipBackgroundColorResource(R.color.notice_chip_bg);
-            chip.setTextColor(getColorStateList(R.color.notice_chip_text));
-            chip.setChipStrokeColorResource(R.color.blue_dark);
-            chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
-            categoryChips.addView(chip);
-            if (category[0].equals(selectedCategory)) chip.setChecked(true);
-        }
-        updateChipLabels();
+            MaterialButton button = new MaterialButton(this, null,
+                    com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            button.setTag(category[0]);
+            button.setCheckable(true);
+            button.setAllCaps(false);
+            button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            button.setCornerRadius((int) (24 * dp));
+            button.setElevation(4 * dp);
+            button.setStrokeColorResource(R.color.blue_dark);
+            button.setBackgroundTintList(getColorStateList(R.color.notice_filter_bg));
+            button.setTextColor(getColorStateList(R.color.notice_filter_text));
+            button.setChecked(category[0].equals(selectedCategory));
+            button.setOnClickListener(v -> selectCategory((String) v.getTag()));
 
-        categoryChips.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
-            Chip checked = group.findViewById(checkedIds.get(0));
-            selectedCategory = (String) checked.getTag();
-            applyCategoryFilter();
-        });
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMarginEnd((int) (8 * dp));
+            categoryFilters.addView(button, params);
+        }
+        updateFilterLabels();
     }
 
-    private void updateChipLabels() {
-        for (int i = 0; i < categoryChips.getChildCount(); i++) {
-            ((Chip) categoryChips.getChildAt(i)).setText(isEnglish ? CATEGORIES[i][1] : CATEGORIES[i][2]);
+    private void selectCategory(String category) {
+        selectedCategory = category;
+        for (int i = 0; i < categoryFilters.getChildCount(); i++) {
+            MaterialButton button = (MaterialButton) categoryFilters.getChildAt(i);
+            button.setChecked(category.equals(button.getTag())); // single selection, always one checked
+        }
+        applyCategoryFilter();
+    }
+
+    private void updateFilterLabels() {
+        for (int i = 0; i < categoryFilters.getChildCount(); i++) {
+            ((MaterialButton) categoryFilters.getChildAt(i)).setText(isEnglish ? CATEGORIES[i][1] : CATEGORIES[i][2]);
         }
     }
 
