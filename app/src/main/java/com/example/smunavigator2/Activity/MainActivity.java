@@ -237,23 +237,24 @@ public class MainActivity extends BaseActivity {
                 feedList.clear();
 
                 for (DataSnapshot profileSnap : snapshot.getChildren()) {
-                    if (profileSnap.hasChild("posts")) { //
-                        DataSnapshot postsSnap = profileSnap.child("posts");
+                    for (DataSnapshot postSnap : profileSnap.child("posts").getChildren()) {
+                        Post post = postSnap.getValue(Post.class);
+                        if (post == null || "private".equals(post.getVisibility())) continue;
 
-                        for (DataSnapshot postSnap : postsSnap.getChildren()) {
-                            String imageUrl = postSnap.child("imageUrl").getValue(String.class);
-
-                            if (imageUrl != null && !imageUrl.isEmpty()) {
-                                feedList.add(new Post(
-                                        List.of(imageUrl),
-                                        "", // caption (optional)
-                                        profileSnap.getKey(), // userId
-                                        System.currentTimeMillis()
-                                ));
-                            }
+                        // Old posts only stored a single "imageUrl"
+                        String legacyUrl = postSnap.child("imageUrl").getValue(String.class);
+                        if ((post.getImageUrls() == null || post.getImageUrls().isEmpty())
+                                && post.getMainImage() == null && legacyUrl != null) {
+                            post.setImageUrls(List.of(legacyUrl));
                         }
+                        if ((post.getImageUrls() == null || post.getImageUrls().isEmpty())
+                                && post.getMainImage() == null) continue;
+
+                        if (post.getUserId() == null) post.setUserId(profileSnap.getKey());
+                        feedList.add(post);
                     }
                 }
+                feedList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
 
                 binding.socialFeedRecycler.setLayoutManager(
                         new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false)
