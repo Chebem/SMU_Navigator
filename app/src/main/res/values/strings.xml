@@ -13,6 +13,8 @@
     <string name="hi_user">Hi, %1$s</string>
     <string name="about">about</string>
     <string name="follow">Follow</string>
+    <string name="following_state">Following</string>
+    <string name="follow_failed">Couldn\'t update follow. Please try again.</string>
     <string name="followers">Followers</string>
     <string name="likes">Likes</string>
     <string name="followings">Followings</string>
