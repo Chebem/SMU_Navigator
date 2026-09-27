@@ -1,5 +1,12 @@
 package com.example.smunavigator2.Activity;
 
+import com.google.firebase.database.Query;
+import com.example.smunavigator2.Utils.PushUtils;
+import androidx.core.content.ContextCompat;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
+import android.content.SharedPreferences;
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -45,6 +52,12 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
 
+    private Query unreadQuery;
+    private ValueEventListener unreadListener;
+    private final ActivityResultLauncher<String> notificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> { });
+
+
     private ActivityMainBinding binding;
 
     @Override
@@ -76,27 +89,28 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
         });
 
+        // Red dot on the bell while there are unread notifications (live)
         View badgeView = findViewById(R.id.badgeView);
-
-        // Check Firebase for unread notifications
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("notifications").child(uid);
-
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        unreadQuery = FirebaseDatabase.getInstance().getReference("notifications").child(uid)
+                .orderByChild("read").equalTo(false).limitToFirst(1);
+        unreadListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    badgeView.setVisibility(View.VISIBLE); // show red dot
-                } else {
-                    badgeView.setVisibility(View.GONE); // hide red dot
-                }
+                badgeView.setVisibility(snapshot.exists() ? View.VISIBLE : View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 badgeView.setVisibility(View.GONE);
             }
-        });
+        };
+        unreadQuery.addValueEventListener(unreadListener);
+
+        // Pushes: notices topic + this device's token for follow alerts
+        PushUtils.createChannel(this);
+        PushUtils.registerDevice(uid);
+        askNotificationPermission();
 
 
         // Navigate to Campus
@@ -224,6 +238,23 @@ public class MainActivity extends BaseActivity {
         });
 
 
+    }
+
+    // Android 13+ needs permission to show notifications; ask once, not every launch
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) return;
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("askedNotificationPermission", false)) return;
+        prefs.edit().putBoolean("askedNotificationPermission", true).apply();
+        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unreadQuery != null) unreadQuery.removeEventListener(unreadListener);
     }
 
     private void initSocialFeed() {
