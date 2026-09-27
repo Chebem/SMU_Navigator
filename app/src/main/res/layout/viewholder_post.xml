@@ -63,12 +63,23 @@
 
             <TextView
                 android:id="@+id/usernameTxt"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 tools:text="@string/bembem"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
+
+            <!-- Report / block (others' posts) or delete (your own) -->
+            <ImageView
+                android:id="@+id/postMoreBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/more_options"
+                android:padding="6dp"
+                android:src="@drawable/ic_more_vert" />
         </LinearLayout>
 
 
