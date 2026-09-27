@@ -779,58 +779,17 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    // Straight-line distance right away (works even with no saved location),
-    // then Google's walking distance + time when the student's own location is known
+    // Distance from the student (or campus) plus an estimated walk. Google's Distance Matrix
+    // returns ZERO_RESULTS for walking and driving in Korea, which used to show "Not available".
     private void showDistanceTo(double lat, double lng) {
         boolean isEnglish = DistanceUtils.isEnglishLocale();
         placeDistance.setText(isEnglish ? "Locating…" : "위치 확인 중…");
         DistanceUtils.resolveOrigin(this, (originLat, originLng, fromUser) -> {
             float meters = DistanceUtils.meters(originLat, originLng, lat, lng);
-            placeDistance.setText(DistanceUtils.label(meters, fromUser, isEnglish));
-            if (fromUser) {
-                fetchDistanceAndDuration(new LatLng(originLat, originLng), new LatLng(lat, lng), placeDistance);
-            }
+            placeDistance.setText(DistanceUtils.walkLabel(meters, fromUser, isEnglish));
         });
     }
 
-    private void fetchDistanceAndDuration(LatLng origin, LatLng destination, TextView targetTextView) {
-        String apiKey = BuildConfig.MAPS_API_KEY;
-        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?" +
-                "origins=" + origin.latitude + "," + origin.longitude +
-                "&destinations=" + destination.latitude + "," + destination.longitude +
-                "&mode=walking&language=" + (DistanceUtils.isEnglishLocale() ? "en" : "ko") + "&key=" + apiKey;
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        JSONArray rows = response.getJSONArray("rows");
-                        if (rows.length() > 0) {
-                            JSONArray elements = rows.getJSONObject(0).getJSONArray("elements");
-                            if (elements.length() > 0) {
-                                JSONObject element = elements.getJSONObject(0);
-
-                                String status = element.optString("status", "UNKNOWN");
-
-                                if ("OK".equals(status)) {
-                                    String distance = element.getJSONObject("distance").getString("text");
-                                    String duration = element.getJSONObject("duration").getString("text");
-                                    targetTextView.setText(distance + " • " + duration);
-                                } else {
-                                    targetTextView.setText("Not available");
-                                    Log.w("DistanceMatrix", "Route status: " + status);
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        Log.e("DistanceMatrix", "Parse error", e);
-                        targetTextView.setText(""); // fallback
-                    }
-                },
-                error -> Log.e("DistanceMatrix", "Request failed", error));
-
-        queue.add(request);
-    }
     private void loadAllMarkers() {
         googleMap.setOnMarkerClickListener(marker -> {
             Object tag = marker.getTag();
