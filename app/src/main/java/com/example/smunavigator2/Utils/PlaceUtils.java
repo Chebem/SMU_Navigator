@@ -21,26 +21,39 @@ public final class PlaceUtils {
         switch (normalize(category)) {
             case "restaurant":
             case "restaurants":
-                return R.drawable.food_placehlolder;
+                return R.drawable.ph_restaurant;
             case "coffee":
-                return R.drawable.coffee_placehlolder;
+                return R.drawable.ph_coffee;
             case "mart":
             case "marts":
-                return R.drawable.shop_placeholder;
+                return R.drawable.ph_mart;
             case "convenience":
-                return R.drawable.convenience_placehlolder;
+                return R.drawable.ph_convenience;
             case "accommodation":
             case "dorms":
             case "dormitory":
             case "dormitories":
-                return R.drawable.accommodation_placehlolder;
+                return R.drawable.ph_dorm;
             case "bars":
-                return R.drawable.bar_placehlolder;
+                return R.drawable.ph_bar;
             case "facilities":
-                return R.drawable.facilties;
+                return R.drawable.ph_facilities;
             default:
-                return R.drawable.placeholder_image;
+                return R.drawable.ph_place;
         }
+    }
+
+    /** Small round-thumbnail version of {@link #placeholderImage}. */
+    public static int placeholderThumb(String category) {
+        int cover = placeholderImage(category);
+        if (cover == R.drawable.ph_restaurant) return R.drawable.ph_restaurant_thumb;
+        if (cover == R.drawable.ph_coffee) return R.drawable.ph_coffee_thumb;
+        if (cover == R.drawable.ph_mart) return R.drawable.ph_mart_thumb;
+        if (cover == R.drawable.ph_convenience) return R.drawable.ph_convenience_thumb;
+        if (cover == R.drawable.ph_dorm) return R.drawable.ph_dorm_thumb;
+        if (cover == R.drawable.ph_bar) return R.drawable.ph_bar_thumb;
+        if (cover == R.drawable.ph_facilities) return R.drawable.ph_facilities_thumb;
+        return R.drawable.ph_place_thumb;
     }
 
     /** Marker layout key GoogleMapActivity uses for this category. */
