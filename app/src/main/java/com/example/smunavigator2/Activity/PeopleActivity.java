@@ -20,6 +20,7 @@ import com.example.smunavigator2.Adapter.PeopleAdapter;
 import com.example.smunavigator2.Adapter.PeopleAdapter.Person;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.FollowUtils;
+import com.example.smunavigator2.Utils.ModerationUtils;
 import com.example.smunavigator2.databinding.ActivityPeopleBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -102,6 +103,7 @@ public class PeopleActivity extends AppCompatActivity {
             });
         }
 
+        ModerationUtils.watchBlocked();
         loadPeople(userId);
         watchMyFollowing();
     }
@@ -127,6 +129,7 @@ public class PeopleActivity extends AppCompatActivity {
                 String uid = profile.getKey();
                 if (uid == null || (keep != null && !keep.contains(uid))) continue;
                 if (MODE_SEARCH.equals(mode) && uid.equals(myUid)) continue; // don't find yourself
+                if (ModerationUtils.isBlocked(uid)) continue; // or people you blocked
                 String name = profile.child("profileName").getValue(String.class);
                 if (TextUtils.isEmpty(name)) continue; // accounts that never finished setup
                 allPeople.add(new Person(uid, name,
