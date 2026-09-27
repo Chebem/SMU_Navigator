@@ -178,4 +178,15 @@
     <string name="notif_follow_title">새 팔로워</string>
     <string name="walk">도보</string>
     <string name="walk_minutes">약 %1$d분</string>
+    <string name="delete_account">계정 삭제</string>
+    <string name="delete_account_title">계정을 삭제하시겠습니까?</string>
+    <string name="delete_account_message">계정, 프로필, 게시물과 사진, 팔로우, 즐겨찾기, 좋아요, 댓글, 알림이 영구적으로 삭제됩니다. 되돌릴 수 없습니다.</string>
+    <string name="delete">삭제</string>
+    <string name="cancel">취소</string>
+    <string name="confirm_password_title">본인 확인</string>
+    <string name="confirm_password_message">계정을 삭제하려면 비밀번호를 입력하세요.</string>
+    <string name="password">비밀번호</string>
+    <string name="wrong_password">비밀번호가 올바르지 않습니다. 다시 시도해 주세요.</string>
+    <string name="account_deleted">계정이 삭제되었습니다.</string>
+    <string name="deleting_account">계정을 삭제하는 중…</string>
 </resources>
