@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Place with no photo: place category cover (gradient + white icon). Sized so it scales well
+     as the detail page cover, a Popular card and a round Nearest thumbnail. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="400dp" android:height="360dp">
+        <shape android:shape="rectangle">
+            <gradient android:angle="135" android:startColor="#4F6D8A" android:endColor="#9DB4CC" />
+        </shape>
+    </item>
+    <item android:width="96dp" android:height="96dp" android:gravity="center"
+        android:drawable="@drawable/ic_cat_place" />
+</layer-list>
