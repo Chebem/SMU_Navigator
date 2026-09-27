@@ -190,4 +190,5 @@
     <string name="account_deleted">계정이 삭제되었습니다.</string>
     <string name="deleting_account">계정을 삭제하는 중…</string>
     <string name="added_to_favorites">즐겨찾기에 추가되었습니다</string>
+    <string name="no_reviews_yet">아직 리뷰가 없습니다</string>
 </resources>
