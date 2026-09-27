@@ -53,7 +53,7 @@ The app shows notices published on Semyung University's public website, with Eng
 
 You can delete your account at any time:
 
-- **In the app:** Profile → Settings → **Delete account**. This deletes your account, profile, posts, profile photo, follows and favorites.
+- **In the app:** Profile → Settings → **Delete account**. This deletes your account, profile, posts and their photos, profile photo, follows, favorites, likes, comments and notifications.
 - **By email:** send a request from the email address of your account to **me@chebemyvette.com** with the subject "Delete my SMU Navigator account". We delete your account and data within 30 days.
 
 Crash reports that are not linked to your account may remain for up to 90 days.
@@ -122,7 +122,7 @@ SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스
 
 ## 5. 계정 및 데이터 삭제
 
-- **앱에서:** 프로필 → 설정 → **계정 삭제**. 계정, 프로필, 게시물, 프로필 사진, 팔로우, 즐겨찾기가 삭제됩니다.
+- **앱에서:** 프로필 → 설정 → **계정 삭제**. 계정, 프로필, 게시물과 사진, 프로필 사진, 팔로우, 즐겨찾기, 좋아요, 댓글, 알림이 삭제됩니다.
 - **이메일로:** 계정 이메일 주소로 **me@chebemyvette.com** 에 "SMU Navigator 계정 삭제" 제목으로 요청하시면 30일 이내에 삭제합니다.
 
 계정과 연결되지 않은 오류 보고는 최대 90일간 남아 있을 수 있습니다.
