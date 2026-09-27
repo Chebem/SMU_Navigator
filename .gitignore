@@ -55,3 +55,9 @@ scraper/*.json
 *service-account*.json
 *serviceAccountKey*.json
 *-firebase-adminsdk-*.json
+
+# =====================
+# Cloud Functions
+# =====================
+functions/node_modules/
+firebase-debug.log
