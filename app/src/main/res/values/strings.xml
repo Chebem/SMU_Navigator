@@ -194,4 +194,5 @@
     <string name="account_deleted">Your account has been deleted.</string>
     <string name="deleting_account">Deleting your account…</string>
     <string name="added_to_favorites">Added to favorites</string>
+    <string name="no_reviews_yet">No reviews yet</string>
 </resources>
