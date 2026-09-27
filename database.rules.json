@@ -48,9 +48,21 @@
       }
     },
 
+    // Written by the Cloud Function (admin, bypasses rules); you may read yours and mark them read
     "notifications": {
       "$uid": {
-        ".read": "auth != null && auth.uid === $uid"
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    // This device's push token, so the Cloud Function can reach you; only you can add or remove yours
+    "fcmTokens": {
+      "$uid": {
+        "$token": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.val() === true"
+        }
       }
     }
   }
