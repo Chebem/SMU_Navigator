@@ -7,10 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -22,6 +24,7 @@ import com.example.smunavigator2.Activity.ProfilePageActivity;
 import com.example.smunavigator2.Dialog.CommentsBottomSheet;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.ModerationUtils;
 import com.example.smunavigator2.Utils.TimeUtils;
 import com.example.smunavigator2.databinding.ViewholderPostBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -146,6 +149,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
         }
 
         bindLikes(holder, post);
+        bindMoreMenu(holder, post);
 
         // Comments: count now, full list + reply box in a sheet
         holder.binding.commentsText.setText(holder.itemView.getResources()
@@ -163,6 +167,59 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder> 
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) clickListener.onPostClick(post);
         });
+    }
+
+    // ⋮ on a post: delete your own, or report / block someone else's
+    private void bindMoreMenu(@NonNull Viewholder holder, Post post) {
+        FirebaseUser me = FirebaseAuth.getInstance().getCurrentUser();
+        if (me == null || post.getUserId() == null || post.getPostId() == null) {
+            holder.binding.postMoreBtn.setVisibility(View.GONE);
+            return;
+        }
+        holder.binding.postMoreBtn.setVisibility(View.VISIBLE);
+        boolean mine = post.getUserId().equals(me.getUid());
+        String path = "profiles/" + post.getUserId() + "/posts/" + post.getPostId();
+        holder.binding.postMoreBtn.setOnClickListener(v -> {
+            PopupMenu menu = new PopupMenu(v.getContext(), v);
+            if (mine) {
+                menu.getMenu().add(0, 1, 0, R.string.delete_post);
+            } else {
+                menu.getMenu().add(0, 2, 0, R.string.report);
+                menu.getMenu().add(0, 3, 1, R.string.block);
+            }
+            menu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == 1) {
+                    new AlertDialog.Builder(v.getContext())
+                            .setMessage(R.string.delete_post_confirm)
+                            .setNegativeButton(R.string.cancel, null)
+                            .setPositiveButton(R.string.delete, (d, w) ->
+                                    FirebaseDatabase.getInstance().getReference(path).removeValue()
+                                            .addOnSuccessListener(r -> removePost(post)))
+                            .show();
+                } else if (id == 2) {
+                    ModerationUtils.report(v.getContext(), ModerationUtils.TYPE_POST, path, post.getUserId());
+                } else if (id == 3) {
+                    ModerationUtils.confirmBlock(v.getContext(), post.getUserId(),
+                            holder.binding.usernameTxt.getText().toString(), () -> removePostsBy(post.getUserId()));
+                }
+                return true;
+            });
+            menu.show();
+        });
+    }
+
+    private void removePost(Post post) {
+        int i = postList.indexOf(post);
+        if (i >= 0) {
+            postList.remove(i);
+            notifyItemRemoved(i);
+        }
+    }
+
+    private void removePostsBy(String uid) {
+        postList.removeIf(p -> uid.equals(p.getUserId()));
+        notifyDataSetChanged();
     }
 
     // Like / unlike: likes/{myUid} = true under the post; count and heart update right away
