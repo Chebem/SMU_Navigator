@@ -19,7 +19,7 @@ public final class DistanceUtils {
     public static final double CAMPUS_LAT = 37.1732056;
     public static final double CAMPUS_LNG = 128.194364;
 
-    // Further than this from campus (e.g. at home, on a bus) -> measure from campus instead
+    // Further than this from campus (e.g. at home, on a bus) measure from campus instead
     private static final float FAR_FROM_CAMPUS_METERS = 20_000f;
 
     public interface OriginCallback {
@@ -42,7 +42,7 @@ public final class DistanceUtils {
         return String.format(Locale.getDefault(), "%.1f km", meters / 1000f);
     }
 
-    /** "850 m from you" / "1.2 km from campus" (Korean: "내 위치에서 850 m" / "캠퍼스에서 1.2 km") */
+    /** "850 m from you" / "1.2 km from campus" */
     public static String label(float meters, boolean fromUser, boolean isEnglish) {
         String distance = format(meters);
         if (isEnglish) return distance + (fromUser ? " from you" : " from campus");
@@ -55,7 +55,7 @@ public final class DistanceUtils {
 
     /**
      * Student's current location when available and near Jecheon, otherwise the campus.
-     * Uses the last known location, and asks for a fresh one when there is none (new phone, emulator).
+     * Uses the last known location, and asks for a fresh one when there is none.
      */
     public static void resolveOrigin(Activity activity, OriginCallback callback) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
