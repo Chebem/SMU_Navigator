@@ -6,27 +6,49 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.smunavigator2.Adapter.ReviewsAdapter;
+import com.example.smunavigator2.Dialog.ReviewSheet;
 import com.example.smunavigator2.Domain.Committee;
 import com.example.smunavigator2.Domain.ConvenienceFacility;
 import com.example.smunavigator2.Domain.FacilityModel;
 import com.example.smunavigator2.Domain.ItemDomain;
+import com.example.smunavigator2.Domain.Review;
 import com.example.smunavigator2.Domain.StoreModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.FavoriteUtils;
+import com.example.smunavigator2.Utils.ModerationUtils;
 import com.example.smunavigator2.Utils.PlaceUtils;
 import com.example.smunavigator2.databinding.ActivityDetailBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
     private ActivityDetailBinding binding;
     private Object object;
+    private String placeKey;
+
+    private ReviewsAdapter reviewsAdapter;
+    private final List<Review> allReviews = new ArrayList<>();
+    private Review myReview;
+    private DatabaseReference reviewsRef;
+    private ValueEventListener reviewsListener;
+    private final Runnable onBlockedChanged = this::showReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         setVariable();
         setupExploreButton();
         setupFavoriteButton();
+        setupReviews();
     }
 
     // ❤️ Same favorites as the map, so saved places show on the Favorites screen
@@ -69,6 +92,7 @@ public class DetailActivity extends AppCompatActivity {
             StoreModel st = (StoreModel) object;
             lat = st.getLat(); lng = st.getLng(); category = st.getCategory(); image = st.getImagePath();
         }
+        placeKey = name.isEmpty() ? null : FavoriteUtils.key(name, lat, lng); // also keys this place's reviews
         if (user == null || name.isEmpty() || (lat == 0 && lng == 0)) {
             binding.imageView5.setVisibility(View.GONE); // nothing to save it by
             return;
@@ -104,6 +128,83 @@ public class DetailActivity extends AppCompatActivity {
                         Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
                     });
         });
+    }
+
+    // ⭐ Reviews: one per person, live average and list; blocked people's reviews are hidden
+    private void setupReviews() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || placeKey == null) {
+            binding.writeReviewBtn.setVisibility(View.GONE);
+            return;
+        }
+        ModerationUtils.watchBlocked();
+        ModerationUtils.addBlockListener(onBlockedChanged);
+
+        reviewsAdapter = new ReviewsAdapter(user.getUid(), placeKey, review -> ReviewSheet.show(this, placeKey, review));
+        binding.reviewsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        binding.reviewsRecycler.setAdapter(reviewsAdapter);
+        binding.writeReviewBtn.setOnClickListener(v -> ReviewSheet.show(this, placeKey, myReview));
+
+        reviewsRef = FirebaseDatabase.getInstance().getReference("reviews").child(placeKey);
+        reviewsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allReviews.clear();
+                myReview = null;
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Review r;
+                    try {
+                        r = child.getValue(Review.class);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if (r == null || r.userId == null || r.rating < 1) continue;
+                    allReviews.add(r);
+                    if (r.userId.equals(user.getUid())) myReview = r;
+                }
+                allReviews.sort((a, b) -> Long.compare(b.timestamp, a.timestamp)); // newest first
+                binding.writeReviewBtn.setText(myReview != null ? R.string.edit_review : R.string.write_review);
+                showReviews();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        };
+        reviewsRef.addValueEventListener(reviewsListener);
+    }
+
+    private void showReviews() {
+        if (reviewsAdapter == null) return;
+        List<Review> visible = new ArrayList<>();
+        int total = 0;
+        for (Review r : allReviews) {
+            total += r.rating; // the average counts everyone, even people you blocked
+            if (!ModerationUtils.isBlocked(r.userId)) visible.add(r);
+        }
+        reviewsAdapter.setReviews(visible);
+
+        int count = allReviews.size();
+        if (count == 0) {
+            binding.ratingBar.setVisibility(View.GONE);
+            binding.ratingTxt.setText(R.string.no_reviews_yet);
+            binding.reviewSummaryTxt.setText(R.string.be_first_review);
+        } else {
+            float average = (float) total / count;
+            binding.ratingBar.setVisibility(View.VISIBLE);
+            binding.ratingBar.setRating(average);
+            String summary = getResources().getQuantityString(R.plurals.review_summary, count,
+                    String.format(Locale.getDefault(), "%.1f", average), count);
+            binding.ratingTxt.setText(summary);
+            binding.reviewSummaryTxt.setText(summary);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (reviewsRef != null) reviewsRef.removeEventListener(reviewsListener);
+        ModerationUtils.removeBlockListener(onBlockedChanged);
     }
 
     private void showFavorite(boolean saved) {
