@@ -220,7 +220,7 @@ public class MainActivity extends BaseActivity {
                     CommitteeAdapter adapter = new CommitteeAdapter(list);
                     binding.recommendedView.setAdapter(adapter);
 
-                    if (!list.isEmpty())
+                    if (list.isEmpty())
                     {
                         Toast.makeText(MainActivity.this, "No committees available.", Toast.LENGTH_SHORT).show();
 
