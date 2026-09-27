@@ -2,16 +2,11 @@ package com.example.smunavigator2.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,41 +15,26 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.smunavigator2.Adapter.FollowersAdapter;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
-import com.example.smunavigator2.Utils.FollowUtils;
-import com.example.smunavigator2.Utils.ModerationUtils;
-import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.ViewModel.ProfileViewModel;
 import com.example.smunavigator2.databinding.ActivityProfilePageBinding;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
-import com.google.firebase.auth.FirebaseUser;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProfilePageActivity extends AppCompatActivity implements PostsAdapter.OnPostClickListener {
 
-    // Blocking / unblocking from here: refresh the button (posts refresh on the next profile update)
-    private final Runnable onBlockedChanged = this::updateFollowButtonText;
-
-    /** Intent extra: whose profile to show. Missing = the signed-in user. */
-    public static final String EXTRA_USER_ID = "userId";
-
     private ActivityProfilePageBinding binding;
     private PostsAdapter postsAdapter;
-
-    private String myUid;
-    private String viewedUid;
-    private boolean isOwnProfile;
-    private boolean followedByMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,76 +58,71 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         postsAdapter = new PostsAdapter(new ArrayList<>(), this);
         binding.postList.setAdapter(postsAdapter);
 
-        // Tap a count to see who follows this profile, or who it follows
-        binding.followersColumn.setOnClickListener(v -> startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_FOLLOWERS, viewedUid)));
-        binding.followingColumn.setOnClickListener(v -> startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_FOLLOWING, viewedUid)));
-
-        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String requestedUid = getIntent().getStringExtra(EXTRA_USER_ID);
-        isOwnProfile = requestedUid == null || requestedUid.equals(myUid);
-        viewedUid = isOwnProfile ? myUid : requestedUid;
-        setupFollowButton();
+        binding.followersList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         ProfileViewModel viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        viewModel.getProfileModelLiveData(viewedUid).observe(this, profileModel -> {
-            // First data in: fade the loading screen out
-            if (binding.loadingOverlay.getVisibility() == View.VISIBLE) {
-                binding.loadingOverlay.animate().alpha(0f).setDuration(200)
-                        .withEndAction(() -> binding.loadingOverlay.setVisibility(View.GONE));
-            }
+        viewModel.getProfileModelLiveData().observe(this, profileModel -> {
             if (profileModel == null) return;
-            followedByMe = profileModel.followedByMe;
-            updateFollowButtonText();
 
             Log.d("ProfileDebug", "Data loaded: " + profileModel);
 
-            binding.nameText.setText(profileModel.profileName != null ? profileModel.profileName : "");
-            binding.departmentText.setText(profileModel.department != null ? profileModel.department : "");
-            binding.aboutText.setText(profileModel.about != null ? profileModel.about : "");
+            binding.nameText.setText(
+                    profileModel.profileName != null && !profileModel.profileName.isEmpty()
+                            ? profileModel.profileName : "Michael Test"
+            );
+
+            binding.departmentText.setText(
+                    profileModel.department != null && !profileModel.department.isEmpty()
+                            ? profileModel.department : "Department of Computer Science"
+            );
+
+            binding.aboutText.setText(
+                    profileModel.about != null && !profileModel.about.isEmpty()
+                            ? profileModel.about : "This is test about."
+            );
 
             binding.followersTxt.setText(String.valueOf(profileModel.followersNum));
             binding.followingTxt.setText(String.valueOf(profileModel.followingNum));
+            binding.likesTxt.setText(String.valueOf(profileModel.likes));
 
             Glide.with(this)
                     .load(profileModel.profileImage)
-                    .placeholder(R.drawable.ic_default_avatar)
-                    .error(R.drawable.ic_default_avatar)
-                    .fallback(R.drawable.ic_default_avatar) // no photo set
                     .into(binding.profileImg);
 
-            List<Post> postList = profileModel.posts != null
-                    ? new ArrayList<>(profileModel.posts.values()) : new ArrayList<>();
-            postList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
-            binding.postsCountTxt.setText(String.valueOf(postList.size()));
+            binding.followersList.setAdapter(new FollowersAdapter(
+                    profileModel.followers != null ? profileModel.followers : new ArrayList<>()
+            ));
 
-            if (!isOwnProfile && ModerationUtils.isBlocked(viewedUid)) postList.clear(); // you blocked them
+            List<Post> postList = new ArrayList<>();
+            if (profileModel.posts != null) {
+                for (Map.Entry<String, ProfileModel.Post> entry : profileModel.posts.entrySet()) {
+                    ProfileModel.Post oldPost = entry.getValue();
+                    postList.add(new Post(
+                            oldPost.getImageUrls(),
+                            oldPost.getCaption(),
+                            oldPost.getUserId(),
+                            oldPost.getTimestamp()
+                    ));
+                }
+            }
+
             postsAdapter.updatePosts(postList);
         });
 
         binding.settingsIcon.setOnClickListener(v -> {
-            if (!isOwnProfile) {
-                showOthersMenu(v);
-                return;
-            }
             PopupMenu popup = new PopupMenu(this, v);
             popup.getMenuInflater().inflate(R.menu.menu_profile_dropdown, popup.getMenu());
 
             popup.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.menu_edit_profile) {
-                    startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true));
+                    startActivity(new Intent(this, ProfileSetupActivity.class));
                     return true;
                 } else if (id == R.id.menu_logout) {
-                    // Remove this device's push token first (needs to still be signed in), then sign out
-                    PushUtils.unregisterDevice(myUid).addOnCompleteListener(t -> {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    });
-                    return true;
-                } else if (id == R.id.menu_delete_account) {
-                    confirmDeleteAccount();
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                     return true;
                 }
                 return false;
@@ -157,130 +132,6 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         });
 
         setupBottomNav(R.id.profile);
-    }
-
-    // Own profile: "Edit profile". Someone else's: Follow / Following, and no settings menu.
-    private void setupFollowButton() {
-        if (isOwnProfile) {
-            binding.followBtn.setText(R.string.edit_profile);
-            binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true)));
-        } else {
-            // Someone else's profile: ⋮ with report / block instead of your settings
-            binding.settingsIcon.setImageResource(R.drawable.ic_more_vert);
-            binding.settingsIcon.setContentDescription(getString(R.string.more_options));
-            binding.backBtn.setVisibility(View.VISIBLE);
-            binding.backBtn.setOnClickListener(v -> finish());
-            binding.followBtn.setOnClickListener(v -> {
-                if (ModerationUtils.isBlocked(viewedUid)) ModerationUtils.unblock(this, viewedUid);
-                else toggleFollow();
-            });
-            ModerationUtils.watchBlocked();
-            ModerationUtils.addBlockListener(onBlockedChanged);
-            updateFollowButtonText();
-        }
-    }
-
-    private void updateFollowButtonText() {
-        if (isOwnProfile) return;
-        if (ModerationUtils.isBlocked(viewedUid)) binding.followBtn.setText(R.string.unblock);
-        else binding.followBtn.setText(followedByMe ? R.string.following_state : R.string.follow);
-    }
-
-    private void showOthersMenu(View anchor) {
-        PopupMenu menu = new PopupMenu(this, anchor);
-        boolean blocked = ModerationUtils.isBlocked(viewedUid);
-        menu.getMenu().add(0, 1, 0, R.string.report_user);
-        menu.getMenu().add(0, 2, 1, blocked ? R.string.unblock : R.string.block);
-        menu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == 1) {
-                ModerationUtils.report(this, ModerationUtils.TYPE_USER, "profiles/" + viewedUid, viewedUid);
-            } else if (blocked) {
-                ModerationUtils.unblock(this, viewedUid);
-            } else {
-                ModerationUtils.confirmBlock(this, viewedUid, binding.nameText.getText().toString(), null);
-            }
-            return true;
-        });
-        menu.show();
-    }
-
-    private void toggleFollow() {
-        binding.followBtn.setEnabled(false);
-        FollowUtils.setFollowing(myUid, viewedUid, !followedByMe).addOnCompleteListener(task -> {
-            binding.followBtn.setEnabled(true);
-            if (!task.isSuccessful()) {
-                Toast.makeText(this, R.string.follow_failed, Toast.LENGTH_SHORT).show();
-            }
-            // On success the profile listener fires and updates the button and counts
-        });
-    }
-
-    // Delete account (required by Google Play). The login is deleted here; the
-    // cleanUpDeletedUser Cloud Function then removes the profile, posts, photos, follows, etc.
-    private void confirmDeleteAccount() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.delete_account_title)
-                .setMessage(R.string.delete_account_message)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.delete, (d, w) -> deleteAccount())
-                .show();
-    }
-
-    private void deleteAccount() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-        Toast.makeText(this, R.string.deleting_account, Toast.LENGTH_SHORT).show();
-        PushUtils.unregisterDevice(user.getUid()).addOnCompleteListener(t ->
-                user.delete().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        onAccountDeleted();
-                    } else if (task.getException() instanceof FirebaseAuthRecentLoginRequiredException) {
-                        askPasswordThenDelete(user); // Firebase wants a recent sign-in first
-                    } else {
-                        Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
-                    }
-                }));
-    }
-
-    private void askPasswordThenDelete(FirebaseUser user) {
-        EditText password = new EditText(this);
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        password.setHint(R.string.password);
-        FrameLayout box = new FrameLayout(this);
-        int pad = Math.round(20 * getResources().getDisplayMetrics().density);
-        box.setPadding(pad, 0, pad, 0);
-        box.addView(password);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.confirm_password_title)
-                .setMessage(R.string.confirm_password_message)
-                .setView(box)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.delete, (d, w) -> {
-                    String email = user.getEmail();
-                    String pw = password.getText().toString();
-                    if (email == null || pw.isEmpty()) return;
-                    user.reauthenticate(EmailAuthProvider.getCredential(email, pw))
-                            .addOnSuccessListener(r -> user.delete().addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) onAccountDeleted();
-                                else Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
-                            }))
-                            .addOnFailureListener(e -> Toast.makeText(this, R.string.wrong_password, Toast.LENGTH_SHORT).show());
-                })
-                .show();
-    }
-
-    private void onAccountDeleted() {
-        Toast.makeText(this, R.string.account_deleted, Toast.LENGTH_LONG).show();
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(this, LoginActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ModerationUtils.removeBlockListener(onBlockedChanged);
     }
 
     @Override
@@ -293,8 +144,7 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         bottomNav.setItemSelected(selectedItemId, true);
 
         bottomNav.setOnItemSelectedListener(id -> {
-            // On someone else's profile, the Profile tab goes back to your own
-            if (id == selectedItemId && isOwnProfile) return;
+            if (id == selectedItemId) return;
 
             Intent intent = null;
             if (id == R.id.home) intent = new Intent(this, MainActivity.class);

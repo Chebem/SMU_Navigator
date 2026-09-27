@@ -4,28 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="80dp"
     android:background="@drawable/main_bg_gradient2">
-
-    <!-- Back Button: 24dp icon inside a 60dp tap area -->
-    <ImageView
-        android:id="@+id/backBtn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:padding="18dp"
-        android:src="@drawable/back3"
-        android:contentDescription="@string/back"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
     <!-- Profile Image Selection -->
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="32dp"
         android:src="@drawable/ic_add_photo"
         android:contentDescription="@string/profile_image"
         app:civ_border_width="2dp"
@@ -59,8 +46,6 @@
         android:id="@+id/nameInput"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
         android:layout_marginTop="72dp"
         android:autofillHints=""
         android:background="@drawable/gradient_corner_bg"
@@ -79,8 +64,6 @@
         android:id="@+id/departmentInput"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
         android:layout_marginTop="40dp"
         android:autofillHints=""
         android:background="@drawable/gradient_corner_bg"
@@ -99,8 +82,6 @@
         android:id="@+id/bioInput"
         android:layout_width="0dp"
         android:layout_height="100dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
         android:layout_marginTop="40dp"
         android:autofillHints=""
         android:background="@drawable/gradient_corner_bg"

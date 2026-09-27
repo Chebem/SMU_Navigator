@@ -12,32 +12,7 @@
       // Whole node is read for the social feed (MainActivity.initSocialFeed)
       ".read": "auth != null",
       "$uid": {
-        ".write": "auth != null && auth.uid === $uid",
-        // Following someone: you may add or remove only your own entry in their followers list
-        "followers": {
-          "$followerUid": {
-            ".write": "auth != null && auth.uid === $followerUid"
-          }
-        },
-        "posts": {
-          "$postId": {
-            // Liking: you may set or remove only your own like, on a post that exists
-            "likes": {
-              "$likerUid": {
-                ".write": "auth != null && auth.uid === $likerUid && root.child('profiles').child($uid).child('posts').child($postId).exists()",
-                ".validate": "newData.val() === true"
-              }
-            },
-            // Commenting: anyone signed in may add a comment as themselves; only the author may delete it
-            // (the post owner can also delete any comment through the profiles/$uid rule above)
-            "comments": {
-              "$commentId": {
-                ".write": "auth != null && root.child('profiles').child($uid).child('posts').child($postId).exists() && ((!data.exists() && newData.child('userId').val() === auth.uid) || (data.child('userId').val() === auth.uid && !newData.exists()))",
-                ".validate": "newData.hasChildren(['userId', 'text', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 500 && newData.child('timestamp').isNumber()"
-              }
-            }
-          }
-        }
+        ".write": "auth != null && auth.uid === $uid"
       }
     },
 
@@ -48,48 +23,9 @@
       }
     },
 
-    // Written by the Cloud Function (admin, bypasses rules); you may read yours and mark them read
     "notifications": {
       "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid"
-      }
-    },
-
-    // Place reviews: reviews/{placeKey}/{uid}, one per person per place; only you can write yours
-    "reviews": {
-      ".read": "auth != null",
-      "$placeKey": {
-        "$uid": {
-          ".write": "auth != null && auth.uid === $uid",
-          ".validate": "newData.hasChildren(['userId', 'rating', 'timestamp']) && newData.child('userId').val() === $uid && newData.child('rating').isNumber() && newData.child('rating').val() >= 1 && newData.child('rating').val() <= 5 && newData.child('timestamp').isNumber() && (!newData.child('text').exists() || (newData.child('text').isString() && newData.child('text').val().length <= 500))"
-        }
-      }
-    },
-
-    // Reports: anyone signed in can file one as themselves; nobody can read them in the app (use the console)
-    "reports": {
-      "$reportId": {
-        ".write": "auth != null && !data.exists() && newData.child('reporterUid').val() === auth.uid",
-        ".validate": "newData.hasChildren(['type', 'path', 'reason', 'reporterUid', 'timestamp'])"
-      }
-    },
-
-    // Who you blocked: private to you
-    "blocks": {
-      "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid"
-      }
-    },
-
-    // This device's push token, so the Cloud Function can reach you; only you can add or remove yours
-    "fcmTokens": {
-      "$uid": {
-        "$token": {
-          ".write": "auth != null && auth.uid === $uid",
-          ".validate": "newData.val() === true"
-        }
+        ".read": "auth != null && auth.uid === $uid"
       }
     }
   }

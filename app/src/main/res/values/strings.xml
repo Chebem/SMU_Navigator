@@ -13,8 +13,6 @@
     <string name="hi_user">Hi, %1$s</string>
     <string name="about">about</string>
     <string name="follow">Follow</string>
-    <string name="following_state">Following</string>
-    <string name="follow_failed">Couldn\'t update follow. Please try again.</string>
     <string name="followers">Followers</string>
     <string name="likes">Likes</string>
     <string name="followings">Followings</string>
@@ -78,9 +76,6 @@
     <string name="your_password">Your Password</string>
     <string name="enter_your_password">Enter Your Password</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="reset_enter_email">Enter your email above first</string>
-    <string name="reset_email_sent">If an account exists for this email, a reset link has been sent</string>
-    <string name="reset_email_failed">Couldn\'t send the reset email. Please try again.</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="tap_go_explore">Tap.Go.Explore!</string>
     <string name="where_do_you_wanna_go">Where do you wanna go?</string>
@@ -158,73 +153,4 @@
     <string name="marker_icon">Marker icon</string>
     <string name="_2_hrs_ago">2 hrs ago</string>
     <string name="bembem">BemBem</string>
-    <string name="like">Like</string>
-    <string name="comments">Comments</string>
-    <string name="write_a_comment">Write a comment…</string>
-    <string name="send">Send</string>
-    <string name="no_comments_yet">No comments yet. Be the first!</string>
-    <string name="action_failed">Something went wrong. Please try again.</string>
-    <plurals name="comments_count">
-        <item quantity="one">%d Comment</item>
-        <item quantity="other">%d Comments</item>
-    </plurals>
-    <string name="find_people">Find people</string>
-    <string name="search_people_hint">Search by name or department</string>
-    <string name="no_people_found">No one found</string>
-    <string name="no_followers_yet">No followers yet</string>
-    <string name="not_following_anyone">Not following anyone yet</string>
-    <string name="notification_channel_id" translatable="false">general</string>
-    <string name="notification_channel_name">Notifications</string>
-    <string name="no_notifications_yet">You don\'t have any notifications yet.</string>
-    <string name="follow_back">Follow back</string>
-    <string name="someone">Someone</string>
-    <string name="notif_follow_text">%1$s started following you</string>
-    <string name="notif_follow_title">New follower</string>
-    <string name="walk">Walk</string>
-    <string name="walk_minutes">~%1$d min</string>
-    <string name="delete_account">Delete account</string>
-    <string name="delete_account_title">Delete your account?</string>
-    <string name="delete_account_message">This permanently deletes your account, profile, posts and photos, follows, favorites, likes, comments and notifications. This can\'t be undone.</string>
-    <string name="delete">Delete</string>
-    <string name="cancel">Cancel</string>
-    <string name="confirm_password_title">Confirm it\'s you</string>
-    <string name="confirm_password_message">Enter your password to delete your account.</string>
-    <string name="password">Password</string>
-    <string name="wrong_password">Wrong password. Please try again.</string>
-    <string name="account_deleted">Your account has been deleted.</string>
-    <string name="deleting_account">Deleting your account…</string>
-    <string name="added_to_favorites">Added to favorites</string>
-    <string name="no_reviews_yet">No reviews yet</string>
-    <string name="reviews">Reviews</string>
-    <string name="write_review">Write a review</string>
-    <string name="edit_review">Edit your review</string>
-    <string name="review_hint">What was it like? (optional)</string>
-    <string name="post_review">Post</string>
-    <string name="review_pick_stars">Tap the stars to rate it</string>
-    <string name="review_posted">Thanks for your review!</string>
-    <string name="be_first_review">No reviews yet. Be the first!</string>
-    <plurals name="review_summary">
-        <item quantity="one">★ %1$s · %2$d review</item>
-        <item quantity="other">★ %1$s · %2$d reviews</item>
-    </plurals>
-    <string name="more_options">More options</string>
-    <string name="edit">Edit</string>
-    <string name="report">Report</string>
-    <string name="report_user">Report user</string>
-    <string name="block">Block</string>
-    <string name="unblock">Unblock</string>
-    <string name="report_title">Why are you reporting this?</string>
-    <string-array name="report_reasons">
-        <item>Spam</item>
-        <item>Harassment or bullying</item>
-        <item>Inappropriate content</item>
-        <item>Something else</item>
-    </string-array>
-    <string name="report_sent">Thanks. We\'ll review this report.</string>
-    <string name="block_title">Block %1$s?</string>
-    <string name="block_message">You won\'t see their posts, comments or reviews, and you\'ll stop following each other. You can unblock them from their profile.</string>
-    <string name="blocked_user">%1$s is blocked</string>
-    <string name="unblocked">Unblocked</string>
-    <string name="delete_post">Delete post</string>
-    <string name="delete_post_confirm">Delete this post? This can\'t be undone.</string>
 </resources>

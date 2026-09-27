@@ -1,10 +1,6 @@
 package com.example.smunavigator2.Domain;
 
-import com.google.firebase.database.Exclude;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Post {
     private List<String> imageUrls;
@@ -73,39 +69,6 @@ public class Post {
 
     public void setMainImage(String mainImage) {
         this.mainImage = mainImage;
-    }
-
-    // Database key of this post under profiles/{userId}/posts; set after reading, never stored
-    private String postId;
-
-    // likes/{uid}: true for everyone who liked it; comments/{pushId}: {userId, text, timestamp}
-    private Map<String, Boolean> likes = new HashMap<>();
-    private Map<String, Object> comments = new HashMap<>();
-
-    @Exclude
-    public String getPostId() {
-        return postId;
-    }
-
-    @Exclude
-    public void setPostId(String postId) {
-        this.postId = postId;
-    }
-
-    public Map<String, Boolean> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Map<String, Boolean> likes) {
-        this.likes = likes != null ? likes : new HashMap<>();
-    }
-
-    public Map<String, Object> getComments() {
-        return comments;
-    }
-
-    public void setComments(Map<String, Object> comments) {
-        this.comments = comments != null ? comments : new HashMap<>();
     }
 
 }

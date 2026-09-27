@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.smunavigator2.Utils.PlaceUtils;
-import com.example.smunavigator2.Activity.DetailActivity;
+import com.example.smunavigator2.Activity.GoogleMapActivity;
 import com.example.smunavigator2.Domain.StoreModel;
 import com.example.smunavigator2.R;
 
@@ -133,20 +132,19 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
         String category = item.getCategory();
 
         // Category-specific placeholder
-        int placeholderRes = PlaceUtils.placeholderImage(category);
+        int placeholderRes = getPlaceholderImageRes(category);
 
         if (imageUrl == null || imageUrl.isEmpty()) {
-            // No photo yet: the category cover (gradient + icon) fills the card like a photo
-            holder.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(holder.itemView.getContext()).load(placeholderRes).into(holder.image);
+            Glide.with(holder.itemView.getContext())
+                    .load(placeholderRes)
+                    .circleCrop()
+                    .into(holder.image);
         } else {
-            // A real photo fills the card
-            holder.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
                     .placeholder(placeholderRes)
                     .error(placeholderRes)
-                    .centerCrop()
+                    .circleCrop()
                     .into(holder.image);
         }
 
@@ -158,9 +156,27 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
                 holder.address.setText(shortAddress);
             }
 
-            // Detail page first (photo, hours, favorite, later reviews); its Explore button opens the map
+            // Launch GoogleMapActivity
             Context context = holder.itemView.getContext();
-            context.startActivity(new Intent(context, DetailActivity.class).putExtra("object", item));
+            Intent intent = new Intent(context, GoogleMapActivity.class);
+            intent.putExtra("storeLat", item.getLat());
+            intent.putExtra("storeLng", item.getLng());
+            intent.putExtra("storeName", item.getName());
+            intent.putExtra("storeAddress", item.getAddress());
+            intent.putExtra("storeHours",
+                    item.getOpening_hours() != null
+                            ? TextUtils.join(", ", item.getOpening_hours())
+                            : "Opening hours not available"
+            );
+            intent.putExtra("storeImage", item.getImagePath());
+            intent.putExtra("storeCategory", item.getCategory());
+            intent.putExtra("storeDescription", item.getActivity() != null ? item.getActivity() : "");
+
+            // Map marker layout key (case-insensitive)
+            String layoutKey = getMarkerLayoutKeyFromCategory(item.getCategory());
+            intent.putExtra("markerLayout", layoutKey);
+
+            context.startActivity(intent);
 
             if (listener != null) listener.onClick(item);
         });
@@ -187,8 +203,70 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
     /**
      * ✅ Returns placeholder images for RecyclerView items (NOT map markers)
      */
+    private int getPlaceholderImageRes(String category) {
+        if (category == null) return R.drawable.placeholder_image;
+
+        switch (category.toLowerCase(Locale.ROOT)) {
+            case "restaurant":
+            case "restaurants":
+                return R.drawable.food_placehlolder;
+
+            case "coffee":
+                return R.drawable.coffee_placehlolder;
+
+            case "mart":
+                return R.drawable.shop_placeholder;
+
+            case "convenience":
+                return R.drawable.convenience_placehlolder;
+
+            case "accommodation":
+            case "dorms":
+                return R.drawable.accommodation_placehlolder;
+
+            case "bars":
+                return R.drawable.bar_placehlolder;
+
+            case "facilities":
+                return R.drawable.facilties;
+
+            default:
+                return R.drawable.placeholder_image;
+        }
+    }
 
     /**Returns layout keys for MAP MARKERS */
+    private String getMarkerLayoutKeyFromCategory(String category) {
+        if (category == null) return "store_marker";
+
+        switch (category.toLowerCase(Locale.ROOT)) {
+            case "coffee":
+                return "coffee_marker";
+
+            case "restaurant":
+            case "restaurants":
+                return "food_marker";
+
+            case "dorms":
+            case "accommodation":
+                return "dorm_marker";
+
+            case "facilities":
+                return "facilities_marker";
+
+            case "convenience":
+                return "convenience_marker";
+
+            case "bars":
+                return "bars_marker";
+
+            case "mart":
+                return "mart_marker";
+
+            default:
+                return "store_marker";
+        }
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
