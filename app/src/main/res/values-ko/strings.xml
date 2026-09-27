@@ -176,4 +176,6 @@
     <string name="someone">누군가</string>
     <string name="notif_follow_text">%1$s님이 회원님을 팔로우하기 시작했습니다</string>
     <string name="notif_follow_title">새 팔로워</string>
+    <string name="walk">도보</string>
+    <string name="walk_minutes">약 %1$d분</string>
 </resources>
