@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import com.example.smunavigator2.R;
 import com.google.android.material.button.MaterialButton;
 
-/** Outlined, rounded filter buttons in the same style as the map filters (activity_map.xml). */
+/** Outlined, rounded filter buttons. */
 public final class FilterButtons {
 
     private FilterButtons() {}
