@@ -59,9 +59,15 @@ public final class DistanceUtils {
      */
     public static String walkLabel(float meters, boolean fromUser, boolean isEnglish) {
         String label = label(meters, fromUser, isEnglish);
-        if (meters > MAX_WALK_ESTIMATE_METERS) return label;
-        int minutes = Math.max(1, Math.round(meters * 1.3f / 75f));
+        int minutes = walkMinutes(meters);
+        if (minutes < 0) return label;
         return label + (isEnglish ? " • ~" + minutes + " min walk" : " • 도보 약 " + minutes + "분");
+    }
+
+    /** Estimated walking minutes, or -1 when it's too far for a walking time to be useful. */
+    public static int walkMinutes(float meters) {
+        if (meters > MAX_WALK_ESTIMATE_METERS) return -1;
+        return Math.max(1, Math.round(meters * 1.3f / 75f));
     }
 
     public static boolean isEnglishLocale() {
