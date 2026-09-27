@@ -214,16 +214,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Distance filter (1 km / 2 km / All), same outlined MaterialButton style as the map; added in CityGuideActivity -->
-            <LinearLayout
-                android:id="@+id/distanceFilters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal"
-                android:paddingVertical="4dp" />
-
             <!-- Nearest Stores RecyclerView + ProgressBar -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

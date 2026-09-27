@@ -7,8 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.Domain.ProfileModel.Follower;
-import com.example.smunavigator2.Domain.Post;
-import com.example.smunavigator2.Utils.PostParser;
+import com.example.smunavigator2.Domain.ProfileModel.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,17 +24,10 @@ public class ProfileRepository {
     private final DatabaseReference profileRef;
     private final MutableLiveData<ProfileModel> profileLiveData;
 
-    private final String myUid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-
     public ProfileRepository() {
-        this(null);
-    }
-
-    /** Loads {@code userId}'s profile; null means the signed-in user. */
-    public ProfileRepository(String userId) {
         profileRef = FirebaseDatabase.getInstance("https://smu-navigator-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("profiles")
-                .child(userId != null ? userId : myUid);
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         profileLiveData = new MutableLiveData<>();
     }
 
@@ -45,20 +37,14 @@ public class ProfileRepository {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d("FIREBASE_DEBUG", "Data snapshot: " + snapshot);
 
-                // Read fields one by one: some old profiles store numbers as text, which crashes getValue(ProfileModel.class)
-                ProfileModel profile = new ProfileModel();
-                profile.profileName = snapshot.child("profileName").getValue(String.class);
-                profile.profileImage = snapshot.child("profileImage").getValue(String.class);
-                profile.department = snapshot.child("department").getValue(String.class);
-                profile.about = snapshot.child("about").getValue(String.class);
+                ProfileModel profile = snapshot.getValue(ProfileModel.class);
+                if (profile == null) profile = new ProfileModel();
 
                 // Parse posts as Map<String, Post>
                 Map<String, Post> postMap = new HashMap<>();
                 for (DataSnapshot postSnap : snapshot.child("posts").getChildren()) {
-                    Post post = PostParser.parse(postSnap);
+                    Post post = postSnap.getValue(Post.class);
                     if (post != null) {
-                        post.setPostId(postSnap.getKey());
-                        if (post.getUserId() == null) post.setUserId(snapshot.getKey());
                         postMap.put(postSnap.getKey(), post);
                     }
                 }
@@ -75,11 +61,6 @@ public class ProfileRepository {
                     }
                 }
                 profile.followers = followerList;
-
-                // Counts come from the lists themselves, so they can't drift
-                profile.followersNum = (int) snapshot.child("followers").getChildrenCount();
-                profile.followingNum = (int) snapshot.child("following").getChildrenCount();
-                profile.followedByMe = snapshot.child("followers").hasChild(myUid);
 
                 profileLiveData.setValue(profile);
             }

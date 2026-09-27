@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.TaskStackBuilder
 import com.bumptech.glide.Glide
 import com.example.smunavigator2.R
-import com.example.smunavigator2.Utils.PushUtils
 import com.example.smunavigator2.databinding.ActivitySplashBinding
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
@@ -45,9 +43,6 @@ class SplashActivity : AppCompatActivity() {
         )
         Log.d("SplashActivity", "App Check initialized")
 
-        // Opened by tapping a push: go straight to the notice or profile, with Home underneath for Back
-        if (auth.currentUser != null && openPushTarget()) return
-
         //  Load mascot animation
         Glide.with(this)
             .asGif()
@@ -59,17 +54,5 @@ class SplashActivity : AppCompatActivity() {
             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
         }
-    }
-
-    private fun openPushTarget(): Boolean {
-        val extras = intent.extras ?: return false
-        val data = extras.keySet().associateWith { extras.get(it)?.toString() ?: "" }
-        val target = PushUtils.targetIntent(this, data) ?: return false
-        TaskStackBuilder.create(this)
-            .addNextIntent(Intent(this, MainActivity::class.java))
-            .addNextIntent(target)
-            .startActivities()
-        finish()
-        return true
     }
 }

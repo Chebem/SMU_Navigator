@@ -1,11 +1,7 @@
 package com.example.smunavigator2.Activity;
 
 import com.example.smunavigator2.BuildConfig;
-import com.example.smunavigator2.Utils.DistanceUtils;
-import com.example.smunavigator2.Utils.FavoriteUtils;
-import com.example.smunavigator2.Utils.PlaceUtils;
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -90,7 +86,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private CardView overlayCard;
     private ImageView placeImage;
-    private String overlayCategory = ""; // category of the tapped marker, for the card's placeholder
     private TextView placeTitle, placeAddress, placeHours, placeDistance;
 
 
@@ -255,7 +250,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             if (tag instanceof MarkerTagData) {
                 MarkerTagData info = (MarkerTagData) tag;
 
-                overlayCategory = info.category; // for the card's placeholder image
                 if ("Dorms".equalsIgnoreCase(info.category)) {
                     LatLng dormPos = marker.getPosition();
                     showDormOverlay(
@@ -650,7 +644,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             try {
                 startActivity(intent);
             } catch (Exception e) {
-                openKakaoWeb(destination.latitude, destination.longitude, placeName); // no Naver Map app
+                Toast.makeText(this, "Naver Map not installed", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -660,7 +654,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             try {
                 startActivity(intent);
             } catch (Exception e) {
-                openKakaoWeb(destination.latitude, destination.longitude, placeName); // no Kakao Map app
+                Toast.makeText(this, "KakaoMap not installed", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -784,49 +778,44 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    // Distance from the student (or campus) plus an estimated walk. Google's Distance Matrix
-    // returns ZERO_RESULTS for walking and driving in Korea, which used to show "Not available".
-    // The walk button shows the same estimate and opens real walking directions (Kakao / Naver)
-    private void showDistanceTo(double lat, double lng, String name) {
-        boolean isEnglish = DistanceUtils.isEnglishLocale();
-        Button walkBtn = findViewById(R.id.btnWalk);
-        placeDistance.setText(isEnglish ? "Locating…" : "위치 확인 중…");
-        walkBtn.setText(R.string.walk);
-        walkBtn.setOnClickListener(v -> openWalkingDirections(lat, lng, name));
-        DistanceUtils.resolveOrigin(this, (originLat, originLng, fromUser) -> {
-            float meters = DistanceUtils.meters(originLat, originLng, lat, lng);
-            placeDistance.setText(DistanceUtils.walkLabel(meters, fromUser, isEnglish));
-            int minutes = DistanceUtils.walkMinutes(meters);
-            if (minutes > 0) walkBtn.setText(getString(R.string.walk_minutes, minutes));
-        });
-    }
+    private void fetchDistanceAndDuration(LatLng origin, LatLng destination, TextView targetTextView) {
+        String apiKey = BuildConfig.MAPS_API_KEY;
+        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?" +
+                "origins=" + origin.latitude + "," + origin.longitude +
+                "&destinations=" + destination.latitude + "," + destination.longitude +
+                "&mode=walking&language=en&key=" + apiKey;
 
-    // Google has no walking routes in Korea, so hand off to Kakao Map, then Naver Map, then Kakao on the web
-    private void openWalkingDirections(double lat, double lng, String name) {
-        String label = name != null ? name : "";
-        Intent kakao = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("kakaomap://route?ep=" + lat + "," + lng + "&by=FOOT"));
-        Intent naver = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("nmap://route/walk?dlat=" + lat + "&dlng=" + lng + "&dname=" + Uri.encode(label)
-                        + "&appname=" + getPackageName()))
-                .setPackage("com.nhn.android.nmap");
-        for (Intent app : new Intent[]{kakao, naver}) {
-            try {
-                startActivity(app);
-                return;
-            } catch (ActivityNotFoundException ignored) {
-                // not installed, try the next one
-            }
-        }
-        openKakaoWeb(lat, lng, label);
-    }
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray rows = response.getJSONArray("rows");
+                        if (rows.length() > 0) {
+                            JSONArray elements = rows.getJSONObject(0).getJSONArray("elements");
+                            if (elements.length() > 0) {
+                                JSONObject element = elements.getJSONObject(0);
 
-    private void openKakaoWeb(double lat, double lng, String name) {
-        String place = (name == null || name.isEmpty() ? "Destination" : name).replace(",", " ");
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://map.kakao.com/link/to/" + Uri.encode(place) + "," + lat + "," + lng)));
-    }
+                                String status = element.optString("status", "UNKNOWN");
 
+                                if ("OK".equals(status)) {
+                                    String distance = element.getJSONObject("distance").getString("text");
+                                    String duration = element.getJSONObject("duration").getString("text");
+                                    targetTextView.setText(distance + " • " + duration);
+                                } else {
+                                    targetTextView.setText("Not available");
+                                    Log.w("DistanceMatrix", "Route status: " + status);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("DistanceMatrix", "Parse error", e);
+                        targetTextView.setText(""); // fallback
+                    }
+                },
+                error -> Log.e("DistanceMatrix", "Request failed", error));
+
+        queue.add(request);
+    }
     private void loadAllMarkers() {
         googleMap.setOnMarkerClickListener(marker -> {
             Object tag = marker.getTag();
@@ -836,7 +825,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 double lat = Double.parseDouble(info[5]);
                 double lng = Double.parseDouble(info[6]);
                 String category = info.length >= 5 ? info[4] : "";
-                overlayCategory = category;
                 if (category.equalsIgnoreCase("Dorms")) {
                     showDormOverlay(info[0], info[1], info[2], info[3], info[4], lat, lng);
                 } else {
@@ -997,15 +985,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     //overlay for store
-    // Photo when there is one, otherwise the category cover (was always the SMU logo)
-    private void loadPlaceImage(String imageUrl, String category) {
-        int placeholder = PlaceUtils.placeholderImage(category);
-        Glide.with(this).load(imageUrl != null && !imageUrl.isEmpty() ? imageUrl : null)
-                .placeholder(placeholder).error(placeholder).fallback(placeholder)
-                .centerCrop()
-                .into(placeImage);
-    }
-
     private void showStoreOverlay(String title, String address, String hours, String description, String imageUrl, double storeLat, double storeLng) {
         placeTitle.setText(title != null ? title : "No name");
 
@@ -1028,9 +1007,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         //  Format hours if structured
         if (hours != null && !hours.trim().isEmpty()) {
             if (hours.contains("Monday")) {
-                String formatted = formatOpeningHours(hours);
-                placeHours.setText(formatted.isEmpty() ? getString(R.string.hours_unknown)
-                        : getString(R.string.open_with_hours, formatted));
+                placeHours.setText(getString(R.string.open_with_hours, formatOpeningHours(hours)));
             } else {
                 placeHours.setText(getString(R.string.open_fallback, hours));
             }
@@ -1039,11 +1016,25 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // ✅ Use lat/lng instead of geocoding
-        showDistanceTo(storeLat, storeLng, title);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng dest = new LatLng(storeLat, storeLng); //
+                    fetchDistanceAndDuration(origin, dest, placeDistance);
+                }
+            });
+        } else {
+            placeDistance.setText(""); // Or "Location unavailable"
+        }
 
 
         //  Load image or fallback
-        loadPlaceImage(imageUrl, overlayCategory);
+        if (imageUrl != null) {
+            Glide.with(this).load(imageUrl).into(placeImage);
+        } else {
+            placeImage.setImageResource(R.drawable.smu_logo);
+        }
 
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1071,10 +1062,24 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
        placeHours.setText(getString(R.string.contact_dorm_office));
 
-        loadPlaceImage(imageUrl, "dormitory");
+        if (imageUrl != null) {
+            Glide.with(this).load(imageUrl).into(placeImage);
+        } else {
+            placeImage.setImageResource(R.drawable.smu_logo);
+        }
 
         // Distance logic from user's location to dorm coordinates
-        showDistanceTo(dormLat, dormLng, name);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng dest = new LatLng(dormLat, dormLng);
+                    fetchDistanceAndDuration(origin, dest, placeDistance); // ➕ Ensure `placeDistance` TextView exists
+                }
+            });
+        } else {
+            placeDistance.setText(""); // Or use "Location unavailable"
+        }
         // 🧭 Show direction options
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1115,14 +1120,16 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         if (hours != null && !hours.trim().isEmpty()) {
-            String formatted = formatOpeningHours(hours);
-            placeHours.setText(formatted.isEmpty() ? getString(R.string.hours_unknown)
-                    : getString(R.string.open_with_hours, formatted));
+            placeHours.setText(getString(R.string.open_with_hours, formatOpeningHours(hours)));
         } else {
             placeHours.setText(getString(R.string.hours_unknown));
         }
 
-        loadPlaceImage(imageUrl, overlayCategory);
+        if (imageUrl != null) {
+            Glide.with(this).load(imageUrl).into(placeImage);
+        } else {
+            placeImage.setImageResource(R.drawable.smu_logo);
+        }
 
         // 📞 Handle call button
         Button callBtn = findViewById(R.id.btnCallStore);
@@ -1138,7 +1145,17 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // 📍 Distance display
-        showDistanceTo(placeLat, placeLng, name);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng dest = new LatLng(placeLat, placeLng);
+                    fetchDistanceAndDuration(origin, dest, placeDistance);
+                }
+            });
+        } else {
+            placeDistance.setText("");
+        }
 
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1148,7 +1165,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         // ❤️ Favorite functionality
         AppCompatButton favoriteBtn = findViewById(R.id.favoriteBtn);
         String safeName = name != null ? name : "Unknown";
-        String placeId = FavoriteUtils.key(name, placeLat, placeLng);
+        String placeId = (name + "_" + placeLat + "_" + placeLng).replace(".", "_");
 
         if (favoriteRef == null) {
             Toast.makeText(this, "Favorites not available", Toast.LENGTH_SHORT).show();

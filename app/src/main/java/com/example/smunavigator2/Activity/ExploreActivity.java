@@ -2,6 +2,7 @@ package com.example.smunavigator2.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smunavigator2.Adapter.NoticeAdapter;
 import com.example.smunavigator2.Domain.NoticeModel;
 import com.example.smunavigator2.R;
-import com.example.smunavigator2.Utils.FilterButtons;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -104,18 +104,39 @@ public class ExploreActivity extends AppCompatActivity {
         });
     }
 
+    // Same look as the map filters (activity_map.xml): outlined, rounded, white; selected one filled
     private void setupCategoryFilters() {
         categoryFilters = findViewById(R.id.categoryFilters);
+        float dp = getResources().getDisplayMetrics().density;
         for (String[] category : CATEGORIES) {
-            FilterButtons.add(categoryFilters, category[0], category[0].equals(selectedCategory))
-                    .setOnClickListener(v -> selectCategory((String) v.getTag()));
+            MaterialButton button = new MaterialButton(this, null,
+                    com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            button.setTag(category[0]);
+            button.setCheckable(true);
+            button.setAllCaps(false);
+            button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            button.setCornerRadius((int) (24 * dp));
+            button.setElevation(4 * dp);
+            button.setStrokeColorResource(R.color.blue_dark);
+            button.setBackgroundTintList(getColorStateList(R.color.notice_filter_bg));
+            button.setTextColor(getColorStateList(R.color.notice_filter_text));
+            button.setChecked(category[0].equals(selectedCategory));
+            button.setOnClickListener(v -> selectCategory((String) v.getTag()));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMarginEnd((int) (8 * dp));
+            categoryFilters.addView(button, params);
         }
         updateFilterLabels();
     }
 
     private void selectCategory(String category) {
         selectedCategory = category;
-        FilterButtons.select(categoryFilters, category);
+        for (int i = 0; i < categoryFilters.getChildCount(); i++) {
+            MaterialButton button = (MaterialButton) categoryFilters.getChildAt(i);
+            button.setChecked(category.equals(button.getTag())); // single selection, always one checked
+        }
         applyCategoryFilter();
     }
 

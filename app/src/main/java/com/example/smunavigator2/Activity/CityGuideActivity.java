@@ -2,7 +2,6 @@ package com.example.smunavigator2.Activity;
 
 import static com.example.smunavigator2.Activity.BaseActivity.database;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,13 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,8 +29,6 @@ import com.example.smunavigator2.Domain.CityLocation;
 import com.example.smunavigator2.Domain.Location;
 import com.example.smunavigator2.Domain.StoreModel;
 import com.example.smunavigator2.R;
-import com.example.smunavigator2.Utils.DistanceUtils;
-import com.example.smunavigator2.Utils.FilterButtons;
 import com.example.smunavigator2.ViewModel.ResultViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class CityGuideActivity extends AppCompatActivity {
@@ -65,21 +58,6 @@ public class CityGuideActivity extends AppCompatActivity {
 
     private FloatingActionButton languageFab;
     private boolean isEnglish;
-
-    // Nearest list: measured from the student when possible, otherwise from campus
-    private final List<StoreModel> allStores = new ArrayList<>();
-    private String selectedCategory = "All City Sections";
-    private double originLat = DistanceUtils.CAMPUS_LAT;
-    private double originLng = DistanceUtils.CAMPUS_LNG;
-    private boolean originIsUser = false;
-
-    private static final int RADIUS_ALL = 0;
-    private static final int[] RADII_METERS = {1000, 2000, RADIUS_ALL};
-    private int radiusMeters = 2000;
-    private LinearLayout distanceFilters;
-
-    private final ActivityResultLauncher<String[]> locationPermission =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> updateOrigin());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,46 +110,10 @@ public class CityGuideActivity extends AppCompatActivity {
         nearestRecyclerView.setAdapter(nearestAdapter);
 
         nearestEmptyMessage = findViewById(R.id.nearestEmptyTextView);
-
-        setupDistanceFilters();
-        locationPermission.launch(new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
-    }
-
-    private void updateOrigin() {
-        DistanceUtils.resolveOrigin(this, (lat, lng, fromUser) -> {
-            originLat = lat;
-            originLng = lng;
-            originIsUser = fromUser;
-            renderPlaces();
-        });
-    }
-
-    private void setupDistanceFilters() {
-        distanceFilters = findViewById(R.id.distanceFilters);
-        for (int radius : RADII_METERS) {
-            FilterButtons.add(distanceFilters, radius, radius == radiusMeters).setOnClickListener(v -> {
-                radiusMeters = (int) v.getTag();
-                FilterButtons.select(distanceFilters, radiusMeters);
-                renderPlaces();
-            });
-        }
-        updateDistanceFilterLabels();
-    }
-
-    private void updateDistanceFilterLabels() {
-        if (distanceFilters == null) return;
-        for (int i = 0; i < distanceFilters.getChildCount(); i++) {
-            int radius = RADII_METERS[i];
-            ((android.widget.Button) distanceFilters.getChildAt(i)).setText(radius == RADIUS_ALL
-                    ? (isEnglish ? "All" : "전체")
-                    : DistanceUtils.format(radius));
-        }
     }
 
     private void updateLanguageUI() {
         languageFab.setImageResource(isEnglish ? R.drawable.ic_english : R.drawable.ic_korean);
-        updateDistanceFilterLabels();
         loadPlaces(isEnglish ? "placesEn" : "placesKo", "All City Sections");
     }
 
@@ -230,45 +172,54 @@ public class CityGuideActivity extends AppCompatActivity {
         }
     }
 
-    private void filterByCategory(String category) {
-        selectedCategory = category;
-        renderPlaces();
-    }
-
-    private void loadPlaces(String nodeName, String category) {
-        selectedCategory = category;
+    private void filterByCategory(String selectedCategory) {
+        String nodeName = isEnglish ? "placesEn" : "placesKo";
         categoryViewModel.getPlaces(nodeName).observe(this, stores -> {
-            allStores.clear();
-            allStores.addAll(stores);
-            renderPlaces();
+            List<StoreModel> popular = new ArrayList<>();
+            List<StoreModel> nearest = new ArrayList<>();
+
+            for (StoreModel store : stores) {
+                if (selectedCategory.equals("All City Sections") || store.getCategory().equalsIgnoreCase(selectedCategory)) {
+                    popular.add(store);
+                    if (distanceFromSMU(store.getLatitude(), store.getLongitude()) <= 2.0) {
+                        nearest.add(store);
+                    }
+                }
+            }
+
+            popularAdapter = new PopularStoreAdapter(popular);
+            nearestAdapter = new NearestStoreAdapter(nearest);
+            popularRecyclerView.setAdapter(popularAdapter);
+            nearestRecyclerView.setAdapter(nearestAdapter);
         });
     }
 
-    private void renderPlaces() {
-        List<StoreModel> popular = new ArrayList<>();
-        List<StoreModel> nearest = new ArrayList<>();
+    private void loadPlaces(String nodeName, String selectedCategory) {
+        categoryViewModel.getPlaces(nodeName).observe(this, stores -> {
+            List<StoreModel> popular = new ArrayList<>();
+            List<StoreModel> nearest = new ArrayList<>();
 
-        for (StoreModel store : allStores) {
-            if (selectedCategory.equals("All City Sections") || store.getCategory().equalsIgnoreCase(selectedCategory)) {
-                popular.add(store);
-                if (radiusMeters == RADIUS_ALL || distanceTo(store) <= radiusMeters) {
-                    nearest.add(store);
+            for (StoreModel store : stores) {
+                if (selectedCategory.equals("All City Sections") || store.getCategory().equalsIgnoreCase(selectedCategory)) {
+                    popular.add(store);
+                    if (distanceFromSMU(store.getLatitude(), store.getLongitude()) <= 2.0) {
+                        nearest.add(store);
+                    }
                 }
             }
-        }
-        nearest.sort(Comparator.comparingDouble(this::distanceTo));
 
-        popularAdapter = new PopularStoreAdapter(popular);
-        nearestAdapter = new NearestStoreAdapter(nearest);
-        nearestAdapter.setOrigin(originLat, originLng, originIsUser, isEnglish);
-        popularRecyclerView.setAdapter(popularAdapter);
-        nearestRecyclerView.setAdapter(nearestAdapter);
+            popularAdapter = new PopularStoreAdapter(popular);
+            nearestAdapter = new NearestStoreAdapter(nearest);
+            popularRecyclerView.setAdapter(popularAdapter);
+            nearestRecyclerView.setAdapter(nearestAdapter);
 
-        nearestEmptyMessage.setVisibility(nearest.isEmpty() ? View.VISIBLE : View.GONE);
-    }
+            if (nearest.isEmpty()) {
+                nearestEmptyMessage.setVisibility(View.VISIBLE);
+            } else {
+                nearestEmptyMessage.setVisibility(View.GONE);
+            }
 
-    private float distanceTo(StoreModel store) {
-        return DistanceUtils.meters(originLat, originLng, store.getLatitude(), store.getLongitude());
+        });
     }
 
     /*private void initSubCategoriesFromFirebase() {
@@ -304,6 +255,19 @@ public class CityGuideActivity extends AppCompatActivity {
             }
         });
     }*/
+
+    private double distanceFromSMU(double lat, double lng) {
+        double smuLat = 37.1662;
+        double smuLng = 128.1696;
+        double earthRadius = 6371;
+
+        double dLat = Math.toRadians(lat - smuLat);
+        double dLng = Math.toRadians(lng - smuLng);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(smuLat)) * Math.cos(Math.toRadians(lat))
+                * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return earthRadius * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
 
     private void setupBottomNav(int selectedItemId) {
         ChipNavigationBar bottomNav = findViewById(R.id.navigationBar);

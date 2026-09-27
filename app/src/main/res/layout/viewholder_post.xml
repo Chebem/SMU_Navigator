@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -37,7 +36,7 @@
             android:id="@+id/postTimeTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/_2_hrs_ago"
+            android:text="@string/_2_hrs_ago"
             android:textSize="12sp"
             android:textColor="#999999"
             android:layout_marginTop="4dp"/>
@@ -56,30 +55,19 @@
                 android:id="@+id/profilePic"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_default_avatar"
+                android:src="@drawable/smu_logo"
                 app:civ_border_width="1dp"
-                app:civ_border_color="@color/blue_dark"
+                app:civ_border_color="@android:color/darker_gray"
                 android:layout_marginEnd="8dp" />
 
             <TextView
                 android:id="@+id/usernameTxt"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@string/bembem"
+                android:text="@string/bembem"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
-
-            <!-- Report / block (others' posts) or delete (your own) -->
-            <ImageView
-                android:id="@+id/postMoreBtn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/more_options"
-                android:padding="6dp"
-                android:src="@drawable/ic_more_vert" />
         </LinearLayout>
 
 
@@ -89,71 +77,19 @@
             android:id="@+id/captionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="@string/your_caption_here"
+            android:text="@string/your_caption_here"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp" />
 
-        <!-- Like and comment actions -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Comments or footer -->
+        <TextView
+            android:id="@+id/commentsText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="4dp">
-
-            <LinearLayout
-                android:id="@+id/likeBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingEnd="12dp"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@string/like">
-
-                <ImageView
-                    android:id="@+id/likeIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@drawable/ic_heart_outline"
-                    android:importantForAccessibility="no" />
-
-                <TextView
-                    android:id="@+id/likeCountTxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="0"
-                    android:textSize="13sp"
-                    android:textColor="#555555" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/commentBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="4dp"
-                android:paddingEnd="12dp"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_comment"
-                    android:importantForAccessibility="no" />
-
-                <TextView
-                    android:id="@+id/commentsText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/_0_comments"
-                    android:textSize="13sp"
-                    android:textColor="#555555" />
-            </LinearLayout>
-        </LinearLayout>
+            android:text="@string/_0_comments"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

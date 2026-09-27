@@ -46,7 +46,7 @@ google-services.json
 
 
 # Private planning notes
-.claude/**/*.md
+.claude/PLANNING.md
 
 # Scraper
 scraper/.venv/
@@ -55,9 +55,3 @@ scraper/*.json
 *service-account*.json
 *serviceAccountKey*.json
 *-firebase-adminsdk-*.json
-
-# =====================
-# Cloud Functions
-# =====================
-functions/node_modules/
-firebase-debug.log

@@ -13,8 +13,6 @@
     <string name="about">소개</string>
     <string name="hi_user">%1$s님, 안녕</string>
     <string name="follow">팔로우</string>
-    <string name="following_state">팔로잉 중</string>
-    <string name="follow_failed">팔로우를 변경하지 못했습니다. 다시 시도해 주세요.</string>
     <string name="followers">팔로워</string>
     <string name="likes">좋아요</string>
     <string name="followings">팔로잉</string>
@@ -76,9 +74,6 @@
     <string name="your_password">비밀번호</string>
     <string name="enter_your_password">비밀번호 입력</string>
     <string name="forgot_password">비밀번호를 잊으셨나요?</string>
-    <string name="reset_enter_email">위에 이메일을 먼저 입력해 주세요</string>
-    <string name="reset_email_sent">가입된 이메일이라면 비밀번호 재설정 링크를 보냈습니다</string>
-    <string name="reset_email_failed">재설정 이메일을 보내지 못했습니다. 다시 시도해 주세요.</string>
     <string name="don_t_have_an_account_register">계정이 없으신가요? 회원가입</string>
     <string name="tap_go_explore">탭. 출발. 탐험!</string>
     <string name="where_do_you_wanna_go">어디로 가고 싶나요?</string>
@@ -156,70 +151,4 @@
     <string name="places" />
 
 
-    <string name="like">좋아요</string>
-    <string name="comments">댓글</string>
-    <string name="write_a_comment">댓글을 입력하세요…</string>
-    <string name="send">보내기</string>
-    <string name="no_comments_yet">아직 댓글이 없습니다. 첫 댓글을 남겨 보세요!</string>
-    <string name="action_failed">문제가 발생했습니다. 다시 시도해 주세요.</string>
-    <plurals name="comments_count">
-        <item quantity="other">댓글 %d개</item>
-    </plurals>
-    <string name="find_people">사람 찾기</string>
-    <string name="search_people_hint">이름 또는 학과로 검색</string>
-    <string name="no_people_found">검색 결과가 없습니다</string>
-    <string name="no_followers_yet">아직 팔로워가 없습니다</string>
-    <string name="not_following_anyone">아직 팔로우한 사람이 없습니다</string>
-    <string name="notification_channel_name">알림</string>
-    <string name="no_notifications_yet">아직 알림이 없습니다.</string>
-    <string name="follow_back">맞팔로우</string>
-    <string name="someone">누군가</string>
-    <string name="notif_follow_text">%1$s님이 회원님을 팔로우하기 시작했습니다</string>
-    <string name="notif_follow_title">새 팔로워</string>
-    <string name="walk">도보</string>
-    <string name="walk_minutes">약 %1$d분</string>
-    <string name="delete_account">계정 삭제</string>
-    <string name="delete_account_title">계정을 삭제하시겠습니까?</string>
-    <string name="delete_account_message">계정, 프로필, 게시물과 사진, 팔로우, 즐겨찾기, 좋아요, 댓글, 알림이 영구적으로 삭제됩니다. 되돌릴 수 없습니다.</string>
-    <string name="delete">삭제</string>
-    <string name="cancel">취소</string>
-    <string name="confirm_password_title">본인 확인</string>
-    <string name="confirm_password_message">계정을 삭제하려면 비밀번호를 입력하세요.</string>
-    <string name="password">비밀번호</string>
-    <string name="wrong_password">비밀번호가 올바르지 않습니다. 다시 시도해 주세요.</string>
-    <string name="account_deleted">계정이 삭제되었습니다.</string>
-    <string name="deleting_account">계정을 삭제하는 중…</string>
-    <string name="added_to_favorites">즐겨찾기에 추가되었습니다</string>
-    <string name="no_reviews_yet">아직 리뷰가 없습니다</string>
-    <string name="reviews">리뷰</string>
-    <string name="write_review">리뷰 쓰기</string>
-    <string name="edit_review">내 리뷰 수정</string>
-    <string name="review_hint">어땠나요? (선택)</string>
-    <string name="post_review">등록</string>
-    <string name="review_pick_stars">별을 눌러 평점을 선택하세요</string>
-    <string name="review_posted">리뷰를 남겨 주셔서 감사합니다!</string>
-    <string name="be_first_review">아직 리뷰가 없습니다. 첫 리뷰를 남겨 보세요!</string>
-    <plurals name="review_summary">
-        <item quantity="other">★ %1$s · 리뷰 %2$d개</item>
-    </plurals>
-    <string name="more_options">더보기</string>
-    <string name="edit">수정</string>
-    <string name="report">신고</string>
-    <string name="report_user">사용자 신고</string>
-    <string name="block">차단</string>
-    <string name="unblock">차단 해제</string>
-    <string name="report_title">신고 사유를 선택하세요</string>
-    <string-array name="report_reasons">
-        <item>스팸</item>
-        <item>괴롭힘 또는 따돌림</item>
-        <item>부적절한 콘텐츠</item>
-        <item>기타</item>
-    </string-array>
-    <string name="report_sent">신고해 주셔서 감사합니다. 검토하겠습니다.</string>
-    <string name="block_title">%1$s님을 차단하시겠습니까?</string>
-    <string name="block_message">상대방의 게시물, 댓글, 리뷰가 보이지 않으며 서로 팔로우가 해제됩니다. 프로필에서 차단을 해제할 수 있습니다.</string>
-    <string name="blocked_user">%1$s님을 차단했습니다</string>
-    <string name="unblocked">차단을 해제했습니다</string>
-    <string name="delete_post">게시물 삭제</string>
-    <string name="delete_post_confirm">이 게시물을 삭제하시겠습니까? 되돌릴 수 없습니다.</string>
 </resources>

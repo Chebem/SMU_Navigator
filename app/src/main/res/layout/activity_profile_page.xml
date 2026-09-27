@@ -40,9 +40,6 @@
                 android:background="@drawable/gradient_corner_bg"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/roundedCorner"
-                app:strokeColor="@color/blue_dark"
-                app:strokeWidth="2dp"
-                android:padding="1dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <!-- Name -->
@@ -51,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                tools:text="@string/michael_mabinuola"
+                android:text="@string/michael_mabinuola"
                 android:textAlignment="center"
                 android:textColor="@color/blue_dark"
                 android:textSize="25sp"
@@ -62,7 +59,7 @@
                 android:id="@+id/departmentText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/department_of_computer_science"
+                android:text="@string/department_of_computer_science"
                 android:textAlignment="center"
                 android:textColor="@color/gray_dark"
                 android:textSize="16sp" />
@@ -73,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                tools:text="@string/about"
+                android:text="@string/about"
                 android:textAlignment="center"
                 android:textColor="@color/blue_dark"
                 android:textSize="16sp" />
@@ -132,9 +129,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.333"
-                    android:id="@+id/followersColumn"
-                    android:background="?attr/selectableItemBackground"
-                    android:paddingVertical="4dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -168,9 +162,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.333"
-                    android:id="@+id/followingColumn"
-                    android:background="?attr/selectableItemBackground"
-                    android:paddingVertical="4dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -203,11 +194,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.333"
-                    android:paddingVertical="4dp"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/postsCountTxt"
+                        android:id="@+id/likesTxt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -220,7 +210,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/posts"
+                        android:text="@string/likes"
                         android:textAlignment="center"
                         android:textColor="@color/gray_dark"
                         android:textSize="16sp" />
@@ -229,6 +219,11 @@
 
             <!-- Divider -->
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="382dp"
+                android:layout_height="47dp" />
 
             <View
                 android:id="@+id/view6"
@@ -236,13 +231,52 @@
                 android:layout_height="15dp"
                 android:background="@drawable/main_bg_gradient2" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/followersLabel"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/followers"
+                    android:textColor="@color/blue_dark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_all"
+                    android:textColor="@color/blue_light"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/followersList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:orientation="horizontal"/>
+
+            <View
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/main_bg_gradient2" />
 
             <TextView
                 android:id="@+id/posts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/posts"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:textColor="@color/blue_dark"
                 android:textSize="16sp"
@@ -259,25 +293,6 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Loading screen: covers the profile until its data arrives, so no placeholder text shows -->
-    <FrameLayout
-        android:id="@+id/loadingOverlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/main_bg_gradient2"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center" />
-    </FrameLayout>
 
 
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
@@ -315,21 +330,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-
-    <!-- Back: only on someone else's profile, returns to where you came from -->
-    <ImageView
-        android:id="@+id/backBtn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:padding="16dp"
-        android:src="@drawable/back3"
-        android:contentDescription="@string/back"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

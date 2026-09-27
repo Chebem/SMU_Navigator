@@ -43,8 +43,8 @@ public class OthersAdapter extends RecyclerView.Adapter<OthersAdapter.Viewholder
         // Set title (English if available, fallback to nameString or "Facility")
         holder.binding.titleTxt.setText(item.getName());
 
-        // Location on the card, like the other campus cards (the long description is on the detail page)
-        holder.binding.addressTxt.setText(item.getLocation());
+        //  Set description
+        holder.binding.addressTxt.setText(item.getDescription());
 
         // Set operating hours or fallback
         holder.binding.openTxt.setText(item.getOperatingHours());
