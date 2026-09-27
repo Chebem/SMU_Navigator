@@ -56,6 +56,33 @@
       }
     },
 
+    // Place reviews: reviews/{placeKey}/{uid}, one per person per place; only you can write yours
+    "reviews": {
+      ".read": "auth != null",
+      "$placeKey": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['userId', 'rating', 'timestamp']) && newData.child('userId').val() === $uid && newData.child('rating').isNumber() && newData.child('rating').val() >= 1 && newData.child('rating').val() <= 5 && newData.child('timestamp').isNumber() && (!newData.child('text').exists() || (newData.child('text').isString() && newData.child('text').val().length <= 500))"
+        }
+      }
+    },
+
+    // Reports: anyone signed in can file one as themselves; nobody can read them in the app (use the console)
+    "reports": {
+      "$reportId": {
+        ".write": "auth != null && !data.exists() && newData.child('reporterUid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['type', 'path', 'reason', 'reporterUid', 'timestamp'])"
+      }
+    },
+
+    // Who you blocked: private to you
+    "blocks": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
     // This device's push token, so the Cloud Function can reach you; only you can add or remove yours
     "fcmTokens": {
       "$uid": {
