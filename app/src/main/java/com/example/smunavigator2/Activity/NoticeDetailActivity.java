@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NoticeDetailActivity extends AppCompatActivity {
 
-    /** Intent extra: notice key under Notices/, used when opened from a push */
+    /** Intent: notice key under Notices/, used when opened from a push */
     public static final String EXTRA_NOTICE_ID = "noticeId";
 
     private WebView webView;
@@ -32,7 +32,7 @@ public class NoticeDetailActivity extends AppCompatActivity {
         ImageButton backBtn = findViewById(R.id.backBtn);
         progressBar = findViewById(R.id.progressBar); // ProgressBar from XML
 
-        // 🔙 Back Button
+        // Back Button
         backBtn.setOnClickListener(v -> {
             if (webView.canGoBack()) {
                 webView.goBack();
