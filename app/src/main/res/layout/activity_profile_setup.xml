@@ -9,8 +9,8 @@
     <!-- Back Button: 24dp icon inside a 60dp tap area -->
     <ImageView
         android:id="@+id/backBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:padding="18dp"
         android:src="@drawable/back3"
         android:contentDescription="@string/back"
