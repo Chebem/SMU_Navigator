@@ -2,12 +2,16 @@ package com.example.smunavigator2.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,15 +22,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Post;
-import com.example.smunavigator2.Utils.FollowUtils;
-import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.FollowUtils;
+import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.ViewModel.ProfileViewModel;
 import com.example.smunavigator2.databinding.ActivityProfilePageBinding;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
+import com.google.firebase.auth.FirebaseUser;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
@@ -130,6 +137,9 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
                         startActivity(intent);
                     });
                     return true;
+                } else if (id == R.id.menu_delete_account) {
+                    confirmDeleteAccount();
+                    return true;
                 }
                 return false;
             });
@@ -167,6 +177,68 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             }
             // On success the profile listener fires and updates the button and counts
         });
+    }
+
+    // Delete account (required by Google Play). The login is deleted here; the
+    // cleanUpDeletedUser Cloud Function then removes the profile, posts, photos, follows, etc.
+    private void confirmDeleteAccount() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.delete_account_title)
+                .setMessage(R.string.delete_account_message)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.delete, (d, w) -> deleteAccount())
+                .show();
+    }
+
+    private void deleteAccount() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        Toast.makeText(this, R.string.deleting_account, Toast.LENGTH_SHORT).show();
+        PushUtils.unregisterDevice(user.getUid()).addOnCompleteListener(t ->
+                user.delete().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        onAccountDeleted();
+                    } else if (task.getException() instanceof FirebaseAuthRecentLoginRequiredException) {
+                        askPasswordThenDelete(user); // Firebase wants a recent sign-in first
+                    } else {
+                        Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
+                    }
+                }));
+    }
+
+    private void askPasswordThenDelete(FirebaseUser user) {
+        EditText password = new EditText(this);
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setHint(R.string.password);
+        FrameLayout box = new FrameLayout(this);
+        int pad = Math.round(20 * getResources().getDisplayMetrics().density);
+        box.setPadding(pad, 0, pad, 0);
+        box.addView(password);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.confirm_password_title)
+                .setMessage(R.string.confirm_password_message)
+                .setView(box)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.delete, (d, w) -> {
+                    String email = user.getEmail();
+                    String pw = password.getText().toString();
+                    if (email == null || pw.isEmpty()) return;
+                    user.reauthenticate(EmailAuthProvider.getCredential(email, pw))
+                            .addOnSuccessListener(r -> user.delete().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) onAccountDeleted();
+                                else Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
+                            }))
+                            .addOnFailureListener(e -> Toast.makeText(this, R.string.wrong_password, Toast.LENGTH_SHORT).show());
+                })
+                .show();
+    }
+
+    private void onAccountDeleted() {
+        Toast.makeText(this, R.string.account_deleted, Toast.LENGTH_LONG).show();
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(this, LoginActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
     }
 
     @Override
