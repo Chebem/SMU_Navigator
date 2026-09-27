@@ -13,8 +13,10 @@ import com.example.smunavigator2.Domain.Committee;
 import com.example.smunavigator2.Domain.ConvenienceFacility;
 import com.example.smunavigator2.Domain.FacilityModel;
 import com.example.smunavigator2.Domain.ItemDomain;
+import com.example.smunavigator2.Domain.StoreModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.FavoriteUtils;
+import com.example.smunavigator2.Utils.PlaceUtils;
 import com.example.smunavigator2.databinding.ActivityDetailBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,6 +65,9 @@ public class DetailActivity extends AppCompatActivity {
         } else if (object instanceof Committee) {
             Committee c = (Committee) object;
             lat = c.getLat(); lng = c.getLng(); category = "Committee"; image = c.getImageUrl();
+        } else if (object instanceof StoreModel) {
+            StoreModel st = (StoreModel) object;
+            lat = st.getLat(); lng = st.getLng(); category = st.getCategory(); image = st.getImagePath();
         }
         if (user == null || name.isEmpty() || (lat == 0 && lng == 0)) {
             binding.imageView5.setVisibility(View.GONE); // nothing to save it by
@@ -165,6 +170,22 @@ public class DetailActivity extends AppCompatActivity {
             binding.contactTxt.setText(facility.getType());
             binding.ratingTxt.setText("Info");
             loadImage(facility.getImagePath());
+        } else if (object instanceof StoreModel) {
+            // City Guide place (restaurant, café, store…): same page as campus places
+            StoreModel store = (StoreModel) object;
+            binding.titleTxt.setText(store.getName());
+            binding.addressTxt2.setText(store.getAddress());
+            binding.descriptionTxt.setText(store.getActivity());
+            binding.openinghoursTxt.setText(PlaceUtils.openingHours(store, getString(R.string.hours_unknown)));
+            String phone = store.getPhone_number();
+            binding.contactTxt.setText(phone != null && !phone.isEmpty() ? phone : "—");
+            // No ratings yet: reviews will fill these in
+            binding.ratingBar.setVisibility(View.GONE);
+            binding.ratingTxt.setText(R.string.no_reviews_yet);
+            int placeholder = PlaceUtils.placeholderImage(store.getCategory());
+            Glide.with(this).load(store.getImagePath())
+                    .placeholder(placeholder).error(placeholder).fallback(placeholder)
+                    .into(binding.pic);
         }
 
         binding.backBtn.setOnClickListener(v -> finish());
@@ -172,6 +193,10 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupExploreButton() {
         binding.btnShowOnMap.setOnClickListener(v -> {
+            if (object instanceof StoreModel) {
+                startActivity(PlaceUtils.mapIntent(this, (StoreModel) object));
+                return;
+            }
             double lat = 0, lng = 0;
             String name = "", category = "", layoutKey = "store_marker";
 
