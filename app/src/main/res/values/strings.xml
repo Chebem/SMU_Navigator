@@ -195,4 +195,36 @@
     <string name="deleting_account">Deleting your account…</string>
     <string name="added_to_favorites">Added to favorites</string>
     <string name="no_reviews_yet">No reviews yet</string>
+    <string name="reviews">Reviews</string>
+    <string name="write_review">Write a review</string>
+    <string name="edit_review">Edit your review</string>
+    <string name="review_hint">What was it like? (optional)</string>
+    <string name="post_review">Post</string>
+    <string name="review_pick_stars">Tap the stars to rate it</string>
+    <string name="review_posted">Thanks for your review!</string>
+    <string name="be_first_review">No reviews yet. Be the first!</string>
+    <plurals name="review_summary">
+        <item quantity="one">★ %1$s · %2$d review</item>
+        <item quantity="other">★ %1$s · %2$d reviews</item>
+    </plurals>
+    <string name="more_options">More options</string>
+    <string name="edit">Edit</string>
+    <string name="report">Report</string>
+    <string name="report_user">Report user</string>
+    <string name="block">Block</string>
+    <string name="unblock">Unblock</string>
+    <string name="report_title">Why are you reporting this?</string>
+    <string-array name="report_reasons">
+        <item>Spam</item>
+        <item>Harassment or bullying</item>
+        <item>Inappropriate content</item>
+        <item>Something else</item>
+    </string-array>
+    <string name="report_sent">Thanks. We\'ll review this report.</string>
+    <string name="block_title">Block %1$s?</string>
+    <string name="block_message">You won\'t see their posts, comments or reviews, and you\'ll stop following each other. You can unblock them from their profile.</string>
+    <string name="blocked_user">%1$s is blocked</string>
+    <string name="unblocked">Unblocked</string>
+    <string name="delete_post">Delete post</string>
+    <string name="delete_post_confirm">Delete this post? This can\'t be undone.</string>
 </resources>
