@@ -3,6 +3,7 @@ package com.example.smunavigator2.Activity;
 import com.example.smunavigator2.BuildConfig;
 import com.example.smunavigator2.Utils.DistanceUtils;
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -645,7 +646,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             try {
                 startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(this, "Naver Map not installed", Toast.LENGTH_SHORT).show();
+                openKakaoWeb(destination.latitude, destination.longitude, placeName); // no Naver Map app
             }
         });
 
@@ -655,7 +656,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             try {
                 startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(this, "KakaoMap not installed", Toast.LENGTH_SHORT).show();
+                openKakaoWeb(destination.latitude, destination.longitude, placeName); // no Kakao Map app
             }
         });
 
@@ -781,13 +782,45 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     // Distance from the student (or campus) plus an estimated walk. Google's Distance Matrix
     // returns ZERO_RESULTS for walking and driving in Korea, which used to show "Not available".
-    private void showDistanceTo(double lat, double lng) {
+    // The walk button shows the same estimate and opens real walking directions (Kakao / Naver)
+    private void showDistanceTo(double lat, double lng, String name) {
         boolean isEnglish = DistanceUtils.isEnglishLocale();
+        Button walkBtn = findViewById(R.id.btnWalk);
         placeDistance.setText(isEnglish ? "Locating…" : "위치 확인 중…");
+        walkBtn.setText(R.string.walk);
+        walkBtn.setOnClickListener(v -> openWalkingDirections(lat, lng, name));
         DistanceUtils.resolveOrigin(this, (originLat, originLng, fromUser) -> {
             float meters = DistanceUtils.meters(originLat, originLng, lat, lng);
             placeDistance.setText(DistanceUtils.walkLabel(meters, fromUser, isEnglish));
+            int minutes = DistanceUtils.walkMinutes(meters);
+            if (minutes > 0) walkBtn.setText(getString(R.string.walk_minutes, minutes));
         });
+    }
+
+    // Google has no walking routes in Korea, so hand off to Kakao Map, then Naver Map, then Kakao on the web
+    private void openWalkingDirections(double lat, double lng, String name) {
+        String label = name != null ? name : "";
+        Intent kakao = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("kakaomap://route?ep=" + lat + "," + lng + "&by=FOOT"));
+        Intent naver = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("nmap://route/walk?dlat=" + lat + "&dlng=" + lng + "&dname=" + Uri.encode(label)
+                        + "&appname=" + getPackageName()))
+                .setPackage("com.nhn.android.nmap");
+        for (Intent app : new Intent[]{kakao, naver}) {
+            try {
+                startActivity(app);
+                return;
+            } catch (ActivityNotFoundException ignored) {
+                // not installed, try the next one
+            }
+        }
+        openKakaoWeb(lat, lng, label);
+    }
+
+    private void openKakaoWeb(double lat, double lng, String name) {
+        String place = (name == null || name.isEmpty() ? "Destination" : name).replace(",", " ");
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://map.kakao.com/link/to/" + Uri.encode(place) + "," + lat + "," + lng)));
     }
 
     private void loadAllMarkers() {
@@ -981,7 +1014,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         //  Format hours if structured
         if (hours != null && !hours.trim().isEmpty()) {
             if (hours.contains("Monday")) {
-                placeHours.setText(getString(R.string.open_with_hours, formatOpeningHours(hours)));
+                String formatted = formatOpeningHours(hours);
+                placeHours.setText(formatted.isEmpty() ? getString(R.string.hours_unknown)
+                        : getString(R.string.open_with_hours, formatted));
             } else {
                 placeHours.setText(getString(R.string.open_fallback, hours));
             }
@@ -990,7 +1025,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // ✅ Use lat/lng instead of geocoding
-        showDistanceTo(storeLat, storeLng);
+        showDistanceTo(storeLat, storeLng, title);
 
 
         //  Load image or fallback
@@ -1033,7 +1068,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // Distance logic from user's location to dorm coordinates
-        showDistanceTo(dormLat, dormLng);
+        showDistanceTo(dormLat, dormLng, name);
         // 🧭 Show direction options
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1074,7 +1109,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         if (hours != null && !hours.trim().isEmpty()) {
-            placeHours.setText(getString(R.string.open_with_hours, formatOpeningHours(hours)));
+            String formatted = formatOpeningHours(hours);
+            placeHours.setText(formatted.isEmpty() ? getString(R.string.hours_unknown)
+                    : getString(R.string.open_with_hours, formatted));
         } else {
             placeHours.setText(getString(R.string.hours_unknown));
         }
@@ -1099,7 +1136,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         // 📍 Distance display
-        showDistanceTo(placeLat, placeLng);
+        showDistanceTo(placeLat, placeLng, name);
 
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
