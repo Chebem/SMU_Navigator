@@ -3,6 +3,7 @@ package com.example.smunavigator2.Activity;
 import com.example.smunavigator2.BuildConfig;
 import com.example.smunavigator2.Utils.DistanceUtils;
 import com.example.smunavigator2.Utils.FavoriteUtils;
+import com.example.smunavigator2.Utils.PlaceUtils;
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -89,6 +90,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private CardView overlayCard;
     private ImageView placeImage;
+    private String overlayCategory = ""; // category of the tapped marker, for the card's placeholder
     private TextView placeTitle, placeAddress, placeHours, placeDistance;
 
 
@@ -253,6 +255,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             if (tag instanceof MarkerTagData) {
                 MarkerTagData info = (MarkerTagData) tag;
 
+                overlayCategory = info.category; // for the card's placeholder image
                 if ("Dorms".equalsIgnoreCase(info.category)) {
                     LatLng dormPos = marker.getPosition();
                     showDormOverlay(
@@ -833,6 +836,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 double lat = Double.parseDouble(info[5]);
                 double lng = Double.parseDouble(info[6]);
                 String category = info.length >= 5 ? info[4] : "";
+                overlayCategory = category;
                 if (category.equalsIgnoreCase("Dorms")) {
                     showDormOverlay(info[0], info[1], info[2], info[3], info[4], lat, lng);
                 } else {
@@ -993,6 +997,15 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     //overlay for store
+    // Photo when there is one, otherwise the category cover (was always the SMU logo)
+    private void loadPlaceImage(String imageUrl, String category) {
+        int placeholder = PlaceUtils.placeholderImage(category);
+        Glide.with(this).load(imageUrl != null && !imageUrl.isEmpty() ? imageUrl : null)
+                .placeholder(placeholder).error(placeholder).fallback(placeholder)
+                .centerCrop()
+                .into(placeImage);
+    }
+
     private void showStoreOverlay(String title, String address, String hours, String description, String imageUrl, double storeLat, double storeLng) {
         placeTitle.setText(title != null ? title : "No name");
 
@@ -1030,11 +1043,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
         //  Load image or fallback
-        if (imageUrl != null) {
-            Glide.with(this).load(imageUrl).into(placeImage);
-        } else {
-            placeImage.setImageResource(R.drawable.smu_logo);
-        }
+        loadPlaceImage(imageUrl, overlayCategory);
 
         Button directionBtn = findViewById(R.id.btnOpenMaps);
         directionBtn.setOnClickListener(v -> {
@@ -1062,11 +1071,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
        placeHours.setText(getString(R.string.contact_dorm_office));
 
-        if (imageUrl != null) {
-            Glide.with(this).load(imageUrl).into(placeImage);
-        } else {
-            placeImage.setImageResource(R.drawable.smu_logo);
-        }
+        loadPlaceImage(imageUrl, "dormitory");
 
         // Distance logic from user's location to dorm coordinates
         showDistanceTo(dormLat, dormLng, name);
@@ -1117,11 +1122,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             placeHours.setText(getString(R.string.hours_unknown));
         }
 
-        if (imageUrl != null) {
-            Glide.with(this).load(imageUrl).into(placeImage);
-        } else {
-            placeImage.setImageResource(R.drawable.smu_logo);
-        }
+        loadPlaceImage(imageUrl, overlayCategory);
 
         // 📞 Handle call button
         Button callBtn = findViewById(R.id.btnCallStore);
