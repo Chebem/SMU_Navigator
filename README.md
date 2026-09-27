@@ -67,8 +67,6 @@ This app was extended into a **research paper** that was **accepted** and presen
 
 The presentation focused on the **design, implementation and real-world deployment** of a bilingual, data-driven mobile navigation system for campus and local environments.
 
-![SMU Navigator poster, MITA 2025](docs/images/poster.jpg)
-
 ---
 
 ## Privacy
