@@ -1,13 +1,8 @@
 package com.example.smunavigator2.Activity;
 
-import com.google.firebase.database.Query;
-import com.example.smunavigator2.Utils.PushUtils;
-import androidx.core.content.ContextCompat;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.activity.result.ActivityResultLauncher;
-import android.content.SharedPreferences;
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -16,31 +11,36 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.smunavigator2.Activity.CityGuideActivity;
 import com.example.smunavigator2.Adapter.CommitteeAdapter;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Committee;
 import com.example.smunavigator2.Domain.Post;
-import com.example.smunavigator2.Utils.PostParser;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.ModerationUtils;
+import com.example.smunavigator2.Utils.PostParser;
+import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.databinding.ActivityMainBinding;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.example.smunavigator2.Activity.CityGuideActivity;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -52,6 +52,7 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
 
+    private final Runnable onBlockedChanged = this::initSocialFeed;
     private Query unreadQuery;
     private ValueEventListener unreadListener;
     private final ActivityResultLauncher<String> notificationPermission =
@@ -106,6 +107,10 @@ public class MainActivity extends BaseActivity {
             }
         };
         unreadQuery.addValueEventListener(unreadListener);
+
+        // Blocked people's posts disappear from the feed (reload when the list changes)
+        ModerationUtils.watchBlocked();
+        ModerationUtils.addBlockListener(onBlockedChanged);
 
         // Pushes: notices topic + this device's token for follow alerts
         PushUtils.createChannel(this);
@@ -255,6 +260,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (unreadQuery != null) unreadQuery.removeEventListener(unreadListener);
+        ModerationUtils.removeBlockListener(onBlockedChanged);
     }
 
     private void initSocialFeed() {
@@ -286,6 +292,7 @@ public class MainActivity extends BaseActivity {
                                 && post.getMainImage() == null) continue;
 
                         if (post.getUserId() == null) post.setUserId(profileSnap.getKey());
+                        if (ModerationUtils.isBlocked(post.getUserId())) continue; // hidden: you blocked them
                         post.setPostId(postSnap.getKey());
                         feedList.add(post);
                     }
