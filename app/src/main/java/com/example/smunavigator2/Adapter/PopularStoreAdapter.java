@@ -136,9 +136,9 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
         int placeholderRes = PlaceUtils.placeholderImage(category);
 
         if (imageUrl == null || imageUrl.isEmpty()) {
-            // No photo yet: the category icon, whole and centred (cropping it like a photo cut it off)
-            holder.image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(holder.itemView.getContext()).load(placeholderRes).circleCrop().into(holder.image); // round, like Nearest
+            // No photo yet: the category cover (gradient + icon) fills the card like a photo
+            holder.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(holder.itemView.getContext()).load(placeholderRes).into(holder.image);
         } else {
             // A real photo fills the card
             holder.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
