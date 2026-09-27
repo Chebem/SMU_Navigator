@@ -2,6 +2,7 @@ package com.example.smunavigator2.Activity;
 
 import com.example.smunavigator2.BuildConfig;
 import com.example.smunavigator2.Utils.DistanceUtils;
+import com.example.smunavigator2.Utils.FavoriteUtils;
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -1146,7 +1147,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         // ❤️ Favorite functionality
         AppCompatButton favoriteBtn = findViewById(R.id.favoriteBtn);
         String safeName = name != null ? name : "Unknown";
-        String placeId = (name + "_" + placeLat + "_" + placeLng).replace(".", "_");
+        String placeId = FavoriteUtils.key(name, placeLat, placeLng);
 
         if (favoriteRef == null) {
             Toast.makeText(this, "Favorites not available", Toast.LENGTH_SHORT).show();
