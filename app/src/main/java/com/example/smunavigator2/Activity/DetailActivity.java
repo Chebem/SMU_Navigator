@@ -3,6 +3,7 @@ package com.example.smunavigator2.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,13 @@ import com.example.smunavigator2.Domain.ConvenienceFacility;
 import com.example.smunavigator2.Domain.FacilityModel;
 import com.example.smunavigator2.Domain.ItemDomain;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.FavoriteUtils;
 import com.example.smunavigator2.databinding.ActivityDetailBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
     private ActivityDetailBinding binding;
@@ -35,6 +42,68 @@ public class DetailActivity extends AppCompatActivity {
 
         setVariable();
         setupExploreButton();
+        setupFavoriteButton();
+    }
+
+    // ❤️ Same favorites as the map, so saved places show on the Favorites screen
+    private void setupFavoriteButton() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String name = binding.titleTxt.getText().toString();
+        double lat = 0, lng = 0;
+        String category = "", image = "";
+        if (object instanceof ItemDomain) {
+            ItemDomain i = (ItemDomain) object;
+            lat = i.getLat(); lng = i.getLng(); category = i.getCategory(); image = i.getImagePath();
+        } else if (object instanceof ConvenienceFacility) {
+            ConvenienceFacility f = (ConvenienceFacility) object;
+            lat = f.getLat(); lng = f.getLng(); category = f.getCategory(); image = f.getImagePath();
+        } else if (object instanceof FacilityModel) {
+            FacilityModel f = (FacilityModel) object;
+            lat = f.getLat(); lng = f.getLng(); category = f.getCategory(); image = f.getImagePath();
+        } else if (object instanceof Committee) {
+            Committee c = (Committee) object;
+            lat = c.getLat(); lng = c.getLng(); category = "Committee"; image = c.getImageUrl();
+        }
+        if (user == null || name.isEmpty() || (lat == 0 && lng == 0)) {
+            binding.imageView5.setVisibility(View.GONE); // nothing to save it by
+            return;
+        }
+
+        String uid = user.getUid();
+        String key = FavoriteUtils.key(name, lat, lng);
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", name);
+        data.put("address", binding.addressTxt2.getText().toString());
+        data.put("description", binding.descriptionTxt.getText().toString());
+        data.put("imageUrl", image);
+        data.put("category", category);
+        data.put("lat", lat);
+        data.put("lng", lng);
+        data.put("phone", binding.contactTxt.getText().toString());
+
+        boolean[] saved = {false};
+        FavoriteUtils.ref(uid, key).get().addOnSuccessListener(snap -> {
+            saved[0] = snap.exists();
+            showFavorite(saved[0]);
+        });
+        binding.imageView5.setOnClickListener(v -> {
+            boolean save = !saved[0];
+            saved[0] = save;
+            showFavorite(save);
+            FavoriteUtils.set(uid, key, save ? data : null)
+                    .addOnSuccessListener(r -> Toast.makeText(this,
+                            save ? R.string.added_to_favorites : R.string.removed_from_favorites, Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> {
+                        saved[0] = !save;
+                        showFavorite(!save);
+                        Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
+                    });
+        });
+    }
+
+    private void showFavorite(boolean saved) {
+        binding.imageView5.setImageResource(saved ? R.drawable.fav_icon_filled : R.drawable.fav_icon);
+        binding.imageView5.setContentDescription(getString(saved ? R.string.removed_from_favorites : R.string.favorite));
     }
 
     private void getIntentExtra() {
