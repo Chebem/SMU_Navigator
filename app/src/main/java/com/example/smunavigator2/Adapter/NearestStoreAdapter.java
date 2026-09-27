@@ -122,7 +122,7 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
         if (imageUrl == null || imageUrl.isEmpty()) {
             // ✅ Use PLACEHOLDER image (different from map marker)
-            int placeholderRes = PlaceUtils.placeholderImage(category);
+            int placeholderRes = PlaceUtils.placeholderThumb(category);
             Glide.with(holder.itemView.getContext())
                     .load(placeholderRes)
                     .circleCrop()
@@ -130,9 +130,9 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
         } else {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(PlaceUtils.placeholderImage(category)) // Use category placeholder
+                    .placeholder(PlaceUtils.placeholderThumb(category)) // Use category placeholder
                     .circleCrop()
-                    .error(PlaceUtils.placeholderImage(category)) // Fallback to placeholder
+                    .error(PlaceUtils.placeholderThumb(category)) // Fallback to placeholder
                     .into(holder.image);
         }
     }
