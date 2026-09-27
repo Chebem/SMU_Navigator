@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.smunavigator2.Adapter.CommentsAdapter;
 import com.example.smunavigator2.Domain.Comment;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.ModerationUtils;
 import com.example.smunavigator2.databinding.BottomSheetCommentsBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,8 @@ public class CommentsBottomSheet {
         dialog.setContentView(binding.getRoot());
 
         CommentsAdapter adapter = new CommentsAdapter();
+        adapter.setCommentsPath("profiles/" + ownerId + "/posts/" + postId + "/comments");
+        ModerationUtils.watchBlocked();
         binding.commentsRecycler.setLayoutManager(new LinearLayoutManager(context));
         binding.commentsRecycler.setAdapter(adapter);
 
@@ -50,7 +53,9 @@ public class CommentsBottomSheet {
                 List<Comment> comments = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Comment comment = child.getValue(Comment.class);
-                    if (comment != null && comment.text != null) comments.add(comment);
+                    if (comment == null || comment.text == null) continue;
+                    comment.key = child.getKey();
+                    if (!ModerationUtils.isBlocked(comment.userId)) comments.add(comment); // hide blocked people
                 }
                 comments.sort((a, b) -> Long.compare(a.timestamp, b.timestamp));
                 adapter.setComments(comments);
