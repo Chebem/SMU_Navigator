@@ -180,4 +180,6 @@
     <string name="someone">Someone</string>
     <string name="notif_follow_text">%1$s started following you</string>
     <string name="notif_follow_title">New follower</string>
+    <string name="walk">Walk</string>
+    <string name="walk_minutes">~%1$d min</string>
 </resources>
