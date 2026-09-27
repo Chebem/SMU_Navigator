@@ -50,44 +50,6 @@ https://github.com/user-attachments/assets/5850f6e5-2763-4c45-9aba-7edd2840684c
 
 ---
 
-## Project Structure
-
-```
-app/                 Android app (com.example.smunavigator2)
-  Activity/          Screens (home, campus, city guide, map, profile, people, notifications…)
-  Adapter/           RecyclerView adapters
-  Domain/            Data models
-  Utils/             Shared helpers (distance, places, favorites, follows, push, moderation)
-functions/           Firebase Cloud Functions
-scraper/             Notice scraper (Python)
-.github/workflows/   Daily notice scraping
-database.rules.json  Realtime Database security rules
-docs/privacy/        Privacy policy (English / Korean)
-```
-
----
-
-## Getting Started
-
-1. **Clone** the repo and open it in **Android Studio** (the project uses JetBrains JDK 21, which ships with Android Studio).
-2. **Firebase:** download `google-services.json` for the Android app from the Firebase Console and put it in `app/`.
-3. **API keys:** add them to `local.properties` in the project root:
-   ```properties
-   MAPS_API_KEY=your_google_maps_key
-   KAKAO_MAP_API_KEY=your_kakao_key
-   ```
-4. **Run** the `app` configuration on a device or emulator.
-
-`google-services.json`, `local.properties` and the scraper's service-account keys are git-ignored, so never commit them.
-
-**Firebase rules and functions** (optional, for your own Firebase project):
-```bash
-cd functions && npm install && cd ..
-firebase deploy --only database,functions
-```
-
----
-
 ## App Demo
 - Demo Video (KR):
 https://github.com/user-attachments/assets/89862122-6b26-45de-871f-056a6f621564
@@ -111,3 +73,8 @@ The presentation focused on the **design, implementation and real-world deployme
 
 ## Privacy
 See the [privacy policy](docs/privacy/index.md) for what the app collects and how to delete your account and data.
+
+---
+
+## License
+© 2025–2026 Chukwuka Chebem Yvette. **All rights reserved.** This code is shared for viewing only; you may not copy, modify, distribute or publish it without written permission.
