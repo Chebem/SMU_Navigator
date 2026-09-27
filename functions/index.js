@@ -103,8 +103,15 @@ exports.cleanUpDeletedUser = functionsV1
       }
     });
 
+    // Their reviews of places
+    const reviews = (await db.ref("reviews").get()).val() || {};
+    Object.keys(reviews).forEach((placeKey) => {
+      if (reviews[placeKey] && reviews[placeKey][uid]) updates[`reviews/${placeKey}/${uid}`] = null;
+    });
+
     // Everything of their own
     updates[`profiles/${uid}`] = null;
+    updates[`blocks/${uid}`] = null;
     updates[`notifications/${uid}`] = null;
     updates[`fcmTokens/${uid}`] = null;
     updates[`favorites/${uid}`] = null;
