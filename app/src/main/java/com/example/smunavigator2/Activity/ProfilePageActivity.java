@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.Utils.FollowUtils;
+import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.ViewModel.ProfileViewModel;
@@ -121,10 +122,13 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
                     startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true));
                     return true;
                 } else if (id == R.id.menu_logout) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    // Remove this device's push token first (needs to still be signed in), then sign out
+                    PushUtils.unregisterDevice(myUid).addOnCompleteListener(t -> {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    });
                     return true;
                 }
                 return false;
