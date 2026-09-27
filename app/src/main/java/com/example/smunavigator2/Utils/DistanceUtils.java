@@ -22,6 +22,9 @@ public final class DistanceUtils {
     // Further than this from campus (e.g. at home, on a bus) measure from campus instead
     private static final float FAR_FROM_CAMPUS_METERS = 20_000f;
 
+    // Beyond this a walking time isn't useful (take the bus)
+    private static final float MAX_WALK_ESTIMATE_METERS = 3_000f;
+
     public interface OriginCallback {
         void onOrigin(double lat, double lng, boolean fromUser);
     }
@@ -47,6 +50,18 @@ public final class DistanceUtils {
         String distance = format(meters);
         if (isEnglish) return distance + (fromUser ? " from you" : " from campus");
         return (fromUser ? "내 위치에서 " : "캠퍼스에서 ") + distance;
+    }
+
+    /**
+     * Distance label plus an estimated walk, e.g. "1.2 km from you • ~20 min walk".
+     * Google has no walking or driving routes in Korea, so the time is estimated:
+     * streets add ~30% to the straight line, walked at ~75 m per minute (4.5 km/h).
+     */
+    public static String walkLabel(float meters, boolean fromUser, boolean isEnglish) {
+        String label = label(meters, fromUser, isEnglish);
+        if (meters > MAX_WALK_ESTIMATE_METERS) return label;
+        int minutes = Math.max(1, Math.round(meters * 1.3f / 75f));
+        return label + (isEnglish ? " • ~" + minutes + " min walk" : " • 도보 약 " + minutes + "분");
     }
 
     public static boolean isEnglishLocale() {
