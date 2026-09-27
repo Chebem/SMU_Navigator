@@ -7,14 +7,13 @@ import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.Repository.ProfileRepository;
 
 public class ProfileViewModel extends ViewModel {
-    private final LiveData<ProfileModel> profileModelLiveData;
+    private LiveData<ProfileModel> profileModelLiveData;
 
-    public ProfileViewModel() {
-        ProfileRepository repository = new ProfileRepository();
-        profileModelLiveData= repository.getProfileLiveData();
+    /** Profile of {@code userId} (null = signed-in user); loaded once and kept across rotations. */
+    public LiveData<ProfileModel> getProfileModelLiveData(String userId) {
+        if (profileModelLiveData == null) {
+            profileModelLiveData = new ProfileRepository(userId).getProfileLiveData();
         }
-
-    public LiveData <ProfileModel> getProfileModelLiveData() {
         return profileModelLiveData;
     }
 }

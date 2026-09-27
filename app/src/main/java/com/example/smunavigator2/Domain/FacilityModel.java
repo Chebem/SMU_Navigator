@@ -1,5 +1,6 @@
 package com.example.smunavigator2.Domain;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 
 import java.io.Serializable;
@@ -49,10 +50,12 @@ public class FacilityModel implements Mappable, Serializable {
         return nameString;
     }
 
+    @Exclude
     public Map<String, String> getNameMap() {
         return name;
     }
 
+    @Exclude
     public void setName(Map<String, String> name) {
         this.name = name;
     }
@@ -91,10 +94,13 @@ public class FacilityModel implements Mappable, Serializable {
         this.lat = lat;
     }
 
+    // The database stores "longitude" (without this every facility had lng 0 and no map location)
+    @PropertyName("longitude")
     public double getLng() {
         return lng;
     }
 
+    @PropertyName("longitude")
     public void setLng(double lng) {
         this.lng = lng;
     }
@@ -123,16 +129,19 @@ public class FacilityModel implements Mappable, Serializable {
         this.type = type;
     }
 
+    @PropertyName("operating_hours") // the database key; without this hours were always "Hours Unknown"
     public String getOperatingHours() {
         return operating_hours != null ? operating_hours : "Hours Unknown";
     }
 
+    @PropertyName("operating_hours")
     public void setOperatingHours(String operating_hours) {
         this.operating_hours = operating_hours;
     }
 
     // Mappable interface implementations
     @Override
+    @Exclude // app-only; "name" in the database is read by getNameString/setNameString
     public String getName() {
         if (name != null && name.containsKey("en")) {
             return name.get("en");

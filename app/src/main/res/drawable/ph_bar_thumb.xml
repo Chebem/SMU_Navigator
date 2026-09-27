@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Round-thumbnail version of ph_bar: same gradient, bigger icon for small sizes -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="96dp" android:height="96dp">
+        <shape android:shape="rectangle">
+            <gradient android:angle="135" android:startColor="#5B2A86" android:endColor="#A044FF" />
+        </shape>
+    </item>
+    <item android:width="48dp" android:height="48dp" android:gravity="center"
+        android:drawable="@drawable/ic_cat_bar" />
+</layer-list>

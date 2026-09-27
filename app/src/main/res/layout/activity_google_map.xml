@@ -386,7 +386,7 @@
                             android:minHeight="0dp"
                             android:paddingHorizontal="16dp"
                             android:layout_marginEnd="8dp"
-                            android:text="@string/_7_min"
+                            android:text="@string/walk"
                             android:textSize="14sp"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white"
