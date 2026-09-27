@@ -12,8 +12,13 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.DistanceUtils;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class NoticeDetailActivity extends AppCompatActivity {
+
+    /** Intent extra: notice key under Notices/, used when opened from a push */
+    public static final String EXTRA_NOTICE_ID = "noticeId";
 
     private WebView webView;
     private ProgressBar progressBar;
@@ -60,9 +65,27 @@ public class NoticeDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Load HTML content
-        String title = getIntent().getStringExtra("title");
-        String htmlContent = getIntent().getStringExtra("html");
+        // Opened from a push: only the notice ID is known, so load it first
+        String noticeId = getIntent().getStringExtra(EXTRA_NOTICE_ID);
+        if (getIntent().getStringExtra("html") == null && noticeId != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            FirebaseDatabase.getInstance().getReference("Notices").child(noticeId).get()
+                    .addOnSuccessListener(snap -> {
+                        if (isFinishing() || isDestroyed()) return;
+                        boolean english = DistanceUtils.isEnglishLocale();
+                        String title = snap.child(english ? "title_en" : "title_ko").getValue(String.class);
+                        String html = snap.child(english ? "html_en" : "html_ko").getValue(String.class);
+                        if (html == null) html = snap.child("html_ko").getValue(String.class);
+                        showNotice(title, html != null ? html : "");
+                    })
+                    .addOnFailureListener(e -> progressBar.setVisibility(View.GONE));
+            return;
+        }
+
+        showNotice(getIntent().getStringExtra("title"), getIntent().getStringExtra("html"));
+    }
+
+    private void showNotice(String title, String htmlContent) {
         setTitle(title);
 
         String wrappedHtml = "<html><head><meta charset='UTF-8'>" +
