@@ -135,16 +135,17 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
         int placeholderRes = getPlaceholderImageRes(category);
 
         if (imageUrl == null || imageUrl.isEmpty()) {
-            Glide.with(holder.itemView.getContext())
-                    .load(placeholderRes)
-                    .circleCrop()
-                    .into(holder.image);
+            // No photo yet: the category icon, whole and centred (cropping it like a photo cut it off)
+            holder.image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            Glide.with(holder.itemView.getContext()).load(placeholderRes).circleCrop().into(holder.image); // round, like Nearest
         } else {
+            // A real photo fills the card
+            holder.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
                     .placeholder(placeholderRes)
                     .error(placeholderRes)
-                    .circleCrop()
+                    .centerCrop()
                     .into(holder.image);
         }
 
@@ -222,6 +223,7 @@ public class PopularStoreAdapter extends RecyclerView.Adapter<PopularStoreAdapte
 
             case "accommodation":
             case "dorms":
+            case "dormitory":
                 return R.drawable.accommodation_placehlolder;
 
             case "bars":
