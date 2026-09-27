@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smunavigator2.Utils.FavoriteUtils;
 import com.example.smunavigator2.Adapter.FavoriteAdapter;
 import com.example.smunavigator2.Domain.FavoriteItem;
 import com.example.smunavigator2.R;
@@ -54,8 +55,7 @@ public class FavoritesActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         adapter = new FavoriteAdapter(this, favoriteList, item -> {
-            String placeId = item.getName() + "_" + item.getLat() + "_" + item.getLng();
-            placeId = placeId.replace(".", "_");
+            String placeId = FavoriteUtils.key(item.getName(), item.getLat(), item.getLng());
 
             favoriteRef.child(placeId).removeValue().addOnSuccessListener(unused -> {
                 int index = favoriteList.indexOf(item);
