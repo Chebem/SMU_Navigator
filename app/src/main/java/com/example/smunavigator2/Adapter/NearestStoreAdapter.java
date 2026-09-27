@@ -175,6 +175,7 @@ public class NearestStoreAdapter extends RecyclerView.Adapter<NearestStoreAdapte
 
             case "accommodation":
             case "dorms":
+            case "dormitory":
                 return R.drawable.accommodation_placehlolder;
 
             case "bars":
