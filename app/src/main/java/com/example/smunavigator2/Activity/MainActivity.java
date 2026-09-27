@@ -1,6 +1,8 @@
 package com.example.smunavigator2.Activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -9,30 +11,36 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.smunavigator2.Activity.CityGuideActivity;
 import com.example.smunavigator2.Adapter.CommitteeAdapter;
 import com.example.smunavigator2.Adapter.PostsAdapter;
 import com.example.smunavigator2.Domain.Committee;
 import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
+import com.example.smunavigator2.Utils.ModerationUtils;
+import com.example.smunavigator2.Utils.PostParser;
+import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.databinding.ActivityMainBinding;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.example.smunavigator2.Activity.CityGuideActivity;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -43,6 +51,13 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends BaseActivity {
+
+    private final Runnable onBlockedChanged = this::initSocialFeed;
+    private Query unreadQuery;
+    private ValueEventListener unreadListener;
+    private final ActivityResultLauncher<String> notificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> { });
+
 
     private ActivityMainBinding binding;
 
@@ -75,27 +90,32 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
         });
 
+        // Red dot on the bell while there are unread notifications (live)
         View badgeView = findViewById(R.id.badgeView);
-
-        // Check Firebase for unread notifications
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("notifications").child(uid);
-
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        unreadQuery = FirebaseDatabase.getInstance().getReference("notifications").child(uid)
+                .orderByChild("read").equalTo(false).limitToFirst(1);
+        unreadListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    badgeView.setVisibility(View.VISIBLE); // show red dot
-                } else {
-                    badgeView.setVisibility(View.GONE); // hide red dot
-                }
+                badgeView.setVisibility(snapshot.exists() ? View.VISIBLE : View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 badgeView.setVisibility(View.GONE);
             }
-        });
+        };
+        unreadQuery.addValueEventListener(unreadListener);
+
+        // Blocked people's posts disappear from the feed (reload when the list changes)
+        ModerationUtils.watchBlocked();
+        ModerationUtils.addBlockListener(onBlockedChanged);
+
+        // Pushes: notices topic + this device's token for follow alerts
+        PushUtils.createChannel(this);
+        PushUtils.registerDevice(uid);
+        askNotificationPermission();
 
 
         // Navigate to Campus
@@ -205,7 +225,7 @@ public class MainActivity extends BaseActivity {
                     CommitteeAdapter adapter = new CommitteeAdapter(list);
                     binding.recommendedView.setAdapter(adapter);
 
-                    if (!list.isEmpty())
+                    if (list.isEmpty())
                     {
                         Toast.makeText(MainActivity.this, "No committees available.", Toast.LENGTH_SHORT).show();
 
@@ -225,7 +245,28 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    // Android 13+ needs permission to show notifications; ask once, not every launch
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) return;
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("askedNotificationPermission", false)) return;
+        prefs.edit().putBoolean("askedNotificationPermission", true).apply();
+        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unreadQuery != null) unreadQuery.removeEventListener(unreadListener);
+        ModerationUtils.removeBlockListener(onBlockedChanged);
+    }
+
     private void initSocialFeed() {
+        binding.findPeopleBtn.setOnClickListener(v ->
+                startActivity(PeopleActivity.intent(this, PeopleActivity.MODE_SEARCH, null)));
+
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("profiles");
         binding.progressBarSocial.setVisibility(View.VISIBLE);
 
@@ -237,26 +278,29 @@ public class MainActivity extends BaseActivity {
                 feedList.clear();
 
                 for (DataSnapshot profileSnap : snapshot.getChildren()) {
-                    if (profileSnap.hasChild("posts")) { //
-                        DataSnapshot postsSnap = profileSnap.child("posts");
+                    for (DataSnapshot postSnap : profileSnap.child("posts").getChildren()) {
+                        Post post = PostParser.parse(postSnap);
+                        if (post == null || "private".equals(post.getVisibility())) continue;
 
-                        for (DataSnapshot postSnap : postsSnap.getChildren()) {
-                            String imageUrl = postSnap.child("imageUrl").getValue(String.class);
-
-                            if (imageUrl != null && !imageUrl.isEmpty()) {
-                                feedList.add(new Post(
-                                        List.of(imageUrl),
-                                        "", // caption (optional)
-                                        profileSnap.getKey(), // userId
-                                        System.currentTimeMillis()
-                                ));
-                            }
+                        // Old posts only stored a single "imageUrl"
+                        String legacyUrl = postSnap.child("imageUrl").getValue(String.class);
+                        if ((post.getImageUrls() == null || post.getImageUrls().isEmpty())
+                                && post.getMainImage() == null && legacyUrl != null) {
+                            post.setImageUrls(List.of(legacyUrl));
                         }
+                        if ((post.getImageUrls() == null || post.getImageUrls().isEmpty())
+                                && post.getMainImage() == null) continue;
+
+                        if (post.getUserId() == null) post.setUserId(profileSnap.getKey());
+                        if (ModerationUtils.isBlocked(post.getUserId())) continue; // hidden: you blocked them
+                        post.setPostId(postSnap.getKey());
+                        feedList.add(post);
                     }
                 }
+                feedList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
 
                 binding.socialFeedRecycler.setLayoutManager(
-                        new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false)
+                        new LinearLayoutManager(MainActivity.this)
                 );
 
                 PostsAdapter adapter = new PostsAdapter(feedList, post -> {
@@ -299,13 +343,14 @@ public class MainActivity extends BaseActivity {
                         binding.textView14.setText(greeting);
                     }
 
-                    // Update profile image
-                    if (imageUrl != null && !imageUrl.isEmpty()) {
-                        Glide.with(MainActivity.this)
-                                .load(imageUrl)
-                                .placeholder(R.drawable.profile)
-                                .into(binding.imageView);
-                    }
+                    // Update profile image (default avatar when none is set)
+                    if (isFinishing() || isDestroyed()) return;
+                    Glide.with(MainActivity.this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .fallback(R.drawable.ic_default_avatar)
+                            .into(binding.imageView);
                 } else {
                     Log.d("MainActivity", "Profile not found in database.");
                 }
