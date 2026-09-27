@@ -25,6 +25,7 @@ import com.example.smunavigator2.Domain.Post;
 import com.example.smunavigator2.Domain.ProfileModel;
 import com.example.smunavigator2.R;
 import com.example.smunavigator2.Utils.FollowUtils;
+import com.example.smunavigator2.Utils.ModerationUtils;
 import com.example.smunavigator2.Utils.PushUtils;
 import com.example.smunavigator2.ViewModel.ProfileViewModel;
 import com.example.smunavigator2.databinding.ActivityProfilePageBinding;
@@ -40,6 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfilePageActivity extends AppCompatActivity implements PostsAdapter.OnPostClickListener {
+
+    // Blocking / unblocking from here: refresh the button (posts refresh on the next profile update)
+    private final Runnable onBlockedChanged = this::updateFollowButtonText;
 
     /** Intent extra: whose profile to show. Missing = the signed-in user. */
     public static final String EXTRA_USER_ID = "userId";
@@ -116,10 +120,15 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             postList.sort((a, b) -> Long.compare(b.getTimestamp(), a.getTimestamp())); // newest first
             binding.postsCountTxt.setText(String.valueOf(postList.size()));
 
+            if (!isOwnProfile && ModerationUtils.isBlocked(viewedUid)) postList.clear(); // you blocked them
             postsAdapter.updatePosts(postList);
         });
 
         binding.settingsIcon.setOnClickListener(v -> {
+            if (!isOwnProfile) {
+                showOthersMenu(v);
+                return;
+            }
             PopupMenu popup = new PopupMenu(this, v);
             popup.getMenuInflater().inflate(R.menu.menu_profile_dropdown, popup.getMenu());
 
@@ -156,16 +165,43 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
             binding.followBtn.setText(R.string.edit_profile);
             binding.followBtn.setOnClickListener(v -> startActivity(new Intent(this, ProfileSetupActivity.class).putExtra(ProfileSetupActivity.EXTRA_EDITING, true)));
         } else {
-            binding.settingsIcon.setVisibility(View.GONE);
+            // Someone else's profile: ⋮ with report / block instead of your settings
+            binding.settingsIcon.setImageResource(R.drawable.ic_more_vert);
+            binding.settingsIcon.setContentDescription(getString(R.string.more_options));
             binding.backBtn.setVisibility(View.VISIBLE);
             binding.backBtn.setOnClickListener(v -> finish());
-            binding.followBtn.setOnClickListener(v -> toggleFollow());
+            binding.followBtn.setOnClickListener(v -> {
+                if (ModerationUtils.isBlocked(viewedUid)) ModerationUtils.unblock(this, viewedUid);
+                else toggleFollow();
+            });
+            ModerationUtils.watchBlocked();
+            ModerationUtils.addBlockListener(onBlockedChanged);
             updateFollowButtonText();
         }
     }
 
     private void updateFollowButtonText() {
-        if (!isOwnProfile) binding.followBtn.setText(followedByMe ? R.string.following_state : R.string.follow);
+        if (isOwnProfile) return;
+        if (ModerationUtils.isBlocked(viewedUid)) binding.followBtn.setText(R.string.unblock);
+        else binding.followBtn.setText(followedByMe ? R.string.following_state : R.string.follow);
+    }
+
+    private void showOthersMenu(View anchor) {
+        PopupMenu menu = new PopupMenu(this, anchor);
+        boolean blocked = ModerationUtils.isBlocked(viewedUid);
+        menu.getMenu().add(0, 1, 0, R.string.report_user);
+        menu.getMenu().add(0, 2, 1, blocked ? R.string.unblock : R.string.block);
+        menu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) {
+                ModerationUtils.report(this, ModerationUtils.TYPE_USER, "profiles/" + viewedUid, viewedUid);
+            } else if (blocked) {
+                ModerationUtils.unblock(this, viewedUid);
+            } else {
+                ModerationUtils.confirmBlock(this, viewedUid, binding.nameText.getText().toString(), null);
+            }
+            return true;
+        });
+        menu.show();
     }
 
     private void toggleFollow() {
@@ -239,6 +275,12 @@ public class ProfilePageActivity extends AppCompatActivity implements PostsAdapt
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(this, LoginActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ModerationUtils.removeBlockListener(onBlockedChanged);
     }
 
     @Override
