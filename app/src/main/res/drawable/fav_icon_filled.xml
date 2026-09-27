@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Saved" state of fav_icon: red heart on the same light grey circle (42dp) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="42dp" android:height="42dp">
+        <shape android:shape="oval">
+            <solid android:color="#EEEEEE" />
+        </shape>
+    </item>
+    <item android:width="22dp" android:height="22dp" android:gravity="center"
+        android:drawable="@drawable/ic_heart_filled" />
+</layer-list>
