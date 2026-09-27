@@ -17,6 +17,8 @@ This policy explains what information the app collects, why, who it is shared wi
 | **Email address and password** | When you create an account | To sign you in. Passwords are handled by Firebase Authentication; we never see them. |
 | **Profile:** display name, department, short bio, profile photo | When you set up or edit your profile | Shown on your profile and next to your posts |
 | **Posts:** photos, captions, time posted | When you upload a post | Shown in the in-app social feed to other signed-in users |
+| **Likes, comments and place reviews:** star rating, text, time | When you like, comment or review | Shown to other signed-in users with your name and photo |
+| **Reports and blocks:** what you reported and why; who you blocked | When you report or block | Reports are seen only by the developer to moderate content; your block list is private to you |
 | **Follows** | When you follow someone | To show followers/following on profiles |
 | **Favorite places** | When you save a place | So you can find it again in Favorites |
 | **Precise location** (only while you use the app) | When you allow location and open a map, City Guide or Favorites | To show where you are and how far places are, and to get walking directions |
@@ -53,7 +55,7 @@ The app shows notices published on Semyung University's public website, with Eng
 
 You can delete your account at any time:
 
-- **In the app:** Profile → Settings → **Delete account**. This deletes your account, profile, posts and their photos, profile photo, follows, favorites, likes, comments and notifications.
+- **In the app:** Profile → Settings → **Delete account**. This deletes your account, profile, posts and their photos, profile photo, follows, favorites, likes, comments, reviews, blocks and notifications.
 - **By email:** send a request from the email address of your account to **me@chebemyvette.com** with the subject "Delete my SMU Navigator account". We delete your account and data within 30 days.
 
 Crash reports that are not linked to your account may remain for up to 90 days.
@@ -95,6 +97,8 @@ SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스
 | **이메일 주소, 비밀번호** | 회원가입 시 | 로그인. 비밀번호는 Firebase Authentication이 처리하며 개발자는 볼 수 없습니다. |
 | **프로필:** 이름, 학과, 자기소개, 프로필 사진 | 프로필 설정·수정 시 | 프로필과 게시물에 표시 |
 | **게시물:** 사진, 캡션, 게시 시간 | 게시물 업로드 시 | 로그인한 다른 사용자에게 소셜 피드로 표시 |
+| **좋아요, 댓글, 장소 리뷰:** 별점, 내용, 시간 | 좋아요·댓글·리뷰 작성 시 | 이름·사진과 함께 로그인한 다른 사용자에게 표시 |
+| **신고 및 차단:** 신고한 콘텐츠와 사유, 차단한 사용자 | 신고·차단 시 | 신고는 콘텐츠 관리를 위해 개발자만 확인하며, 차단 목록은 본인만 볼 수 있음 |
 | **팔로우** | 다른 사용자를 팔로우할 때 | 팔로워/팔로잉 표시 |
 | **즐겨찾는 장소** | 장소 저장 시 | 즐겨찾기에서 다시 보기 |
 | **정확한 위치** (앱 사용 중에만) | 위치 권한 허용 후 지도·도시 가이드·즐겨찾기 사용 시 | 현재 위치 표시, 장소까지의 거리, 도보 길찾기 |
@@ -122,7 +126,7 @@ SMU Navigator(이하 "앱")는 제천 세명대학교 학생을 위한 캠퍼스
 
 ## 5. 계정 및 데이터 삭제
 
-- **앱에서:** 프로필 → 설정 → **계정 삭제**. 계정, 프로필, 게시물과 사진, 프로필 사진, 팔로우, 즐겨찾기, 좋아요, 댓글, 알림이 삭제됩니다.
+- **앱에서:** 프로필 → 설정 → **계정 삭제**. 계정, 프로필, 게시물과 사진, 프로필 사진, 팔로우, 즐겨찾기, 좋아요, 댓글, 리뷰, 차단 목록, 알림이 삭제됩니다.
 - **이메일로:** 계정 이메일 주소로 **me@chebemyvette.com** 에 "SMU Navigator 계정 삭제" 제목으로 요청하시면 30일 이내에 삭제합니다.
 
 계정과 연결되지 않은 오류 보고는 최대 90일간 남아 있을 수 있습니다.
