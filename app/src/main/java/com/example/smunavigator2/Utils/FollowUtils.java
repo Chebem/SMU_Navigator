@@ -27,7 +27,7 @@ public final class FollowUtils {
             return db.updateChildren(updates);
         }
 
-        // The followers entry keeps my name and photo so their list can show me without another read
+        // The followers entry keeps name and photo so their list can show without another read
         return db.child("profiles").child(myUid).get().continueWithTask(me -> {
             DataSnapshot mine = me.isSuccessful() ? me.getResult() : null;
             Map<String, Object> follower = new HashMap<>();
