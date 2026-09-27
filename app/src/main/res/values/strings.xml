@@ -182,4 +182,15 @@
     <string name="notif_follow_title">New follower</string>
     <string name="walk">Walk</string>
     <string name="walk_minutes">~%1$d min</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_title">Delete your account?</string>
+    <string name="delete_account_message">This permanently deletes your account, profile, posts and photos, follows, favorites, likes, comments and notifications. This can\'t be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm_password_title">Confirm it\'s you</string>
+    <string name="confirm_password_message">Enter your password to delete your account.</string>
+    <string name="password">Password</string>
+    <string name="wrong_password">Wrong password. Please try again.</string>
+    <string name="account_deleted">Your account has been deleted.</string>
+    <string name="deleting_account">Deleting your account…</string>
 </resources>
