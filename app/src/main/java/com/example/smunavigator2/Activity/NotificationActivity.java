@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Your notifications (newest first); opening this screen marks them read. */
+/** notifications opening this screen marks them read. */
 public class NotificationActivity extends AppCompatActivity {
 
     private ActivityNotificationBinding binding;
