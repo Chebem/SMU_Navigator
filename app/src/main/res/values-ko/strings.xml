@@ -170,4 +170,10 @@
     <string name="no_people_found">검색 결과가 없습니다</string>
     <string name="no_followers_yet">아직 팔로워가 없습니다</string>
     <string name="not_following_anyone">아직 팔로우한 사람이 없습니다</string>
+    <string name="notification_channel_name">알림</string>
+    <string name="no_notifications_yet">아직 알림이 없습니다.</string>
+    <string name="follow_back">맞팔로우</string>
+    <string name="someone">누군가</string>
+    <string name="notif_follow_text">%1$s님이 회원님을 팔로우하기 시작했습니다</string>
+    <string name="notif_follow_title">새 팔로워</string>
 </resources>
