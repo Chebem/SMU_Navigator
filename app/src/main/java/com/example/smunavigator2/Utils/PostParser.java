@@ -11,7 +11,7 @@ public final class PostParser {
     private PostParser() {
     }
 
-    /** One malformed post (e.g. a number saved as text) is skipped instead of crashing the screen. */
+    /** One malformed post (i.e a number saved as text) is skipped instead of crashing the screen. */
     public static Post parse(DataSnapshot postSnap) {
         try {
             return postSnap.getValue(Post.class);
