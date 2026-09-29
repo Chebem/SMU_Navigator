@@ -9,7 +9,7 @@ https://github.com/user-attachments/assets/73f72fb0-0522-40f8-97c6-7fb28d7e620e
 
 ---
 
-## ✨ Features
+## Features
 
 ### Campus & City Guide
 - **Campus guide:** faculties, dormitories, convenience facilities and other facilities, each with a detail page
