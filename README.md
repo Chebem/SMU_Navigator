@@ -1,7 +1,6 @@
 
 # SMU Navigator (SMU 길아잡이)📍
-
-https://github.com/user-attachments/assets/5850f6e5-2763-4c45-9aba-7edd2840684c
+https://github.com/user-attachments/assets/73f72fb0-0522-40f8-97c6-7fb28d7e620e
 
 **SMU Navigator** is a **bilingual Android app (Korean/English)** that helps students and visitors find their way around **Semyung University** and explore nearby places in **Jecheon, South Korea**, with campus guides, a city guide, university notices and a small student social feed.
 
