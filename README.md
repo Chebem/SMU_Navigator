@@ -53,7 +53,7 @@ https://github.com/user-attachments/assets/73f72fb0-0522-40f8-97c6-7fb28d7e620e
 - Demo Video (KR):
 https://github.com/user-attachments/assets/89862122-6b26-45de-871f-056a6f621564
 - Demo Video (ENG):
-https://github.com/user-attachments/assets/5850f6e5-2763-4c45-9aba-7edd2840684c
+https://github.com/user-attachments/assets/73f72fb0-0522-40f8-97c6-7fb28d7e620e
 
 ---
 
